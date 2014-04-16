@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
 
 {% block page %}
-    <div>
-        {% block content %}{% endblock content %}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">TAMMY & BENJAMIN - Dashboard</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <ul class="nav nav-sidebar">
+                    <li class="active"><a href="/">Analytics</a></li>
+                    <li><a href="/orders/">Commandes</a></li>
+                </ul>
+            </div>
+            <div class="col-md-10">
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
     </div>
 {% endblock page %}

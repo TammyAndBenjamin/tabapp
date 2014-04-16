@@ -1,0 +1,12 @@
+Flask==0.10.1
+Flask-WTF==0.9.5
+Jinja2==2.7.2
+MarkupSafe==0.19
+WTForms==1.0.5
+Werkzeug==0.9.4
+itsdangerous==0.24
+requests==2.2.1
+stevedore==0.15
+virtualenv==1.11.4
+virtualenv-clone==0.2.4
+virtualenvwrapper==4.2

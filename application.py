@@ -3,17 +3,30 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 from flask import Flask, request, render_template, jsonify
+from flask.ext.httpauth import HTTPBasicAuth
 from flask_wtf.csrf import CsrfProtect
 from form_order import OrderForm, ItemLine
+import math
 import json
 import requests
 
 key = '3adfb09ddcdbafd4851e294634b8af9a'
 pwd = '9f67e06ae055c0c11dba39df4650d0ff'
 base_url = 'https://{}:{}@tammyandbenjamin.myshopify.com/admin/'.format(key, pwd)
+users = {
+    'benjamin': 'ta mère',
+    'jonathan': 'my password',
+}
 
 app = Flask(__name__)
 CsrfProtect(app)
+auth = HTTPBasicAuth()
+
+@auth.get_password
+def get_pw(username):
+    if username in users:
+        return users.get(username)
+    return None
 
 def list_from_api(url, key, page = None):
     def make_requests(url, page):
@@ -98,11 +111,19 @@ def process_orders(orders):
     return rows
 
 @app.route('/')
+@auth.login_required
 def index():
     return render_template('index.html')
 
 @app.route('/analytics')
+@auth.login_required
 def analytics():
+    return render_template('index.html')
+
+@app.route('/orders/', defaults={'page': 1})
+@app.route('/orders/<int:page>')
+@auth.login_required
+def orders(page):
     date_lbound = request.args.get('date_lbound')
     date_ubound = request.args.get('date_ubound')
     fields = [
@@ -115,25 +136,22 @@ def analytics():
         'tax_lines',
         'total_discounts',
     ]
-    url = '{base_url}orders.json?page={{page}}&fields={fields}{date_lbound}{date_ubound}'.format(**{
+    url = '{base_url}orders.json?financial_status=paid&page={{page}}&fields={fields}{date_lbound}{date_ubound}'.format(**{
             'base_url': base_url,
             'fields': ','.join(fields),
             'date_lbound': '&updated_at_min={}'.format(date_lbound) if date_lbound else '',
             'date_ubound': '&updated_at_max={}'.format(date_ubound) if date_ubound else '',
         })
-    orders = list_from_api(url, 'orders')
-    rows = process_orders(orders)
-    return jsonify(rows=rows)
-
-@app.route('/orders/', defaults={'page': 1})
-@app.route('/orders/<int:page>')
-def orders(page):
-    url = '{base_url}orders.json?page={{page}}'.format(**{
-            'base_url': base_url,
-        })
+    max_page = math.ceil(len(list_from_api(url, 'orders')) / 50)
     orders = list_from_api(url, 'orders', page)
-    return render_template('orders.html', orders=orders)
+    orders = process_orders(orders)
+    context = {
+        'page': page,
+        'max_page': max_page,
+        'orders': orders,
+    }
+    return render_template('orders.html', **context)
 
 
 if __name__ == "__main__":
-    app.run(host='172.16.1.55',debug=True)
+    app.run(host='62.210.207.214',debug=True)

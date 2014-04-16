@@ -1,6 +1,122 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <h1>Commandes</h1>
+    <h1>Suivi des ventes</h1>
     <a href="/orders/add">Ajouter une commande</a>
+    <form id="filters" class="form-inline" role="form">
+        <div class="form-group">
+            <label for="date_lbound">De</label>
+            <input type="datetime-local" class="form-control" name="date_lbound" />
+        </div>
+        <div class="form-group">
+            <label for="date_ubound">à</label>
+            <input type="datetime-local" class="form-control" name="date_ubound" />
+        </div>
+        <button class="btn btn-small">Filtrer</button>
+    </form>
+    <table id="sales" class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Order no.</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Produits</th>
+                <th style="white-space: nowrap;">Sous-total</th>
+                <th style="white-space: nowrap;">Remises HT</th>
+                <th style="white-space: nowrap;">Coût</th>
+                <th style="white-space: nowrap;">Marge</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.order_no }}</td>
+                    <td>{{ order.customer_firstname }}</td>
+                    <td>{{ order.customer_lastname }}</td>
+                    <td>{{ order.customer_email }}</td>
+                    <td>{{ order.products | join(', ') }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.excluding_taxes_amount) }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.discount_amount) }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.cost_amount) }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.benefits) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <ul class="pagination">
+        <li{% if page == 1 %} class="disabled"{% endif %}><a href="/orders/{{ page - 1 }}">&laquo;</a></li>
+        {% for i in range(0, max_page) %}
+            {% set real_i = i + 1 %}
+            <li{% if page == real_i %} class="active"{% endif %}><a href="/orders/{{ real_i }}">{{ real_i }}</a></li>
+        {% endfor %}
+        <li{% if page == max_page %} class="disabled"{% endif %}><a href="/orders/{{ page + 1 }}">&raquo;</a></li>
+    </ul>
 {% endblock content %}
+
+{% block script %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+    <script>
+        numeral.language('fr', {
+            delimiters: {
+                thousands: ' ',
+                decimal: ','
+            },
+            abbreviations: {
+                thousand: 'k',
+                million: 'm',
+                billion: 'b',
+                trillion: 't'
+            },
+            ordinal : function (number) {
+                return number === 1 ? 'er' : 'ème';
+            },
+            currency: {
+                symbol: '€'
+            }
+        });
+        numeral.language('fr');
+    </script>
+    <script type="text/html" id="order_row">
+        <tr>
+            <td><!-- order_no --></td>
+            <td><!-- customer_firstname --></td>
+            <td><!-- customer_lastname --></td>
+            <td><!-- customer_email --></td>
+            <td><!-- products --></td>
+            <td style="white-space: nowrap;"><!-- excluding_taxes_amount --></td>
+            <td style="white-space: nowrap;"><!-- discount_amount --></td>
+            <td style="white-space: nowrap;"><!-- cost_amount --></td>
+            <td style="white-space: nowrap;"><!-- benefits --></td>
+        </tr>
+    </script>
+    <script>
+        (function($) {
+            $('#filters').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: 'orders',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        var container = $('#aggregate_sales tbody');
+                        container.empty();
+                        $.each(response.rows, function(i, row) {
+                            var currency_format = '0,0.00 $',
+                                html_row = $('#order_row').html(),
+                                html_row = html_row.replace('<!-- order_no -->', row['order_no']),
+                                html_row = html_row.replace('<!-- customer_firstname -->', row['customer_firstname']),
+                                html_row = html_row.replace('<!-- customer_lastname -->', row['customer_lastname']),
+                                html_row = html_row.replace('<!-- customer_email -->', row['customer_email']),
+                                html_row = html_row.replace('<!-- products -->', row['products'].join(', ')),
+                                html_row = html_row.replace('<!-- excluding_taxes_amount -->', numeral(row['excluding_taxes_amount']).format(currency_format)),
+                                html_row = html_row.replace('<!-- discount_amount -->', numeral(row['discount_amount']).format(currency_format)),
+                                html_row = html_row.replace('<!-- cost_amount -->', numeral(row['cost_amount']).format(currency_format)),
+                                html_row = html_row.replace('<!-- benefits -->', numeral(row['benefits']).format(currency_format));
+                            container.append(html_row);
+                        });
+                    }
+                });
+            });
+        })(jQuery);
+    </script>
+{% endblock script %}

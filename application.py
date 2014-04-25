@@ -151,6 +151,8 @@ def orders(page):
     orders = process_orders(orders)
     context = {
         'page': page,
+        'date_lbound': date_lbound,
+        'date_ubound': date_ubound,
         'max_page': max_page,
         'orders': orders,
     }

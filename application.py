@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, division, print_function, unicode_literals
+from datetime import date
 from flask import Flask, request, render_template, jsonify
 from flask.ext.httpauth import HTTPBasicAuth
 from flask_wtf.csrf import CsrfProtect
 from form_order import OrderForm, ItemLine
+from dateutil.relativedelta import relativedelta
 import math
 import json
 import requests
@@ -124,8 +126,10 @@ def analytics():
 @app.route('/orders/<int:page>')
 @auth.login_required
 def orders(page):
-    date_lbound = request.args.get('date_lbound')
-    date_ubound = request.args.get('date_ubound')
+    default_lbound = date.today() - relativedelta(months=1)
+    default_ubound = date.today()
+    date_lbound = request.args.get('date_lbound', default_lbound)
+    date_ubound = request.args.get('date_ubound', default_ubound)
     fields = [
         'name',
         'created_at',
@@ -154,4 +158,4 @@ def orders(page):
 
 
 if __name__ == "__main__":
-    app.run(host='62.210.207.214',debug=True)
+    app.run(host='62.210.207.214', port=5050, debug=True)

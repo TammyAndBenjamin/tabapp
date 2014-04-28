@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Suivi des ventes</h1>
     <a href="/orders/add">Ajouter une commande</a>
-    <form id="filters" class="form-inline" role="form">
+    <form id="filters" class="form-inline" role="form" action="/orders/">
         <div class="form-group">
             <label for="date_lbound">Du</label>
             <input type="date" class="form-control" name="date_lbound" value="{{ date_lbound }}" style="width: 160px;" />

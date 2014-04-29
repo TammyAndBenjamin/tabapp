@@ -40,6 +40,7 @@
                 <div class="modal-body">
                     <form id="cost_form" role="form">
                         <div class="form-group">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                             <label for="product_cost">Product cost</label>
                             <input type="text" class="form-control" id="product_cost" name="product_cost">
                         </div>
@@ -65,11 +66,12 @@
                 var self = $(this),
                     row = $(e.delegateTarget);
                 if (self.data('content')) {
+                    self.popover('toggle');
                     return;
                 }
                 $.ajax({
                     type: 'GET',
-                    url: '/products/' + row.data('product-id'),
+                    url: '{{ url_for('product_costs_bp.products_list') }}' + row.data('productId'),
                     success: function(response) {
                         var costs = response.costs;
                         self.attr('data-content', JSON.stringify(costs));
@@ -80,7 +82,7 @@
             $('.action_row').on('click', '.edit_cost', function(e) {
                 var self = $(e.delegateTarget);
                 $('#cost_form')
-                    .attr('action', '/products/' + self.data('product-id'))
+                    .attr('action', '{{ url_for('product_costs_bp.products_list') }}' + self.data('productId'))
                     .find('label').html(self.data('label')).end()
                     .find('[name=product_cost]').val(self.data('value')).end();
                 $('#product_cost_modal').modal('show');

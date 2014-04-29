@@ -6,7 +6,6 @@ from flask import Blueprint, request, render_template, jsonify, g
 from form_order import OrderForm, ItemLine
 from utils import list_from_api, process_orders
 import math
-import requests
 
 orders_bp = Blueprint('orders_bp', __name__)
 

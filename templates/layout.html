@@ -10,7 +10,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">TAMMY & BENJAMIN - Dashboard</a>
+                <a class="navbar-brand">TAMMY & BENJAMIN - Dashboard</a>
             </div>
         </div>
     </div>
@@ -19,7 +19,8 @@
             <div class="col-md-2">
                 <ul class="nav nav-sidebar">
                     <li class="active"><a href="/">Analytics</a></li>
-                    <li><a href="/orders/">Commandes</a></li>
+                    <li><a href="{{ url_for('orders_bp.orders_list') }}">Orders</a></li>
+                    <li><a href="{{ url_for('product_costs_bp.products_list') }}">Products Costs</a></li>
                 </ul>
             </div>
             <div class="col-md-10">

@@ -15,7 +15,7 @@ app.db = None
 app.config.from_pyfile('settings.py')
 app.secret_key = app.config['SECRET_KEY']
 app.register_blueprint(orders_bp, url_prefix='/orders')
-app.register_blueprint(product_costs_bp, url_prefix='/products')
+app.register_blueprint(product_costs_bp, url_prefix='/products_costs')
 CsrfProtect(app)
 app.auth = HTTPBasicAuth()
 

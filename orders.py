@@ -4,7 +4,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, request, render_template, jsonify, g
 from form_order import OrderForm, ItemLine
-from utils import list_from_api, process_orders
+from utils import list_from_resource, process_orders
 import math
 
 orders_bp = Blueprint('orders_bp', __name__)
@@ -26,14 +26,14 @@ def orders_list(page):
         'tax_lines',
         'total_discounts',
     ]
-    url = '{base_url}orders.json?financial_status=paid&page={{page}}&fields={fields}{date_lbound}{date_ubound}'.format(**{
-            'base_url': g.config['SHOPIFY_URL'],
+    resource = 'orders'
+    params = '?financial_status=paid&page={{page}}&fields={fields}{date_lbound}{date_ubound}'.format(**{
             'fields': ','.join(fields),
             'date_lbound': '&updated_at_min={}'.format(date_lbound) if date_lbound else '',
             'date_ubound': '&updated_at_max={}'.format(date_ubound) if date_ubound else '',
         })
-    max_page = math.ceil(len(list_from_api(url, 'orders')) / 50)
-    orders = list_from_api(url, 'orders', page)
+    max_page = math.ceil(len(list_from_resource(resource, params)) / 50)
+    orders = list_from_resource(resource, params, page)
     orders = process_orders(orders)
     context = {
         'page': page,

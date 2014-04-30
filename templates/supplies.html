@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <title>TAMMY & BENJAMIN - Supplies</title>
+    </head>
+    <body>
+        <div style="text-align: center"><img src="http://cdn.shopify.com/s/files/1/0343/0553/t/5/assets/logo.png?7945"></div>
+        <div style="padding: 40px 0 0 0; width:600px; height: 100px; margin: auto;">
+            <table style="height: 400px" class="table table-bordered table table-hover table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Remaining quantity</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr{% if product.quantity == 0 %} class="danger"{% endif %}>
+                            <td style="font-family: verdana; font-size: 12px;">{{ product.title }}</td>
+                            <td style="font-family: verdana; font-size: 12px;">{{ product.quantity }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

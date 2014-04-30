@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, render_template, jsonify, g
-from utils import list_from_api, process_orders
+from utils import list_from_resource, process_orders
 import math
 import psycopg2.extras
 
@@ -27,12 +27,12 @@ def products_list():
         'title',
         'variants',
     ]
-    url = '{base_url}products.json?page={{page}}&fields={fields}'.format(**{
-            'base_url': g.config['SHOPIFY_URL'],
-            'fields': ','.join(fields),
-        })
-    max_page = math.ceil(len(list_from_api(url, 'products')) / 50)
-    rows = list_from_api(url, 'products', page)
+    resource = 'products'
+    params = '?page={{page}}&fields={fields}'.format(**{
+        'fields': ','.join(fields),
+    })
+    max_page = math.ceil(len(list_from_resource(resource, params)) / 50)
+    rows = list_from_resource(resource, params, page)
     products = []
     for row in rows:
         product_cost = current_cost(cur, row.get('id'))

@@ -6,6 +6,7 @@ from flask.ext.httpauth import HTTPBasicAuth
 from flask_wtf.csrf import CsrfProtect
 from orders import orders_bp
 from product_costs import product_costs_bp
+from supply import supply_bp
 import json
 import psycopg2
 
@@ -16,6 +17,7 @@ app.config.from_pyfile('settings.py')
 app.secret_key = app.config['SECRET_KEY']
 app.register_blueprint(orders_bp, url_prefix='/orders')
 app.register_blueprint(product_costs_bp, url_prefix='/products_costs')
+app.register_blueprint(supply_bp, url_prefix='/supply')
 CsrfProtect(app)
 app.auth = HTTPBasicAuth()
 

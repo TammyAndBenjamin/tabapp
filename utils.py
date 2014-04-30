@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 
+from flask import g
 import requests
 
-def list_from_api(url, key, page = None):
+def list_from_resource(resource, params, page = None):
+    url = '{}{}.json{}'.format(g.config['SHOPIFY_URL'], resource, params)
     def make_requests(url, page):
         url = url.format(**{'page': page})
         r = requests.get(url)
         return r.json()
     if page:
         data = make_requests(url, page)
-        rows = data.get(key)
+        rows = data.get(resource)
     else:
         page = 1
         rows = []
         while True:
             data = make_requests(url, page)
-            if not data.get(key):
+            if not data.get(resource):
                 break
-            rows += data.get(key)
+            rows += data.get(resource)
             page += 1
     return rows
 

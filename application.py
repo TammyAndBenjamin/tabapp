@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, render_template, g
-from flask.ext.httpauth import HTTPBasicAuth
 from flask_wtf.csrf import CsrfProtect
 from orders import orders_bp
 from product_costs import product_costs_bp
@@ -17,9 +16,8 @@ app.config.from_pyfile('settings.py')
 app.secret_key = app.config['SECRET_KEY']
 app.register_blueprint(orders_bp, url_prefix='/orders')
 app.register_blueprint(product_costs_bp, url_prefix='/products_costs')
-app.register_blueprint(supply_bp, url_prefix='/supply')
+app.register_blueprint(supply_bp, url_prefix='/supplies')
 CsrfProtect(app)
-app.auth = HTTPBasicAuth()
 
 @app.before_request
 def init_request():
@@ -29,22 +27,9 @@ def init_request():
     g.db = app.db
     g.config = app.config
 
-@app.auth.get_password
-def get_pw(username):
-    if username in app.config['USERS']:
-        return app.config['USERS'].get(username)
-    return None
-
 @app.route('/')
-@app.auth.login_required
 def index():
     return render_template('index.html')
-
-@app.route('/analytics')
-@app.auth.login_required
-def analytics():
-    return render_template('index.html')
-
 
 if __name__ == "__main__":
     app.run(host='62.210.207.214', port=5050, debug=True)

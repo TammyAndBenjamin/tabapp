@@ -3,12 +3,16 @@
 from flask import g
 import requests
 
-def list_from_resource(resource, params, page = None):
-    url = '{}{}.json{}'.format(g.config['SHOPIFY_URL'], resource, params)
+def list_from_resource(resource, params, page = None, count = False):
     def make_requests(url, page):
         url = url.format(**{'page': page})
         r = requests.get(url)
         return r.json()
+    url = '{}{}.json{}'.format(g.config['SHOPIFY_URL'], resource, params)
+    if count:
+        url = url.replace(resource, '{}/count'.format(resource))
+        data = make_requests(url, 1)
+        return int(data.get('count'))
     if page:
         data = make_requests(url, page)
         rows = data.get(resource)

@@ -32,7 +32,7 @@ def orders_list(page):
             'date_lbound': '&updated_at_min={}'.format(date_lbound) if date_lbound else '',
             'date_ubound': '&updated_at_max={}'.format(date_ubound) if date_ubound else '',
         })
-    max_page = math.ceil(len(list_from_resource(resource, params)) / 50)
+    max_page = math.ceil(list_from_resource(resource, params, count = True) / 50)
     orders = list_from_resource(resource, params, page)
     orders = process_orders(orders)
     context = {

@@ -1,7 +1,7 @@
 #!/usr/bin/env python                                                                                                                                                                                                                                                         [98/217]
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, render_template, jsonify, g
+from flask import Flask, request, render_template, g
 from flask.ext.httpauth import HTTPBasicAuth
 from flask_wtf.csrf import CsrfProtect
 from orders import orders_bp

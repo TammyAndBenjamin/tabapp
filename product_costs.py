@@ -31,7 +31,7 @@ def products_list():
     params = '?page={{page}}&fields={fields}'.format(**{
         'fields': ','.join(fields),
     })
-    max_page = math.ceil(len(list_from_resource(resource, params)) / 50)
+    max_page = math.ceil(list_from_resource(resource, params, count = True) / 50)
     rows = list_from_resource(resource, params, page)
     products = []
     for row in rows:

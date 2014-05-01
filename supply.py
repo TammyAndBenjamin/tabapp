@@ -4,13 +4,23 @@ from flask import Blueprint, render_template, jsonify, make_response, abort
 from utils import list_from_resource, process_orders
 import requests
 import json
+import re
 
 supply_bp = Blueprint('supply_bp', __name__)
 
 def get_products():
+    def get_image_from_size(url, size):
+        if size == 'original':
+            return url
+        pattern = r'(\.(jpg|jpeg)\?)'
+        return re.sub(pattern, r'_{}\1'.format(size), url, flags=re.IGNORECASE)
     quantity_buffer = 2
     fields = [
+        'id',
         'title',
+        'images',
+        'body_html',
+        'handle',
         'variants',
     ]
     resource = 'products'
@@ -19,12 +29,22 @@ def get_products():
     })
     rows = list_from_resource('products', params)
     products = []
+    product_url = 'http://www.tammyandbenjamin.com/products/{}'
     for row in rows:
-        quantity_variant = int(row.get('variants')[0].get('inventory_quantity'))
+        images_source = [ image.get('src') for image in row.get('images') ]
+        sizes = ['original', 'large', 'medium', 'small']
+        images = [{ size: get_image_from_size(image_source, size) for size in sizes }
+            for image_source in images_source]
+        variant = row.get('variants')[0]
+        quantity_variant = int(variant.get('inventory_quantity'))
         remaining_amount = quantity_variant - quantity_buffer
         product = {
             'title': row.get('title'),
             'quantity': remaining_amount if remaining_amount > 0 else 0,
+            'url': product_url.format(row.get('handle')),
+            'description': row.get('body_html'),
+            'images': images,
+            'price': float(variant.get('price')),
         }
         products.append(product)
     return products

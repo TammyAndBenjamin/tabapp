@@ -44,7 +44,7 @@ def get_products():
             'url': product_url.format(row.get('handle')),
             'description': row.get('body_html'),
             'images': images,
-            'price': float(variant.get('price')),
+            'price': decimal.Decimal(variant.get('price')),
         }
         products.append(product)
     return products

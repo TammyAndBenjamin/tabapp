@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from flask import g
+import decimal
 import requests
+import psycopg2.extras
 
 def list_from_resource(resource, params, page = None, count = False):
     def make_requests(url, page):
@@ -28,12 +30,13 @@ def list_from_resource(resource, params, page = None, count = False):
     return rows
 
 def process_orders(orders):
+    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     rows = []
     for order in orders:
         customer = order.get('customer')
         lines = order.get('line_items')
         tax_lines = order.get('tax_lines')
-        discount_value = float(order.get('total_discounts'))
+        discount_value = decimal.Decimal(order.get('total_discounts'))
         row = {
             'order_no': order.get('name'),
             'customer_firstname': customer.get('first_name'),
@@ -46,18 +49,26 @@ def process_orders(orders):
             'benefits': 0,
         }
         for line in lines:
+            cur.execute('''
+                SELECT value
+                FROM product_cost
+                WHERE product_id = %s
+                AND daterange(start_date, end_date) @> current_date
+            ''', (int(line.get('product_id')), ))
+            cost_row = cur.fetchone()
+            row['cost_amount'] += cost_row.get('value', 0) if cost_row else 0
             taxes = line.get('tax_lines')
             row['products'].append(line.get('title'))
-            price = float(line.get('price'))
+            price = decimal.Decimal(line.get('price'))
             if order.get('taxes_included'):
                 for tax_line in taxes:
-                    tax_rate = float(tax_line.get('rate'))
+                    tax_rate = decimal.Decimal(tax_line.get('rate'))
                     row['excluding_taxes_amount'] += price / (1 + tax_rate)
             else:
                 row['excluding_taxes_amount'] += price
         if order.get('taxes_included'):
             for tax_line in tax_lines:
-                tax_rate = float(tax_line.get('rate'))
+                tax_rate = decimal.Decimal(tax_line.get('rate'))
                 row['discount_amount'] += discount_value / (1 + tax_rate)
         else:
             row['discount_amount'] += discount_value
@@ -81,11 +92,11 @@ def aggregate_orders(orders):
             }
         row['count'] += 1
         if order.get('taxes_included'):
-            row['subtotal_price'] += (float(order.get('total_price', 0)) - float(order.get('total_tax', 0)))
+            row['subtotal_price'] += (decimal.Decimal(order.get('total_price', 0)) - decimal.Decimal(order.get('total_tax', 0)))
         else:
-            row['subtotal_price'] += float(order.get('subtotal_price', 0))
-        row['total_discount'] += float(order.get('total_discount', 0))
-        row['total_tax'] += float(order.get('total_tax', 0))
-        row['total_price'] += float(order.get('total_price', 0))
+            row['subtotal_price'] += decimal.Decimal(order.get('subtotal_price', 0))
+        row['total_discount'] += decimal.Decimal(order.get('total_discount', 0))
+        row['total_tax'] += decimal.Decimal(order.get('total_tax', 0))
+        row['total_price'] += decimal.Decimal(order.get('total_price', 0))
         aggregate[customer_email] = row
     return aggregate

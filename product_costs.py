@@ -57,10 +57,9 @@ def costs_history(product_id):
         SELECT value, start_date
         FROM product_cost
         WHERE product_id = %s
-        ORDER BY start_date ASC, end_date ASC NULLS LAST
+        ORDER BY end_date DESC NULLS FIRST, start_date DESC
     ''', (product_id,))
     rows = cur.fetchall()
-    print(rows)
     product_costs = []
     for row in rows:
         product_cost = {

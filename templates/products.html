@@ -16,7 +16,7 @@
                 <tr class="action_row" data-product-id="{{ product.id }}" data-label="{{ product.title }}" data-value="{{ product.cost if product.cost != None else '' }}">
                     <td>{{ product.title }}</td>
                     <td>{{ product.price }}</td>
-                    <td>{{ product.cost if product.cost != None else 'No cost' }}{% if product.cost %}&nbsp;<span class="glyphicon glyphicon-search cost_lookback"></span>{% endif %}</td>
+                    <td>{{ product.cost if product.cost != None else 'No cost' }}{% if product.cost %}&nbsp;<span class="glyphicon glyphicon-search cost_lookback" style="cursor: pointer;"></span>{% endif %}</td>
                     <td><a class="edit_cost" href="#">Edit</a></td>
                 </tr>
             {% endfor %}
@@ -38,17 +38,17 @@
                     <h4 class="modal-title">Edit product cost</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="cost_form" role="form">
+                    <form id="cost_form" role="form" class="form-inline">
                         <div class="form-group">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                            <label for="product_cost">Product cost</label>
+                            <label for="product_cost" style="margin-right: 5px;">Product cost</label>
                             <input type="text" class="form-control" id="product_cost" name="product_cost">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary validate_cost">Save changes</button>
+                    <button type="button" class="btn btn-primary validate_cost">Update</button>
                 </div>
             </div>
         </div>
@@ -56,38 +56,69 @@
 {% endblock content %}
 
 {% block script %}
+    <script id="costs_list" type="text/html">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                %% cost_lines %%
+            </tbody>
+        </table>
+    </script>
+    <script id="cost_line" type="text/html">
+        <tr>
+            <td>%% cost_date %%</td>
+            <td style="text-align: right;">%% cost_price %%</td>
+        </tr>
+    </script>
     <script>
         (function($) {
             $('.cost_lookback').popover({
                 trigger: 'manual',
+                html: true,
                 title: 'Costs history'
             });
-            $('.action_row').on('click', '.cost_lookback', function(e) {
-                var self = $(this),
-                    row = $(e.delegateTarget);
-                if (self.data('content')) {
-                    self.popover('toggle');
-                    return;
-                }
-                $.ajax({
-                    type: 'GET',
-                    url: '{{ url_for('product_costs_bp.products_list') }}' + row.data('productId'),
-                    success: function(response) {
-                        var costs = response.costs;
-                        self.attr('data-content', JSON.stringify(costs));
-                        self.popover('show');
+            $('.action_row')
+                .on('click', '.cost_lookback', function(e) {
+                    var self = $(this),
+                        row = $(e.delegateTarget);
+                    if (self.data('content')) {
+                        self.popover('toggle');
+                        return;
                     }
+                    $.ajax({
+                        type: 'GET',
+                        url: '{{ url_for('product_costs_bp.products_list') }}' + row.data('productId'),
+                        success: function(response) {
+                            var costs = response.costs;
+                            if (!costs) {
+                                return;
+                            }
+                            var lines_content = '',
+                                line_tpl = $('#cost_line').html();
+                            $.each(costs, function() {
+                                lines_content += line_tpl
+                                    .replace('%% cost_date %%', this.date)
+                                    .replace('%% cost_price %%', this.value);
+                            });
+                            self.attr('data-content', $('#costs_list').html().replace('%% cost_lines %%', lines_content));
+                            self.popover('show');
+                        }
+                    });
+                })
+                .on('click', '.edit_cost', function(e) {
+                    e.preventDefault();
+                    var row = $(e.delegateTarget);
+                    $('#cost_form')
+                        .attr('action', '{{ url_for('product_costs_bp.products_list') }}' + row.data('productId'))
+                        .find('label').html(row.data('label')).end()
+                        .find('[name=product_cost]').val(row.data('value')).end();
+                    $('#product_cost_modal').modal('show');
                 });
-            });
-            $('.action_row').on('click', '.edit_cost', function(e) {
-                e.preventDefault();
-                var self = $(e.delegateTarget);
-                $('#cost_form')
-                    .attr('action', '{{ url_for('product_costs_bp.products_list') }}' + self.data('productId'))
-                    .find('label').html(self.data('label')).end()
-                    .find('[name=product_cost]').val(self.data('value')).end();
-                $('#product_cost_modal').modal('show');
-            });
             $('#product_cost_modal .validate_cost').on('click', function(e) {
                 var self = $(this),
                     form = $('#cost_form'),

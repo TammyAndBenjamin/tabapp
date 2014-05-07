@@ -42,10 +42,16 @@ def get_products():
         product = {
             'title': row.get('title'),
             'quantity': remaining_amount if remaining_amount > 0 else 0,
-            'url': product_url.format(row.get('handle')),
             'description': row.get('body_html'),
-            'images': images,
+            'url': product_url.format(row.get('handle')),
             'price': decimal.Decimal(variant.get('price')),
+            'images': images,
+            'gender': 'Female',
+            'sizes': [],
+            'colors': [],
+            'category': '',
+            'on_sale': False,
+            'sale_price': 0,
         }
         products.append(product)
     return products

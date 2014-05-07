@@ -17,13 +17,13 @@
                     </image>
                 {% endfor %}
             </images>
-            <gender>Female</gender>
-            <sizes></sizes>
-            <colors></colors>
+            <gender>{{ product.gender | default('Female') }}</gender>
+            <sizes>{{ product.sizes | join (', ') }}</sizes>
+            <colors>{{ product.colors | join (', ') }}</colors>
             <details></details>
-            <category></category>
-            <on_sale></on_sale>
-            <sale_price></sale_price>
+            <category>{{ product.category }}</category>
+            <on_sale>{{ product.on_sale }}</on_sale>
+            <sale_price>{{ product.sale_price }}</sale_price>
         </product>
     {% endfor %}
 </products>

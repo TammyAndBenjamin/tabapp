@@ -4,7 +4,7 @@
         <product>
             <title>{{ product.title }}</title>
             <quantity>{{ product.quantity }}</quantity>
-            <description>{{ product.description }}</description>
+            <description>{{ product.description | e }}</description>
             <product_url>{{ product.url }}</product_url>
             <price>{{ product.price }}</price>
             <images>
@@ -17,13 +17,13 @@
                     </image>
                 {% endfor %}
             </images>
-            <category></category>
-            <on_sale></on_sale>
-            <sale_price></sale_price>
-            <gender></gender>
+            <gender>Female</gender>
             <sizes></sizes>
             <colors></colors>
             <details></details>
+            <category></category>
+            <on_sale></on_sale>
+            <sale_price></sale_price>
         </product>
     {% endfor %}
 </products>

@@ -27,7 +27,7 @@ def init_request():
     g.db = app.db
     g.config = app.config
 
-@app.route('/')
+@app.route('/', subdomain='backyard')
 def index():
     return render_template('index.html')
 

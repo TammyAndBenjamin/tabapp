@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, render_template, jsonify, g
-from utils import list_from_resource, process_orders
+from utils import list_from_resource
 import math
 import psycopg2.extras
 
-product_costs_bp = Blueprint('product_costs_bp', __name__)
+product_costs_bp = Blueprint('product_costs_bp', __name__, subdomain='backyard')
 
 def current_cost(cur, product_id):
     cur.execute('''

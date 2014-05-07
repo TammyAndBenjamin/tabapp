@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, jsonify, make_response, abort
-from utils import list_from_resource, process_orders
+from utils import list_from_resource
+import decimal
 import requests
 import json
 import re
 
-supply_bp = Blueprint('supply_bp', __name__)
+supply_bp = Blueprint('supply_bp', __name__, subdomain='data')
 
 def get_products():
     def get_image_from_size(url, size):

@@ -7,7 +7,7 @@ from form_order import OrderForm, ItemLine
 from utils import list_from_resource, process_orders
 import math
 
-orders_bp = Blueprint('orders_bp', __name__)
+orders_bp = Blueprint('orders_bp', __name__, subdomain='backyard')
 
 @orders_bp.route('/', defaults={'page': 1})
 @orders_bp.route('/<int:page>')

@@ -28,7 +28,7 @@ def products_list():
         'variants',
     ]
     resource = 'products'
-    params = '?page={{page}}&fields={fields}'.format(**{
+    params = '?page={{page}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })
     max_page = math.ceil(list_from_resource(resource, params, count = True) / 50)

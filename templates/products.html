@@ -17,7 +17,7 @@
                     <td>{{ product.title }}</td>
                     <td>{{ product.price }}</td>
                     <td>{{ product.cost if product.cost != None else 'No cost' }}{% if product.cost %}&nbsp;<span class="glyphicon glyphicon-search cost_lookback"></span>{% endif %}</td>
-                    <td><a class="edit_cost">Edit</a></td>
+                    <td><a class="edit_cost" href="#">Edit</a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -80,6 +80,7 @@
                 });
             });
             $('.action_row').on('click', '.edit_cost', function(e) {
+                e.preventDefault();
                 var self = $(e.delegateTarget);
                 $('#cost_form')
                     .attr('action', '{{ url_for('product_costs_bp.products_list') }}' + self.data('productId'))
@@ -96,7 +97,8 @@
                     url: form.attr('action'),
                     data: data,
                     success: function(response) {
-                        console.log(response);
+                        $('#product_cost_modal').modal('hide');
+                        document.location = '/products_costs/';
                     }
                 });
             });

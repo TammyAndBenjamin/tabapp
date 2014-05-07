@@ -25,7 +25,7 @@ def get_products():
         'variants',
     ]
     resource = 'products'
-    params = '?page={{page}}&fields={fields}'.format(**{
+    params = '?page={{page}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })
     rows = list_from_resource('products', params)

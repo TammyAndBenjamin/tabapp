@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, jsonify, make_response, abort
-from utils import list_from_resource
+from utils import list_from_resource, noindex
 import decimal
 import requests
 import json
@@ -57,6 +57,7 @@ def get_products():
     return products
 
 @supply_bp.route('/')
+@noindex
 def list():
     context = {
         'products': get_products(),
@@ -64,6 +65,7 @@ def list():
     return render_template('supplies.html', **context)
 
 @supply_bp.route('/<string:mediatype>')
+@noindex
 def raw(mediatype):
     context = {
         'products': get_products(),

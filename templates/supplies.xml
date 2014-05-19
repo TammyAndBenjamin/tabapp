@@ -22,7 +22,6 @@
             <colors>{{ product.colors | join (', ') }}</colors>
             <details></details>
             <category>{{ product.category }}</category>
-            <on_sale>{{ product.on_sale }}</on_sale>
             <sale_price>{{ product.sale_price }}</sale_price>
         </product>
     {% endfor %}

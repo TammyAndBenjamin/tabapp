@@ -50,8 +50,7 @@ def get_products():
             'sizes': [],
             'colors': [],
             'category': '',
-            'on_sale': False,
-            'sale_price': 0,
+            'sale_price': '',
         }
         products.append(product)
     return products

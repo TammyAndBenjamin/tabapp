@@ -45,6 +45,7 @@ def get_products():
             'description': row.get('body_html'),
             'url': product_url.format(row.get('handle')),
             'price': decimal.Decimal(variant.get('price')),
+            'sku': variant.get('sku'),
             'images': images,
             'gender': 'Female',
             'sizes': [],

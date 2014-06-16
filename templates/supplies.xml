@@ -6,6 +6,7 @@
             <quantity>{{ product.quantity }}</quantity>
             <description>{{ product.description | e }}</description>
             <product_url>{{ product.url }}</product_url>
+            <sku>{{ product.sku }}</sku>
             <price>{{ product.price }}</price>
             <images>
                 {% for image in product.images %}

@@ -2,26 +2,56 @@
     <head>
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
         <title>TAMMY & BENJAMIN - Supplies</title>
+        <style>
+            table thead th { border: 0 !important; text-align: center; }
+            table tbody td { font-family: verdana; font-size: 12px; text-align: center; }
+        </style>
     </head>
     <body>
         <div style="text-align: center"><img src="http://cdn.shopify.com/s/files/1/0343/0553/t/5/assets/logo.png?7945"></div>
         <div style="padding: 40px 0 0 0; width:600px; height: 100px; margin: auto;">
-            <table style="height: 400px" class="table table-bordered table table-hover table table-condensed">
+            <div class="bg-danger pull-left" style="width: 150px; margin: 5px 0; text-align: center;">Rupture de stock</div>
+            <form id="product_filter_form" class="form-inline pull-right" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="product_filter">Filtrer les produits</label>
+                    <input type="search" class="form-control" id="product_filter" placeholder="Filtrer les produits">
+                </div>
+            </form>
+            <table class="table table-bordered table table-hover table table-condensed">
                 <thead>
                     <tr>
-                        <th>Product</th>
-                        <th>Remaining quantity</th>
+                        <th>Produit</th>
                     <tr>
                 </thead>
-                <tbody>
+                <tbody id="products">
                     {% for product in products %}
                         <tr{% if product.quantity == 0 %} class="danger"{% endif %}>
-                            <td style="font-family: verdana; font-size: 12px;">{{ product.title }}</td>
-                            <td style="font-family: verdana; font-size: 12px;">{{ product.quantity }}</td>
+                            <td>{{ product.title }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#product_filter_form').on('submit', function(e) {
+                    e.preventDefault();
+                });
+                $('#product_filter').on('keyup', function(e) {
+                    var self = $(this),
+                        q = self.val(),
+                        re = new RegExp(q, 'i');
+                    $('#products tr').each(function() {
+                        var row = $(this),
+                            product_name = row.find('td').html();
+                        row.hide();
+                        if (re.test(product_name)) {
+                            row.show();
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

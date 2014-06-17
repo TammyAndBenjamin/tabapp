@@ -19,6 +19,7 @@ def get_products():
     fields = [
         'id',
         'title',
+        'product_type',
         'images',
         'body_html',
         'handle',
@@ -47,10 +48,10 @@ def get_products():
             'price': decimal.Decimal(variant.get('price')),
             'sku': variant.get('sku'),
             'images': images,
+            'category': row.get('product_type'),
             'gender': 'Female',
             'sizes': [],
             'colors': [],
-            'category': '',
             'sale_price': '',
         }
         products.append(product)

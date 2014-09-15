@@ -11,7 +11,7 @@ orders_bp = Blueprint('orders_bp', __name__, subdomain='backyard')
 
 @orders_bp.route('/', defaults={'page': 1})
 @orders_bp.route('/<int:page>')
-def orders_list(page):
+def index(page):
     default_lbound = date.today() - relativedelta(months=1)
     default_ubound = date.today()
     date_lbound = request.args.get('date_lbound', default_lbound)

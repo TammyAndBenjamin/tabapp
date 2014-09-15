@@ -19,7 +19,7 @@ def current_cost(cur, product_id):
     return product_cost
 
 @product_costs_bp.route('/')
-def products_list():
+def index():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     page = int(request.args.get('page', 1))
     fields = [

@@ -23,12 +23,12 @@
         </tbody>
     </table>
     <ul id="pager" class="pagination">
-        <li{% if page == 1 %} class="disabled"{% endif %}><a href="{{ url_for('product_costs_bp.products_list') }}?page={{ page - 1 }}">&laquo;</a></li>
+        <li{% if page == 1 %} class="disabled"{% endif %}><a href="{{ url_for('product_costs_bp.index') }}?page={{ page - 1 }}">&laquo;</a></li>
         {% for i in range(0, max_page) %}
             {% set real_i = i + 1 %}
-            <li{% if page == real_i %} class="active"{% endif %}><a href="{{ url_for('product_costs_bp.products_list') }}?page={{ real_i }}">{{ real_i }}</a></li>
+            <li{% if page == real_i %} class="active"{% endif %}><a href="{{ url_for('product_costs_bp.index') }}?page={{ real_i }}">{{ real_i }}</a></li>
         {% endfor %}
-        <li{% if page == max_page %} class="disabled"{% endif %}><a href="{{ url_for('product_costs_bp.products_list') }}?page={{ page + 1 }}">&raquo;</a></li>
+        <li{% if page == max_page %} class="disabled"{% endif %}><a href="{{ url_for('product_costs_bp.index') }}?page={{ page + 1 }}">&raquo;</a></li>
     </ul>
     <div id="product_cost_modal" class="modal fade">
         <div class="modal-dialog">
@@ -92,7 +92,7 @@
                     }
                     $.ajax({
                         type: 'GET',
-                        url: '{{ url_for('product_costs_bp.products_list') }}' + row.data('productId'),
+                        url: '{{ url_for('product_costs_bp.index') }}' + row.data('productId'),
                         success: function(response) {
                             var costs = response.costs;
                             if (!costs) {
@@ -114,7 +114,7 @@
                     e.preventDefault();
                     var row = $(e.delegateTarget);
                     $('#cost_form')
-                        .attr('action', '{{ url_for('product_costs_bp.products_list') }}' + row.data('productId'))
+                        .attr('action', '{{ url_for('product_costs_bp.index') }}' + row.data('productId'))
                         .find('label').html(row.data('label')).end()
                         .find('[name=product_cost]').val(row.data('value')).end();
                     $('#product_cost_modal').modal('show');

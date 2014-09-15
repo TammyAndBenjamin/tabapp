@@ -11,6 +11,11 @@ retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 @retailers_bp.route('/')
 def index():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute('''
+        SELECT id, name
+        FROM retailer
+    ''')
+    retailers = cur.fetchall()
     page = int(request.args.get('page', 1))
     fields = [
         'id',
@@ -34,6 +39,7 @@ def index():
     context = {
         'page': page,
         'max_page': max_page,
+        'retailers': retailers,
         'products': products,
     }
     return render_template('retailers/index.html', **context)

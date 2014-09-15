@@ -2,16 +2,18 @@
 
 {% block content %}
     <h1>Products costs</h1>
-    <form name="quantity_form" method="POST">
-        <div class="row">
+    <form name="quantity_form" method="POST" class="form-horizontal" role="form">
+        <fieldset>
+            <legend>Retailers</legend>
             <select name="retailer_id">
                 <option value="">Choose a retailer</option>
                 {% for retailer in retailers %}
                     <option value="{{ retailer.id }}">{{ retailer.name }}</option>
                 {% endfor %}
             </select>
-        </div>
-        <div class="row">
+        </fieldset>
+        <fieldset>
+            <legend>Products</legend>
             {% for product in products %}
                 <div class="col-xs-6 col-md-1">
                     <span class="thumbnail">
@@ -26,7 +28,7 @@
                     </span>
                 </div>
             {% endfor %}
-        </div>
+        </fieldset>
         <button class="btn btn-primary">Valider</button>
     </form>
     <br />

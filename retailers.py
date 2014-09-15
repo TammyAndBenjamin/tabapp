@@ -36,4 +36,4 @@ def index():
         'max_page': max_page,
         'products': products,
     }
-    return render_template('retailers/products.html', **context)
+    return render_template('retailers/index.html', **context)

@@ -48,7 +48,7 @@ def products_list():
         'max_page': max_page,
         'products': products,
     }
-    return render_template('products.html', **context)
+    return render_template('costs.html', **context)
 
 @product_costs_bp.route('/<int:product_id>', methods=['GET'])
 def costs_history(product_id):

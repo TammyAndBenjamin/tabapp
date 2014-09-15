@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>Products costs</h1>
+    <form name="quantity_form" method="POST">
+        <div class="row">
+            <select name="retailer_id">
+                <option value="">Choose a retailer</option>
+                {% for retailer in retailers %}
+                    <option value="{{ retailer.id }}">{{ retailer.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="row">
+            {% for product in products %}
+                <div class="col-xs-6 col-md-1">
+                    <span class="thumbnail">
+                        <img  data-toggle="tooltip" title="{{ product.title }}" alt="{{ product.title }}" src="{{ product.image }}" class="img-responsive" />
+                        <div class="caption">
+                            <p class="quantity_changer clearfix">
+                                <a href="#" class="btn btn-xs pull-left" role="button" data-value="-1">-</a>
+                                <input type="text" name="quantity[{{ product.id }}]" value="0" style="width: 20px; float: left;" />
+                                <a href="#" class="btn btn-xs pull-left" role="button" data-value="1">+</a>
+                            </p>
+                        </div>
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary">Valider</button>
+    </form>
+    <br />
+    <ul id="pager" class="pagination">
+        <li{% if page == 1 %} class="disabled"{% endif %}><a href="{{ url_for('retailers_bp.index') }}?page={{ page - 1 }}">&laquo;</a></li>
+        {% for i in range(0, max_page) %}
+            {% set real_i = i + 1 %}
+            <li{% if page == real_i %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.index') }}?page={{ real_i }}">{{ real_i }}</a></li>
+        {% endfor %}
+        <li{% if page == max_page %} class="disabled"{% endif %}><a href="{{ url_for('retailers_bp.index') }}?page={{ page + 1 }}">&raquo;</a></li>
+    </ul>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $('img').tooltip();
+            $('.quantity_changer').on('click', 'a', function(e) {
+                e.preventDefault();
+                var self = $(this),
+                    value = parseInt(self.data('value')),
+                    input = $(e.delegateTarget).find('input'),
+                    newValue = Math.max(0, parseInt(input.val()) + value);
+                input.val(newValue);
+            });
+        });
+    </script>
+{% endblock script %}

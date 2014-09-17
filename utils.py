@@ -23,24 +23,26 @@ def noindex(f):
     """This decorator passes X-Robots-Tag: noindex"""
     return add_response_headers({'X-Robots-Tag': 'noindex'})(f)
 
-def list_from_resource(resource, params, page = None, count = False):
-    def make_requests(url, page):
-        url = url.format(**{'page': page})
+def list_from_resource(resource, params, limit = None, page = None, count = False):
+    def make_requests(url, page, limit):
+        url = url.format(**{'page': page, 'limit': limit})
         r = requests.get(url)
         return r.json()
+    if not limit:
+        limit = 50
     url = '{}{}.json{}'.format(g.config['SHOPIFY_URL'], resource, params)
     if count:
         url = url.replace(resource, '{}/count'.format(resource))
-        data = make_requests(url, 1)
+        data = make_requests(url, 1, limit)
         return int(data.get('count'))
     if page:
-        data = make_requests(url, page)
+        data = make_requests(url, page, limit)
         rows = data.get(resource)
     else:
         page = 1
         rows = []
         while True:
-            data = make_requests(url, page)
+            data = make_requests(url, page, limit)
             if not data.get(resource):
                 break
             rows += data.get(resource)

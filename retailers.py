@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, jsonify, g
+from flask import Blueprint, request, render_template, jsonify, g, redirect, url_for
 from utils import list_from_resource
 import math
 import psycopg2.extras
@@ -8,7 +8,7 @@ import psycopg2.extras
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 
-@retailers_bp.route('/')
+@retailers_bp.route('/', methods=['GET'])
 def index():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('''
@@ -23,11 +23,12 @@ def index():
         'images',
     ]
     resource = 'products'
-    params = '?page={{page}}&fields={fields}&published_status=published'.format(**{
+    limit = 20
+    params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })
-    max_page = math.ceil(list_from_resource(resource, params, count = True) / 50)
-    rows = list_from_resource(resource, params, page)
+    max_page = math.ceil(list_from_resource(resource, params, count = True) / limit)
+    rows = list_from_resource(resource, params, limit=limit, page=page)
     products = []
     for row in rows:
         product = {
@@ -43,3 +44,27 @@ def index():
         'products': products,
     }
     return render_template('retailers/index.html', **context)
+
+
+@retailers_bp.route('/', methods=['POST'])
+def submit():
+    cur = g.db.cursor()
+    retailer_id = request.form.get('retailer_id')
+    product_ids = [ int(v) for v in request.form.getlist('product_id') ]
+    quantities = [ int(v) for v in request.form.getlist('quantity') ]
+    sql = '''
+        INSERT INTO retailer_product(retailer_id, product_id, order_date)
+        VALUES (%s, %s, current_date)
+    '''
+    cart = zip(product_ids, quantities)
+    for product_id, quantity in cart:
+        if not quantity:
+            continue
+        for i in range(quantity):
+            cur.execute(sql, (retailer_id, product_id))
+    return redirect(url_for('retailers_bp.orders'))
+
+
+@retailers_bp.route('/orders')
+def orders():
+    return 'done'

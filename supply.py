@@ -3,8 +3,6 @@
 from flask import Blueprint, render_template, jsonify, make_response, abort
 from utils import list_from_resource, noindex
 import decimal
-import requests
-import json
 import re
 
 supply_bp = Blueprint('supply_bp', __name__, subdomain='data')
@@ -30,7 +28,7 @@ def get_products():
         'fields': ','.join(fields),
         'collection_id': 15219609,  # Collection -> Tous les produits
     })
-    rows = list_from_resource('products', params)
+    rows = list_from_resource(resource, params)
     products = []
     product_url = 'http://www.tammyandbenjamin.com/products/{}'
     for row in rows:

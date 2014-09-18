@@ -2,8 +2,8 @@
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from flask import Blueprint, request, render_template, jsonify, g
-from form_order import OrderForm, ItemLine
+from flask import Blueprint, request, render_template
+from form_order import OrderForm
 from utils import list_from_resource, process_orders
 import math
 

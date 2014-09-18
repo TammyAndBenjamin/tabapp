@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, jsonify, g, redirect, url_for
+from flask import Blueprint, request, render_template, g, redirect, url_for
 from utils import list_from_resource
 import math
 import psycopg2.extras

@@ -1,13 +1,12 @@
 #!/usr/bin/env python                                                                                                                                                                                                                                                         [98/217]
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, render_template, g
+from flask import Flask, render_template, g
 from flask_wtf.csrf import CsrfProtect
 from orders import orders_bp
 from product_costs import product_costs_bp
 from retailers import retailers_bp
 from supply import supply_bp
-import json
 import psycopg2
 
 

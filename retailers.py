@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, g, redirect, url_for
+from flask import Blueprint, request, render_template, g, redirect, url_for, flash
 from utils import list_from_resource
 import math
 import psycopg2.extras
@@ -50,6 +50,9 @@ def index():
 def submit():
     cur = g.db.cursor()
     retailer_id = request.form.get('retailer_id')
+    if not retailer_id:
+        flash('Please choose a retailer', 'error')
+        return redirect(url_for('retailers_bp.index'))
     product_ids = [ int(v) for v in request.form.getlist('product_id') ]
     quantities = [ int(v) for v in request.form.getlist('quantity') ]
     sql = '''

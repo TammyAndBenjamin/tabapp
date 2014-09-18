@@ -23,7 +23,7 @@ def index():
         'images',
     ]
     resource = 'products'
-    limit = 20
+    limit = 50
     params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })

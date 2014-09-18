@@ -20,6 +20,7 @@ app.register_blueprint(retailers_bp, url_prefix='/retailers')
 app.register_blueprint(supply_bp, url_prefix='/supplies')
 CsrfProtect(app)
 
+
 @app.before_request
 def init_request():
     if not app.db:
@@ -28,9 +29,11 @@ def init_request():
     g.db = app.db
     g.config = app.config
 
+
 @app.route('/', subdomain='backyard')
 def index():
     return render_template('index.html')
+
 
 if __name__ == "__main__":
     app.run(host='62.210.207.214', port=5050, debug=True)

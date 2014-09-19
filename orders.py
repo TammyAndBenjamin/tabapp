@@ -3,6 +3,7 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, request, render_template
+from flask.ext.login import login_required
 from form_order import OrderForm
 from utils import list_from_resource, process_orders
 import math
@@ -11,6 +12,7 @@ orders_bp = Blueprint('orders_bp', __name__, subdomain='backyard')
 
 @orders_bp.route('/', defaults={'page': 1})
 @orders_bp.route('/<int:page>')
+@login_required
 def index(page):
     default_lbound = date.today() - relativedelta(months=1)
     default_ubound = date.today()
@@ -45,6 +47,7 @@ def index(page):
     return render_template('orders.html', **context)
 
 @orders_bp.route('/add')
+@login_required
 def form():
     form = OrderForm(request.form)
     return render_template('order.html', form=form)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, render_template, jsonify, g
+from flask.ext.login import login_required
 from utils import list_from_resource
 import math
 import psycopg2.extras
@@ -19,6 +20,7 @@ def current_cost(cur, product_id):
     return product_cost
 
 @product_costs_bp.route('/')
+@login_required
 def index():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     page = int(request.args.get('page', 1))
@@ -51,6 +53,7 @@ def index():
     return render_template('costs.html', **context)
 
 @product_costs_bp.route('/<int:product_id>', methods=['GET'])
+@login_required
 def costs_history(product_id):
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('''
@@ -70,6 +73,7 @@ def costs_history(product_id):
     return jsonify(costs=product_costs)
 
 @product_costs_bp.route('/<int:product_id>', methods=['POST'])
+@login_required
 def add_cost(product_id):
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     product_cost = current_cost(cur, product_id)

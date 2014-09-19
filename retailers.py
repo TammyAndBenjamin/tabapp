@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash
+from flask.ext.login import login_required
 from utils import list_from_resource
 import math
 import psycopg2.extras
@@ -9,6 +10,7 @@ retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 
 @retailers_bp.route('/', methods=['GET'])
+@login_required
 def index():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('''
@@ -47,6 +49,7 @@ def index():
 
 
 @retailers_bp.route('/', methods=['POST'])
+@login_required
 def submit():
     cur = g.db.cursor()
     retailer_id = request.form.get('retailer_id')
@@ -69,5 +72,6 @@ def submit():
 
 
 @retailers_bp.route('/orders')
+@login_required
 def orders():
     return 'done'

@@ -6,6 +6,7 @@ import decimal
 import requests
 import psycopg2.extras
 
+
 def add_response_headers(headers={}):
     """This decorator adds the headers passed in to the response"""
     def decorator(f):
@@ -19,9 +20,11 @@ def add_response_headers(headers={}):
         return decorated_function
     return decorator
 
+
 def noindex(f):
     """This decorator passes X-Robots-Tag: noindex"""
     return add_response_headers({'X-Robots-Tag': 'noindex'})(f)
+
 
 def list_from_resource(resource, params, limit = None, page = None, count = False):
     def make_requests(url, page, limit):
@@ -37,17 +40,19 @@ def list_from_resource(resource, params, limit = None, page = None, count = Fals
         return int(data.get('count'))
     if page:
         data = make_requests(url, page, limit)
-        rows = data.get(resource)
+        rows = data.get(resource.split('/')[0])
     else:
         page = 1
         rows = []
         while True:
             data = make_requests(url, page, limit)
-            if not data.get(resource):
+            result = data.get(resource.split('/')[0])
+            if not result:
                 break
-            rows += data.get(resource)
+            rows += result
             page += 1
     return rows
+
 
 def process_orders(orders):
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -95,6 +100,7 @@ def process_orders(orders):
         row['benefits'] = row['excluding_taxes_amount'] - row['discount_amount'] - row['cost_amount']
         rows.append(row)
     return rows
+
 
 def aggregate_orders(orders):
     aggregate = {}

@@ -2,13 +2,6 @@
 
 {% block content %}
     <h1>Place an order</h1>
-    {% with errors = get_flashed_messages(category_filter=["error"]) %}
-        {% if errors %}
-            {% for message in errors %}
-                <div class="alert alert-danger" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     <form name="quantity_form" method="POST" class="form-horizontal" role="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <fieldset>

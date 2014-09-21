@@ -9,10 +9,35 @@ import psycopg2.extras
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 
-@retailers_bp.route('/', methods=['GET'])
+def submit(form):
+    cur = g.db.cursor()
+    retailer_id = form.get('retailer_id')
+    if not retailer_id:
+        raise Exception('Please choose a retailer')
+    product_ids = [ int(v) for v in form.getlist('product_id') ]
+    quantities = [ int(v) for v in form.getlist('quantity') ]
+    sql = '''
+        INSERT INTO retailer_product(retailer_id, product_id, order_date)
+        VALUES (%s, %s, current_date)
+    '''
+    cart = zip(product_ids, quantities)
+    for product_id, quantity in cart:
+        if not quantity:
+            continue
+        for i in range(quantity):
+            cur.execute(sql, (retailer_id, product_id))
+    return redirect(url_for('retailers_bp.orders'))
+
+
+@retailers_bp.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == 'POST':
+        try: return submit(request.form)
+        except Exception as e:
+            for msg in e.args:
+                flash(msg, 'error')
     cur.execute('''
         SELECT id, name
         FROM retailer
@@ -46,29 +71,6 @@ def index():
         'products': products,
     }
     return render_template('retailers/index.html', **context)
-
-
-@retailers_bp.route('/', methods=['POST'])
-@login_required
-def submit():
-    cur = g.db.cursor()
-    retailer_id = request.form.get('retailer_id')
-    if not retailer_id:
-        flash('Please choose a retailer', 'error')
-        return redirect(url_for('retailers_bp.index'))
-    product_ids = [ int(v) for v in request.form.getlist('product_id') ]
-    quantities = [ int(v) for v in request.form.getlist('quantity') ]
-    sql = '''
-        INSERT INTO retailer_product(retailer_id, product_id, order_date)
-        VALUES (%s, %s, current_date)
-    '''
-    cart = zip(product_ids, quantities)
-    for product_id, quantity in cart:
-        if not quantity:
-            continue
-        for i in range(quantity):
-            cur.execute(sql, (retailer_id, product_id))
-    return redirect(url_for('retailers_bp.orders'))
 
 
 @retailers_bp.route('/orders')

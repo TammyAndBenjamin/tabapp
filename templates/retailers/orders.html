@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <form name="quantity_form" method="POST" class="form-horizontal" role="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <fieldset>
+            <legend>Retailers</legend>
+            <div id="retailer_choices" class="btn-group" data-toggle="buttons" style="margin-bottom: 20px;">
+            {% for retailer in retailers %}
+                <label class="btn btn-default{% if retailer.id == retailer_id %} active{% endif %}">
+                    <input type="checkbox" name="retailer_id" value="{{ retailer.id }}"{% if retailer.id == retailer_id %} checked{% endif %} />{{ retailer.name }}
+                </label>
+            {% endfor %}
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Products</legend>
+                {% for product_order in product_orders %}
+                    <div class="col-xs-6 col-md-2">
+                        <label class="thumbnail" style="cursor: pointer;">
+                            <img  data-toggle="tooltip" title="{{ product_order.product.title }}" alt="{{ product_order.product.title }}" src="{{ product_order.product.image }}" class="img-responsive" />
+                            <div class="caption" style="text-align: center;">
+                                <input type="checkbox" name="product_order_id" value="{{ product_order.id }}" />
+                            </div>
+                        </label>
+                    </div>
+                {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+        <button class="btn btn-primary">Valider</button>
+    </form>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        $('#retailer_choices input').on('change', function(e) {
+            console.log('Load me up');
+        });
+    </script>
+{% endblock script %}

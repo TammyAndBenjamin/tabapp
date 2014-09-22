@@ -79,16 +79,22 @@ def orders():
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     retailer_id = int(request.args.get('retailer_id'))
     cur.execute('''
-        SELECT product_id, array_agg(id) as product_order_ids
+        SELECT
+            product_id,
+            retailer.name as retailer_name,
+            array_agg(retailer_product.id) as product_order_ids
         FROM retailer_product
+        JOIN retailer ON retailer.id = retailer_product.retailer_id
         WHERE retailer_id = %s
-        GROUP BY 1
+        AND sale_date IS NULL
+        GROUP BY 1, 2
     ''', (retailer_id,))
     rows = cur.fetchall()
     product_orders = []
     products = []
     for row in rows:
         product_id = row['product_id']
+        retailer_name = row['retailer_name']
         product_order_ids = row['product_order_ids']
         fields = [
             'id',
@@ -103,6 +109,7 @@ def orders():
         for product_order_id in product_order_ids:
             product_order = {
                 'id': product_order_id,
+                'retailer_name': retailer_name,
                 'product': {
                     'id': product.get('id'),
                     'title': product.get('title'),

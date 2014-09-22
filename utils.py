@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import g, make_response
+from flask import g, make_response, current_app
 import decimal
 import requests
 import psycopg2.extras
@@ -26,27 +26,30 @@ def noindex(f):
     return add_response_headers({'X-Robots-Tag': 'noindex'})(f)
 
 
-def list_from_resource(resource, params, limit = None, page = None, count = False):
+def list_from_resource(resource, params, limit=None, page=None, count=False, key=None):
     def make_requests(url, page, limit):
         url = url.format(**{'page': page, 'limit': limit})
         r = requests.get(url)
         return r.json()
     if not limit:
         limit = 50
+    if not key:
+        key = resource
     url = '{}{}.json{}'.format(g.config['SHOPIFY_URL'], resource, params)
+    current_app.logger.debug(url)
     if count:
         url = url.replace(resource, '{}/count'.format(resource))
         data = make_requests(url, 1, limit)
         return int(data.get('count'))
     if page:
         data = make_requests(url, page, limit)
-        rows = data.get(resource.split('/')[0])
+        rows = data.get(key)
     else:
         page = 1
         rows = []
         while True:
             data = make_requests(url, page, limit)
-            result = data.get(resource.split('/')[0])
+            result = data.get(key)
             if not result:
                 break
             rows += result

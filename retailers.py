@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, g, redirect, url_for, flash
+from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
 from flask.ext.login import login_required
 from utils import list_from_resource
 import math
@@ -26,7 +26,7 @@ def submit(form):
             continue
         for i in range(quantity):
             cur.execute(sql, (retailer_id, product_id))
-    return redirect(url_for('retailers_bp.orders'))
+    return redirect(url_for('retailers_bp.orders', **{'retailer_id': retailer_id}))
 
 
 @retailers_bp.route('/', methods=['GET', 'POST'])
@@ -76,4 +76,48 @@ def index():
 @retailers_bp.route('/orders')
 @login_required
 def orders():
-    return 'done'
+    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    retailer_id = int(request.args.get('retailer_id'))
+    cur.execute('''
+        SELECT product_id, array_agg(id) as product_order_ids
+        FROM retailer_product
+        WHERE retailer_id = %s
+        GROUP BY 1
+    ''', (retailer_id,))
+    rows = cur.fetchall()
+    product_orders = []
+    products = []
+    for row in rows:
+        product_id = row['product_id']
+        product_order_ids = row['product_order_ids']
+        fields = [
+            'id',
+            'title',
+            'images',
+        ]
+        resource = 'products/{}'.format(product_id)
+        params = '?fields={fields}'.format(**{
+            'fields': ','.join(fields),
+        })
+        product = list_from_resource(resource, params, key='product', page=1)
+        for product_order_id in product_order_ids:
+            product_order = {
+                'id': product_order_id,
+                'product': {
+                    'id': product.get('id'),
+                    'title': product.get('title'),
+                    'image': product.get('images')[0].get('src'),
+                }
+            }
+            product_orders.append(product_order)
+    cur.execute('''
+        SELECT id, name
+        FROM retailer
+    ''')
+    retailers = cur.fetchall()
+    context = {
+        'retailer_id': retailer_id,
+        'product_orders': product_orders,
+        'retailers': retailers,
+    }
+    return render_template('retailers/orders.html', **context)

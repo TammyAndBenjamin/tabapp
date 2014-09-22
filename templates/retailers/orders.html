@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+    <h1>Products not sold</h1>
     <form name="quantity_form" method="POST" class="form-horizontal" role="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <fieldset>
@@ -8,7 +9,7 @@
             <div id="retailer_choices" class="btn-group" data-toggle="buttons" style="margin-bottom: 20px;">
             {% for retailer in retailers %}
                 <label class="btn btn-default{% if retailer.id == retailer_id %} active{% endif %}">
-                    <input type="checkbox" name="retailer_id" value="{{ retailer.id }}"{% if retailer.id == retailer_id %} checked{% endif %} />{{ retailer.name }}
+                    <input type="radio" name="retailer_id" value="{{ retailer.id }}"{% if retailer.id == retailer_id %} checked{% endif %} />{{ retailer.name }}
                 </label>
             {% endfor %}
             </div>

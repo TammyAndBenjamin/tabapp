@@ -129,3 +129,8 @@ def aggregate_orders(orders):
         row['total_price'] += decimal.Decimal(order.get('total_price', 0))
         aggregate[customer_email] = row
     return aggregate
+
+
+def execute(cur, sql, params = None):
+    current_app.logger.debug(cur.mogrify(sql, params))
+    cur.execute(sql, params)

@@ -2,14 +2,14 @@
 
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
 from flask.ext.login import login_required
-from utils import list_from_resource
+import utils
 import math
 import psycopg2.extras
 
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 
-def submit(form):
+def add_product_order(form):
     cur = g.db.cursor()
     retailer_id = form.get('retailer_id')
     if not retailer_id:
@@ -25,20 +25,36 @@ def submit(form):
         if not quantity:
             continue
         for i in range(quantity):
-            cur.execute(sql, (retailer_id, product_id))
+            utils.execute(cur, sql, (retailer_id, product_id))
+    return redirect(url_for('retailers_bp.orders', **{'retailer_id': retailer_id}))
+
+
+def sold_product_order(form):
+    cur = g.db.cursor()
+    retailer_id = form.get('retailer_id')
+    if not retailer_id:
+        raise Exception('Please choose a retailer')
+    product_order_ids = form.getlist('product_order_id')
+    sql = '''
+        UPDATE retailer_product
+        SET sale_date = current_date
+        WHERE id = %s
+    '''
+    for product_order_id in product_order_ids:
+        utils.execute(cur, sql, (product_order_id,))
     return redirect(url_for('retailers_bp.orders', **{'retailer_id': retailer_id}))
 
 
 @retailers_bp.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == 'POST':
-        try: return submit(request.form)
+        try: return add_product_order(request.form)
         except Exception as e:
             for msg in e.args:
                 flash(msg, 'error')
-    cur.execute('''
+    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    utils.execute(cur, '''
         SELECT id, name
         FROM retailer
     ''')
@@ -54,8 +70,8 @@ def index():
     params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })
-    max_page = math.ceil(list_from_resource(resource, params, count = True) / limit)
-    rows = list_from_resource(resource, params, limit=limit, page=page)
+    max_page = math.ceil(utils.list_from_resource(resource, params, count = True) / limit)
+    rows = utils.list_from_resource(resource, params, limit=limit, page=page)
     products = []
     for row in rows:
         product = {
@@ -73,12 +89,17 @@ def index():
     return render_template('retailers/index.html', **context)
 
 
-@retailers_bp.route('/orders')
+@retailers_bp.route('/orders', methods=['GET', 'POST'])
 @login_required
 def orders():
+    if request.method == 'POST':
+        try: return sold_product_order(request.form)
+        except Exception as e:
+            for msg in e.args:
+                flash(msg, 'error')
     cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     retailer_id = int(request.args.get('retailer_id'))
-    cur.execute('''
+    utils.execute(cur, '''
         SELECT
             product_id,
             retailer.name as retailer_name,
@@ -105,7 +126,7 @@ def orders():
         params = '?fields={fields}'.format(**{
             'fields': ','.join(fields),
         })
-        product = list_from_resource(resource, params, key='product', page=1)
+        product = utils.list_from_resource(resource, params, key='product', page=1)
         for product_order_id in product_order_ids:
             product_order = {
                 'id': product_order_id,
@@ -117,7 +138,7 @@ def orders():
                 }
             }
             product_orders.append(product_order)
-    cur.execute('''
+    utils.execute(cur, '''
         SELECT id, name
         FROM retailer
     ''')

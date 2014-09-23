@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, jsonify, make_response, abort
-from utils import list_from_resource, noindex
+from tabapp.utils import list_from_resource, noindex
 import decimal
 import re
 

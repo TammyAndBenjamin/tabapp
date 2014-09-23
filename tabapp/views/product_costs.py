@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, render_template, jsonify, g
 from flask.ext.login import login_required
-from utils import list_from_resource
+from tabapp.utils import list_from_resource
 import math
 import psycopg2.extras
 

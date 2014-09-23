@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
 from flask.ext.login import login_required
-import utils
+import tabapp.utils
 import math
 import psycopg2.extras
 
@@ -23,7 +23,7 @@ def structure_from_rows(rows):
         params = '?fields={fields}'.format(**{
             'fields': ','.join(fields),
         })
-        product = utils.list_from_resource(resource, params, key='product', page=1)
+        product = tabapp.utils.list_from_resource(resource, params, key='product', page=1)
         for product_order_id in product_order_ids:
             product_order = {
                 'id': product_order_id,
@@ -52,7 +52,7 @@ def add_product_order(form):
         if not quantity:
             continue
         for i in range(quantity):
-            utils.execute(cur, sql, (retailer_id, product_id))
+            tabapp.utils.execute(cur, sql, (retailer_id, product_id))
     return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
 
 
@@ -67,7 +67,7 @@ def sold_product_order(form):
         WHERE id = %s
     '''
     for product_order_id in product_order_ids:
-        utils.execute(cur, sql, (product_order_id,))
+        tabapp.utils.execute(cur, sql, (product_order_id,))
     return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
 
 
@@ -82,7 +82,7 @@ def pay_product_order(form):
         WHERE id = %s
     '''
     for product_order_id in product_order_ids:
-        utils.execute(cur, sql, (product_order_id,))
+        tabapp.utils.execute(cur, sql, (product_order_id,))
     return redirect(url_for('retailers_bp.orders', **{'retailer_id': retailer_id}))
 
 
@@ -106,8 +106,8 @@ def index():
     params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })
-    max_page = math.ceil(utils.list_from_resource(resource, params, count = True) / limit)
-    rows = utils.list_from_resource(resource, params, limit=limit, page=page)
+    max_page = math.ceil(tabapp.utils.list_from_resource(resource, params, count = True) / limit)
+    rows = tabapp.utils.list_from_resource(resource, params, limit=limit, page=page)
     products = []
     for row in rows:
         product = {
@@ -134,7 +134,7 @@ def orders():
             for msg in e.args:
                 flash(msg, 'error')
     retailer_id = int(request.args.get('retailer_id'))
-    utils.execute(cur, '''
+    tabapp.utils.execute(cur, '''
         SELECT
             product_id,
             retailer.name as retailer_name,
@@ -147,7 +147,7 @@ def orders():
     ''', (retailer_id,))
     rows = cur.fetchall()
     product_orders = structure_from_rows(rows)
-    utils.execute(cur, '''
+    tabapp.utils.execute(cur, '''
         SELECT id, name
         FROM retailer
     ''')
@@ -170,7 +170,7 @@ def invoices():
             #for msg in e.args:
                 #flash(msg, 'error')
     retailer_id = int(request.args.get('retailer_id'))
-    utils.execute(cur, '''
+    tabapp.utils.execute(cur, '''
         SELECT
             product_id,
             retailer.name as retailer_name,
@@ -184,7 +184,7 @@ def invoices():
     ''', (retailer_id,))
     rows = cur.fetchall()
     product_orders = structure_from_rows(rows)
-    utils.execute(cur, '''
+    tabapp.utils.execute(cur, '''
         SELECT id, name
         FROM retailer
     ''')

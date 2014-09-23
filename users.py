@@ -12,7 +12,6 @@ users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     username = request.form.get('username')
     salted_password = g.config['SECRET_KEY'] + request.form.get('password')
     hashed_password = hashlib.md5(salted_password.encode('ascii'))

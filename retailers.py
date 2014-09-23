@@ -9,8 +9,35 @@ import psycopg2.extras
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 
+def structure_from_rows(rows):
+    for row in rows:
+        product_id = row['product_id']
+        retailer_name = row['retailer_name']
+        product_order_ids = row['product_order_ids']
+        fields = [
+            'id',
+            'title',
+            'images',
+        ]
+        resource = 'products/{}'.format(product_id)
+        params = '?fields={fields}'.format(**{
+            'fields': ','.join(fields),
+        })
+        product = utils.list_from_resource(resource, params, key='product', page=1)
+        for product_order_id in product_order_ids:
+            product_order = {
+                'id': product_order_id,
+                'retailer_name': retailer_name,
+                'product': {
+                    'id': product.get('id'),
+                    'title': product.get('title'),
+                    'image': product.get('images')[0].get('src'),
+                }
+            }
+            yield product_order
+
+
 def add_product_order(form):
-    cur = g.db.cursor()
     retailer_id = form.get('retailer_id')
     if not retailer_id:
         raise Exception('Please choose a retailer')
@@ -26,18 +53,32 @@ def add_product_order(form):
             continue
         for i in range(quantity):
             utils.execute(cur, sql, (retailer_id, product_id))
-    return redirect(url_for('retailers_bp.orders', **{'retailer_id': retailer_id}))
+    return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
 
 
 def sold_product_order(form):
-    cur = g.db.cursor()
     retailer_id = form.get('retailer_id')
     if not retailer_id:
         raise Exception('Please choose a retailer')
     product_order_ids = form.getlist('product_order_id')
     sql = '''
         UPDATE retailer_product
-        SET sale_date = current_date
+        SET sold_date = current_date
+        WHERE id = %s
+    '''
+    for product_order_id in product_order_ids:
+        utils.execute(cur, sql, (product_order_id,))
+    return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
+
+
+def pay_product_order(form):
+    retailer_id = form.get('retailer_id')
+    if not retailer_id:
+        raise Exception('Please choose a retailer')
+    product_order_ids = form.getlist('product_order_id')
+    sql = '''
+        UPDATE retailer_product
+        SET payment_date = current_date
         WHERE id = %s
     '''
     for product_order_id in product_order_ids:
@@ -53,12 +94,7 @@ def index():
         except Exception as e:
             for msg in e.args:
                 flash(msg, 'error')
-    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    utils.execute(cur, '''
-        SELECT id, name
-        FROM retailer
-    ''')
-    retailers = cur.fetchall()
+    retailers = g.db.Retailer.all()
     page = int(request.args.get('page', 1))
     fields = [
         'id',
@@ -97,7 +133,6 @@ def orders():
         except Exception as e:
             for msg in e.args:
                 flash(msg, 'error')
-    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     retailer_id = int(request.args.get('retailer_id'))
     utils.execute(cur, '''
         SELECT
@@ -107,37 +142,11 @@ def orders():
         FROM retailer_product
         JOIN retailer ON retailer.id = retailer_product.retailer_id
         WHERE retailer_id = %s
-        AND sale_date IS NULL
+        AND sold_date IS NULL
         GROUP BY 1, 2
     ''', (retailer_id,))
     rows = cur.fetchall()
-    product_orders = []
-    products = []
-    for row in rows:
-        product_id = row['product_id']
-        retailer_name = row['retailer_name']
-        product_order_ids = row['product_order_ids']
-        fields = [
-            'id',
-            'title',
-            'images',
-        ]
-        resource = 'products/{}'.format(product_id)
-        params = '?fields={fields}'.format(**{
-            'fields': ','.join(fields),
-        })
-        product = utils.list_from_resource(resource, params, key='product', page=1)
-        for product_order_id in product_order_ids:
-            product_order = {
-                'id': product_order_id,
-                'retailer_name': retailer_name,
-                'product': {
-                    'id': product.get('id'),
-                    'title': product.get('title'),
-                    'image': product.get('images')[0].get('src'),
-                }
-            }
-            product_orders.append(product_order)
+    product_orders = structure_from_rows(rows)
     utils.execute(cur, '''
         SELECT id, name
         FROM retailer
@@ -149,3 +158,40 @@ def orders():
         'retailers': retailers,
     }
     return render_template('retailers/orders.html', **context)
+
+
+@retailers_bp.route('/invoices', methods=['GET', 'POST'])
+@login_required
+def invoices():
+    if request.method == 'POST':
+        pass
+        #try: return sold_product_order(request.form)
+        #except Exception as e:
+            #for msg in e.args:
+                #flash(msg, 'error')
+    retailer_id = int(request.args.get('retailer_id'))
+    utils.execute(cur, '''
+        SELECT
+            product_id,
+            retailer.name as retailer_name,
+            array_agg(retailer_product.id) as product_order_ids
+        FROM retailer_product
+        JOIN retailer ON retailer.id = retailer_product.retailer_id
+        WHERE retailer_id = %s
+        AND sold_date IS NOT NULL
+        AND payment_date IS NULL
+        GROUP BY 1, 2
+    ''', (retailer_id,))
+    rows = cur.fetchall()
+    product_orders = structure_from_rows(rows)
+    utils.execute(cur, '''
+        SELECT id, name
+        FROM retailer
+    ''')
+    retailers = cur.fetchall()
+    context = {
+        'retailer_id': retailer_id,
+        'product_orders': product_orders,
+        'retailers': retailers,
+    }
+    return render_template('retailers/invoices.html', **context)

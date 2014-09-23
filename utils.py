@@ -58,7 +58,6 @@ def list_from_resource(resource, params, limit=None, page=None, count=False, key
 
 
 def process_orders(orders):
-    cur = g.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     rows = []
     for order in orders:
         customer = order.get('customer')
@@ -77,14 +76,12 @@ def process_orders(orders):
             'benefits': 0,
         }
         for line in lines:
-            cur.execute('''
-                SELECT value
-                FROM product_cost
-                WHERE product_id = %s
-                AND daterange(start_date, end_date) @> current_date
-            ''', (int(line.get('product_id')), ))
-            cost_row = cur.fetchone()
-            row['cost_amount'] += cost_row.get('value', 0) if cost_row else 0
+            product_id = int(line.get('product_id'))
+            product_cost = g.db.ProductCost.query.\
+                    filter_by(\
+                        g.db.ProductCost.product_id==product_id,\
+                        psycopg2.extras.DateRange(g.db.ProductCost.start_date, g.db.ProductCost.end_date)=='2014-09-23').first()
+            row['cost_amount'] += product_cost.value if product_cost else 0
             taxes = line.get('tax_lines')
             row['products'].append(line.get('title'))
             price = decimal.Decimal(line.get('price'))

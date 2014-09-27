@@ -2,9 +2,14 @@
 
 from functools import wraps
 from flask import g, make_response, current_app
+from datetime import date
+from tabapp import db
+from tabapp.models import ProductCost
 import decimal
 import requests
-import psycopg2.extras
+import sqlalchemy
+import sqlalchemy.sql.expression
+import sqlalchemy.dialects.postgresql
 
 
 def add_response_headers(headers={}):
@@ -57,6 +62,24 @@ def list_from_resource(resource, params, limit=None, page=None, count=False, key
     return rows
 
 
+def current_product_cost(product_id, cost_date = None):
+    if not cost_date:
+        cost_date = date.today()
+    product_cost = db.session.query(
+        ProductCost.id,
+        ProductCost.value
+    ).filter(
+        ProductCost.product_id==int(product_id),
+        sqlalchemy.sql.expression.cast(sqlalchemy.func.daterange(
+            ProductCost.start_date,
+            ProductCost.end_date
+        ), sqlalchemy.dialects.postgresql.DATERANGE).contains(cost_date)
+    ).order_by(
+        sqlalchemy.desc(ProductCost.end_date).nullsfirst(),
+    ).first()
+    return product_cost
+
+
 def process_orders(orders):
     rows = []
     for order in orders:
@@ -77,10 +100,7 @@ def process_orders(orders):
         }
         for line in lines:
             product_id = int(line.get('product_id'))
-            product_cost = g.db.ProductCost.query.\
-                    filter_by(\
-                        g.db.ProductCost.product_id==product_id,\
-                        psycopg2.extras.DateRange(g.db.ProductCost.start_date, g.db.ProductCost.end_date)=='2014-09-23').first()
+            product_cost = current_product_cost(product_id)
             row['cost_amount'] += product_cost.value if product_cost else 0
             taxes = line.get('tax_lines')
             row['products'].append(line.get('title'))

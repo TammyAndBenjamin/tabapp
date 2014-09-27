@@ -15,24 +15,6 @@ import sqlalchemy.dialects.postgresql
 product_costs_bp = Blueprint('product_costs_bp', __name__, subdomain='backyard')
 
 
-def current_cost(product_id, cost_date = None):
-    if not cost_date:
-        cost_date = date.today()
-    product_cost = db.session.query(
-        ProductCost.id,
-        ProductCost.value
-    ).filter(
-        ProductCost.product_id==int(product_id),
-        sqlalchemy.sql.expression.cast(sqlalchemy.func.daterange(
-            ProductCost.start_date,
-            ProductCost.end_date
-        ), sqlalchemy.dialects.postgresql.DATERANGE).contains(cost_date)
-    ).order_by(
-        sqlalchemy.desc(ProductCost.end_date).nullsfirst(),
-    ).first()
-    return product_cost
-
-
 @product_costs_bp.route('/')
 @login_required
 def index():
@@ -50,7 +32,7 @@ def index():
     rows = tabapp.utils.list_from_resource(resource, params, page)
     products = []
     for row in rows:
-        product_cost = current_cost(row.get('id'))
+        product_cost = tabapp.utils.current_product_cost(row.get('id'))
         product = {
             'id': row.get('id'),
             'title': row.get('title'),
@@ -96,7 +78,7 @@ def costs_history(product_id):
 @product_costs_bp.route('/<int:product_id>', methods=['POST'])
 @login_required
 def add_cost(product_id):
-    product_cost = current_cost(product_id)
+    product_cost = tabapp.utils.current_product_cost(product_id)
     if product_cost:
         product_cost.end_date = date.today()
     product_cost = ProductCost()

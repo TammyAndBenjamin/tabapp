@@ -1,13 +1,24 @@
 # -*- coding: utf-8 -*-
 
-
+import sqlalchemy_utils
+from datetime import datetime
 from tabapp import db
 
 
 class Login(db.Model):
-    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key = True)
+    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    enabled = db.Column(db.Boolean, nullable=False, default=True)
     username = db.Column(db.String, index = True, unique = True)
-    password = db.Column(db.String)
+    password = db.Column(sqlalchemy_utils.PasswordType(
+        schemes=[
+            'pbkdf2_sha512',
+            'md5_crypt'
+        ],
+        deprecated=['md5_crypt']
+    ))
+
 
     def is_authenticated(self):
         return bool(self.id)
@@ -26,7 +37,10 @@ class Login(db.Model):
 
 
 class Retailer(db.Model):
-    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key = True)
+    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    enabled = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String)
     address = db.Column(db.String)
     zip = db.Column(db.String)
@@ -35,7 +49,10 @@ class Retailer(db.Model):
 
 class ProductCost(db.Model):
     __tablename__ = 'product_cost'
-    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key = True)
+    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    enabled = db.Column(db.Boolean, nullable=False, default=True)
     product_id = db.Column(db.Integer)
     value = db.Column(db.Numeric)
     start_date = db.Column(db.Date)
@@ -44,8 +61,11 @@ class ProductCost(db.Model):
 
 class RetailerProduct(db.Model):
     __tablename__ = 'retailer_product'
-    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key = True)
-    retailer_id = db.Column(db.Integer, index = True)
+    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    enabled = db.Column(db.Boolean, nullable=False, default=True)
+    retailer_id = db.Column(db.Integer, db.ForeignKey('retailer.id'))
     product_id = db.Column(db.Integer)
     order_date = db.Column(db.Date)
     sold_date = db.Column(db.Date)

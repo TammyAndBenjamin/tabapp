@@ -2,8 +2,8 @@
 
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
 from flask.ext.login import login_required, logout_user, login_user
-import hashlib
-import psycopg2.extras
+from tabapp import db
+from tabapp.models import Login
 
 users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 
@@ -13,12 +13,11 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     username = request.form.get('username')
-    salted_password = g.config['SECRET_KEY'] + request.form.get('password')
-    hashed_password = hashlib.md5(salted_password.encode('ascii'))
-    user = db.Login.query.filter_by(username=username, password=hashed_password.hexdigest()).first()
-    if not user:
+    password = request.form.get('password')
+    login = db.session.query(Login).filter(username==username, password==password).first()
+    if not login:
         return render_template('login.html')
-    login_user(user)
+    login_user(login)
     return redirect(request.args.get('next') or url_for('index'))
 
 

@@ -78,14 +78,11 @@ def pay_product_order(form):
     if not retailer_id:
         raise Exception('Please choose a retailer')
     product_order_ids = form.getlist('product_order_id')
-    sql = '''
-        UPDATE retailer_product
-        SET payment_date = current_date
-        WHERE id = %s
-    '''
     for product_order_id in product_order_ids:
-        tabapp.utils.execute(cur, sql, (product_order_id,))
-    return redirect(url_for('retailers_bp.orders', **{'retailer_id': retailer_id}))
+        retailer_product = RetailerProduct.query.get(product_order_id)
+        retailer_product.payment_date = date.today()
+    db.session.commit()
+    return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
 
 
 @retailers_bp.route('/', methods=['GET', 'POST'])
@@ -163,7 +160,7 @@ def orders():
 def invoices():
     if request.method == 'POST':
         pass
-        try: return sold_product_order(request.form)
+        try: return pay_product_order(request.form)
         except Exception as e:
             for msg in e.args:
                 flash(msg, 'error')

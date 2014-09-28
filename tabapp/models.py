@@ -14,9 +14,7 @@ class Login(db.Model):
     password = db.Column(sqlalchemy_utils.PasswordType(
         schemes=[
             'pbkdf2_sha512',
-            'md5_crypt'
         ],
-        deprecated=['md5_crypt']
     ))
 
 
@@ -42,9 +40,13 @@ class Retailer(db.Model):
     version = db.Column(db.DateTime, nullable=False, default=datetime.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String)
+    fees_proportion = db.Column(db.Numeric)
     address = db.Column(db.String)
     zip = db.Column(db.String)
     city = db.Column(db.String)
+    country = db.Column(db.String)
+    contact_firstname = db.Column(db.String)
+    contact_lastname = db.Column(db.String)
 
 
 class ProductCost(db.Model):

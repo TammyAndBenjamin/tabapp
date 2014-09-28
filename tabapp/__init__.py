@@ -3,7 +3,7 @@
 
 from flask import Flask, render_template, g
 from flask_wtf.csrf import CsrfProtect
-from flask.ext.login import LoginManager, login_required
+from flask.ext.login import LoginManager, login_required, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
 import psycopg2
 
@@ -44,3 +44,4 @@ def load_user(userid):
 @app.before_request
 def init_request():
     g.config = app.config
+    g.current_user = current_user

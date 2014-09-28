@@ -1,17 +1,19 @@
-{% extends 'layout.html' %}
+{% extends 'base.html' %}
 
-{% block content %}
-    <h1>Authentication</h1>
-    <form name="login" method="POST" class="form-horizontal" role="form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" placeholder="Enter email">
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Password">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-    </form>
-{% endblock content %}
+{% block page %}
+    <div style="width: 500px; margin: 0 auto;">
+        <h1>Who are you ?</h1>
+        <form name="login" method="POST" class="form-horizontal" role="form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+{% endblock page %}

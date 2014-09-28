@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import g, make_response, current_app
+from flask import g, make_response, current_app, request
 from datetime import date
 from tabapp import db
 from tabapp.models import ProductCost
@@ -148,6 +148,9 @@ def aggregate_orders(orders):
     return aggregate
 
 
-def execute(cur, sql, params = None):
-    current_app.logger.debug(cur.mogrify(sql, params))
-    cur.execute(sql, params)
+def request_wants_json():
+    best = request.accept_mimetypes \
+        .best_match(['application/json', 'text/html'])
+    return best == 'application/json' and \
+        request.accept_mimetypes[best] > \
+        request.accept_mimetypes['text/html']

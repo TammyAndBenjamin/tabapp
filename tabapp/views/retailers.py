@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
-from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
+from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app, jsonify
 from flask.ext.login import login_required
 from tabapp import db
 from tabapp.models import Retailer, RetailerProduct
@@ -88,6 +88,33 @@ def pay_product_order(form):
 @retailers_bp.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    retailers = Retailer.query.all()
+    context = {
+        'retailers': retailers,
+    }
+    return render_template('retailers/index.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>', methods=['GET', 'POST', 'DELETE'])
+@login_required
+def retailer(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    if request.method == 'DELETE':
+        db.session.delete(retailer)
+        db.session.commit()
+        if tabapp.utils.request_wants_json():
+            return jsonify(success='Retailer deleted.')
+        flash('Retailer deleted.', 'success')
+        return redirect(url_for('retailers_bp.index'))
+    context = {
+        'retailer': retailer,
+    }
+    return render_template('retailers/index.html', **context)
+
+
+@retailers_bp.route('/order', methods=['GET', 'POST'])
+@login_required
+def order():
     if request.method == 'POST':
         try: return add_product_order(request.form)
         except Exception as e:

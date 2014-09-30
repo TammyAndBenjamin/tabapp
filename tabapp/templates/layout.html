@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block page %}
+    <br />
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2">
-                <ul class="nav nav-sidebar">
-                    <li class="active"><a href="/">Analytics</a></li>
-                    <li><a href="{{ url_for('orders_bp.index') }}">Orders</a></li>
-                    <li><a href="{{ url_for('product_costs_bp.index') }}">Products Costs</a></li>
-                    <li><a href="{{ url_for('retailers_bp.index') }}">Retailers</a></li>
+                <ul class="nav nav-pills nav-stacked">
+                    <li{% if main_tab == 'analytics' %} class="active"{% endif %}><a href="/">Analytics</a></li>
+                    <li{% if main_tab == 'orders' %} class="active"{% endif %}><a href="{{ url_for('orders_bp.index') }}">Orders</a></li>
+                    <li{% if main_tab == 'product_costs' %} class="active"{% endif %}><a href="{{ url_for('product_costs_bp.index') }}">Products Costs</a></li>
+                    <li{% if main_tab == 'retailers' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.index') }}">Retailers</a></li>
                 </ul>
             </div>
             <div class="col-md-10">

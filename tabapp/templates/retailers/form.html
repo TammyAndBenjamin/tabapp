@@ -53,12 +53,10 @@
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default">Save</button>
+                {% if retailer_id %}
+                    <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                {% endif %}
             </div>
         </div>
     </form>
 {% endblock content %}
-
-{% block script %}
-    {{ super() }}
-    <script></script>
-{% endblock script %}

@@ -108,40 +108,71 @@ def form():
     return render_template('retailers/form.html', **context)
 
 
-@retailers_bp.route('/<int:retailer_id>', methods=['GET', 'DELETE'])
+@retailers_bp.route('/<int:retailer_id>', methods=['GET'])
 @login_required
 def retailer(retailer_id):
     retailer = Retailer.query.get(retailer_id)
-    if request.method == 'DELETE':
-        db.session.delete(retailer)
-        db.session.commit()
-        if tabapp.utils.request_wants_json():
-            return jsonify(success='Retailer deleted.')
-        flash('Retailer deleted.', 'success')
-        return redirect(url_for('retailers_bp.index'))
-    form = RetailerForm(obj=retailer)
+    context = {
+        'retailer': retailer,
+    }
+    return render_template('retailers/retailer.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>/supplies', methods=['GET'])
+@login_required
+def supplies(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    context = {
+        'retailer': retailer,
+    }
+    return render_template('retailers/supplies.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>/sold', methods=['GET'])
+@login_required
+def sold(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    context = {
+        'retailer': retailer,
+    }
+    return render_template('retailers/sold.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>/invoices', methods=['GET'])
+@login_required
+def invoices(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    context = {
+        'retailer': retailer,
+    }
+    return render_template('retailers/invoices.html', **context)
+
+
+@retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
+@retailers_bp.route('/<int:retailer_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_retailer(retailer_id):
+    form = None
+    if request.method == 'POST':
+        form = RetailerForm(request.form)
+        if form.validate():
+            retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
+            retailer.name = form.name.data
+            retailer.fees_proportion = form.fees_proportion.data / 100
+            retailer.address = form.address.data
+            if not retailer.id:
+                db.session.add(retailer)
+            db.session.commit()
+            flash('Retailer updated.', 'success')
+            return redirect(url_for('retailers_bp.retailer', retailer_id=retailer.id))
+    retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
+    form = RetailerForm(obj=retailer) if not form else form
+    form.fees_proportion.data = form.fees_proportion.data * 100
     context = {
         'retailer_id': retailer.id,
         'form': form,
     }
     return render_template('retailers/form.html', **context)
-
-
-@retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
-@retailers_bp.route('/<int:retailer_id>', methods=['POST'])
-@login_required
-def edit_retailer(retailer_id):
-    form = RetailerForm(request.form)
-    if form.validate():
-        retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
-        retailer.name = form.name.data
-        retailer.fees_proportion = form.fees_proportion.data / 100
-        retailer.address = form.address.data
-        if not retailer.id:
-            db.session.add(retailer)
-        db.session.commit()
-        flash('Retailer updated.', 'success')
-        return redirect(url_for('retailers_bp.retailer', retailer_id=retailer.id))
 
 
 @retailers_bp.route('/<int:retailer_id>', methods=['DELETE'])
@@ -225,34 +256,3 @@ def orders():
         'retailers': retailers,
     }
     return render_template('retailers/orders.html', **context)
-
-
-@retailers_bp.route('/invoices', methods=['GET', 'POST'])
-@login_required
-def invoices():
-    if request.method == 'POST':
-        pass
-        try: return pay_product_order(request.form)
-        except Exception as e:
-            for msg in e.args:
-                flash(msg, 'error')
-    retailer_id = int(request.args.get('retailer_id'))
-    retailer_products = db.session.query(
-        RetailerProduct.product_id,
-        Retailer.name,
-        sqlalchemy.func.array_agg(
-            RetailerProduct.id,
-            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
-        ).label('product_order_ids')
-    ).filter(RetailerProduct.payment_date==None).join(Retailer).group_by(
-        RetailerProduct.product_id,
-        Retailer.name
-    )
-    product_orders = structure_from_rows(retailer_products)
-    retailers = Retailer.query.all()
-    context = {
-        'retailer_id': retailer_id,
-        'product_orders': product_orders,
-        'retailers': retailers,
-    }
-    return render_template('retailers/invoices.html', **context)

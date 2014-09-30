@@ -17,13 +17,13 @@
         <tbody>
             {% for retailer in retailers %}
                 <tr>
-                    <td>{{ retailer.name }}</td>
+                    <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}">{{ retailer.name }}</a></td>
                     <td>{{ retailer.address }}</td>
                     <td>{{ retailer.zip }}</td>
                     <td>{{ retailer.city }}</td>
                     <td>{{ '%.0f%%'|format(retailer.fees_proportion * 100) }}</td>
-                    <td>{{ retailer.contact_firstname }} {{ retailer.contact_lastname }}</td>
-                    <td><a href="{{ url_for('retailers_bp.index') }}{{ retailer.id }}" class="glyphicon glyphicon-minus text-danger delete_retailer"></a></td>
+                    <td>{{ retailer.contact_firstname|default('') }} {{ retailer.contact_lastname|default('') }}</td>
+                    <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}" class="glyphicon glyphicon-minus text-danger delete_retailer"></a></td>
                 </tr>
             {% endfor %}
         </tbody>

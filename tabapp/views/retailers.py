@@ -139,10 +139,31 @@ def supplies(retailer_id):
     return render_template('retailers/supplies.html', **context)
 
 
-@retailers_bp.route('/<int:retailer_id>/supplies/add', methods=['GET'])
+@retailers_bp.route('/<int:retailer_id>/supplies/add', methods=['GET', 'POST'])
 @login_required
 def add_supplies(retailer_id):
     retailer = Retailer.query.get(retailer_id)
+    if request.method == 'POST':
+        try:
+            product_ids = [ int(v) for v in request.form.getlist('product_id') ]
+            quantities = [ int(v) for v in request.form.getlist('quantity') ]
+            cart = zip(product_ids, quantities)
+            for product_id, quantity in cart:
+                if not quantity:
+                    continue
+                for i in range(quantity):
+                    retailer_product = RetailerProduct()
+                    retailer_product.retailer_id = retailer.id
+                    retailer_product.product_id = product_id
+                    retailer_product.order_date = date.today()
+                    current_app.logger.debug(str(retailer_product))
+                    retailer.stocks.append(retailer_product)
+            current_app.logger.debug(str(retailer))
+            db.session.commit()
+            return redirect(url_for('retailers_bp.supplies', **{'retailer_id': retailer_id}))
+        except Exception as e:
+            for msg in e.args:
+                flash(msg, 'error')
     page = int(request.args.get('page', 1))
     fields = [
         'id',

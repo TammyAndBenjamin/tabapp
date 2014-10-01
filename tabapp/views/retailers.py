@@ -6,8 +6,8 @@ from flask.ext.login import login_required
 from tabapp import db
 from tabapp.models import Retailer, RetailerProduct
 from tabapp.forms import RetailerForm
-import decimal
 import tabapp.utils
+import decimal
 import math
 import sqlalchemy
 import sqlalchemy.dialects.postgresql
@@ -18,11 +18,11 @@ retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 def structure_from_rows(rows):
     for row in rows:
         product_id = row.product_id
-        retailer_name = row.name
         product_order_ids = row.product_order_ids
         fields = [
             'id',
             'title',
+            'variants',
             'images',
         ]
         resource = 'products/{}'.format(product_id)
@@ -31,13 +31,20 @@ def structure_from_rows(rows):
         })
         product = tabapp.utils.list_from_resource(resource, params, key='product', page=1)
         for product_order_id in product_order_ids:
+            price_incl_tax = decimal.Decimal(product.get('variants')[0].get('price'))
+            price_excl_tax = decimal.Decimal(price_incl_tax / decimal.Decimal(1.2))
+            fees_incl_tax = price_incl_tax * row.fees_proportion
+            fees_excl_tax = price_excl_tax * row.fees_proportion
             product_order = {
                 'id': product_order_id,
-                'retailer_name': retailer_name,
                 'product': {
                     'id': product.get('id'),
                     'title': product.get('title'),
                     'image': product.get('images')[0].get('src'),
+                    'retailer_price_excl_tax': price_excl_tax - fees_excl_tax,
+                    'retailer_price_incl_tax': price_incl_tax - fees_incl_tax,
+                    'tab_price_excl_tax': price_excl_tax,
+                    'tab_price_incl_tax': price_incl_tax,
                 }
             }
             yield product_order
@@ -121,14 +128,14 @@ def supplies(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     retailer_products = db.session.query(
         RetailerProduct.product_id,
-        Retailer.name,
+        Retailer.fees_proportion,
         sqlalchemy.func.array_agg(
             RetailerProduct.id,
             type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
         ).label('product_order_ids')
-    ).filter(RetailerProduct.sold_date!=None).join(Retailer).group_by(
+    ).filter(RetailerProduct.sold_date==None).join(Retailer).group_by(
         RetailerProduct.product_id,
-        Retailer.name
+        Retailer.fees_proportion
     )
     current_app.logger.debug(str(retailer_products))
     retailer_products = structure_from_rows(retailer_products)

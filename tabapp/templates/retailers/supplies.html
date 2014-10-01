@@ -19,10 +19,14 @@
         {% for retailer_product in retailer_products %}
             <tbody>
                 <tr>
-                    <td>{{ product.title }}</td>
+                    <td>{{ retailer_product.product.title }}</td>
+                    <td>{{ '{:.2f} €'.format(retailer_product.product.retailer_price_excl_tax) }}</td>
+                    <td>{{ '{:.2f} €'.format(retailer_product.product.retailer_price_incl_tax) }}</td>
+                    <td>{{ '{:.2f} €'.format(retailer_product.product.tab_price_excl_tax) }}</td>
+                    <td>{{ '{:.2f} €'.format(retailer_product.product.tab_price_incl_tax) }}</td>
                     <td>
-                        <button class="btn btn-primary">Vendu</button>
-                        <button class="btn btn-danger btn-xs">X</button>
+                        <button class="btn btn-success btn-sm">Vendu</button>
+                        <button class="btn btn-danger btn-sm">X</button>
                     </td>
                 </tr>
             </tbody>

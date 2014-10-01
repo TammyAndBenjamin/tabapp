@@ -63,6 +63,58 @@ def retailer(retailer_id):
     return render_template('retailers/retailer.html', **context)
 
 
+@retailers_bp.route('/new')
+@login_required
+def new_retailer():
+    form = RetailerForm()
+    context = {
+        'retailer_id': None,
+        'form': form,
+    }
+    return render_template('retailers/form.html', **context)
+
+
+@retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
+@retailers_bp.route('/<int:retailer_id>', methods=['POST'])
+@retailers_bp.route('/<int:retailer_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_retailer(retailer_id):
+    form = None
+    if request.method == 'POST':
+        form = RetailerForm(request.form)
+        if form.validate():
+            retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
+            retailer.name = form.name.data
+            retailer.fees_proportion = form.fees_proportion.data / 100
+            retailer.address = form.address.data
+            if not retailer.id:
+                db.session.add(retailer)
+            db.session.commit()
+            flash('Retailer updated.', 'success')
+            return redirect(url_for('retailers_bp.retailer', retailer_id=retailer.id))
+    retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
+    form = RetailerForm(obj=retailer) if not form else form
+    form.fees_proportion.data = form.fees_proportion.data * 100 if form.fees_proportion.data else 0
+    context = {
+        'retailer_id': retailer.id,
+        'form': form,
+    }
+    return render_template('retailers/form.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>', methods=['DELETE'])
+@retailers_bp.route('/<int:retailer_id>/delete', methods=['POST'])
+@login_required
+def delete_retailer(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    db.session.delete(retailer)
+    db.session.commit()
+    if tabapp.utils.request_wants_json():
+        return jsonify(success='Retailer deleted.')
+    flash('Retailer deleted.', 'success')
+    return redirect(url_for('retailers_bp.index'))
+
+
 @retailers_bp.route('/<int:retailer_id>/supplies', methods=['GET'])
 @login_required
 def supplies(retailer_id):
@@ -139,58 +191,6 @@ def invoices(retailer_id):
         'retailer': retailer,
     }
     return render_template('retailers/invoices.html', **context)
-
-
-@retailers_bp.route('/new')
-@login_required
-def new_retailer():
-    form = RetailerForm()
-    context = {
-        'retailer_id': None,
-        'form': form,
-    }
-    return render_template('retailers/form.html', **context)
-
-
-@retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
-@retailers_bp.route('/<int:retailer_id>', methods=['POST'])
-@retailers_bp.route('/<int:retailer_id>/edit', methods=['GET', 'POST'])
-@login_required
-def edit_retailer(retailer_id):
-    form = None
-    if request.method == 'POST':
-        form = RetailerForm(request.form)
-        if form.validate():
-            retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
-            retailer.name = form.name.data
-            retailer.fees_proportion = form.fees_proportion.data / 100
-            retailer.address = form.address.data
-            if not retailer.id:
-                db.session.add(retailer)
-            db.session.commit()
-            flash('Retailer updated.', 'success')
-            return redirect(url_for('retailers_bp.retailer', retailer_id=retailer.id))
-    retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
-    form = RetailerForm(obj=retailer) if not form else form
-    form.fees_proportion.data = form.fees_proportion.data * 100 if form.fees_proportion.data else 0
-    context = {
-        'retailer_id': retailer.id,
-        'form': form,
-    }
-    return render_template('retailers/form.html', **context)
-
-
-@retailers_bp.route('/<int:retailer_id>', methods=['DELETE'])
-@retailers_bp.route('/<int:retailer_id>/delete', methods=['POST'])
-@login_required
-def delete_retailer(retailer_id):
-    retailer = Retailer.query.get(retailer_id)
-    db.session.delete(retailer)
-    db.session.commit()
-    if tabapp.utils.request_wants_json():
-        return jsonify(success='Retailer deleted.')
-    flash('Retailer deleted.', 'success')
-    return redirect(url_for('retailers_bp.index'))
 
 
 @retailers_bp.route('/order', methods=['GET', 'POST'])

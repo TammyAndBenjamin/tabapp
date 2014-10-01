@@ -3,37 +3,44 @@
 {% set retailer_tab = 'supplies' %}
 
 {% block list %}
-    <h1>Create invoice</h1>
+    <h2>Add in stock</h2>
     <form name="quantity_form" method="POST" class="form-horizontal" role="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <fieldset>
             <legend>Products</legend>
-                {% for product in products %}
-                    <div class="col-xs-6 col-md-2">
-                        <label class="thumbnail" style="cursor: pointer;">
-                            <img  data-toggle="tooltip" title="{{ product.title }}" alt="{{ product.title }}" src="{{ product.image }}" class="img-responsive" />
-                            <div class="caption" style="text-align: center;">
-                                <p class="quantity_changer clearfix" style="text-align: center;">
-                                    <a href="#" class="btn btn-default btn-xs" role="button" data-value="-1">-</a>
-                                    <input type="hidden" name="product_id" value="{{ product.id }}" />
-                                    <input type="text" name="quantity" value="0" class="quantity_value" style="width: 20px; border: 0; text-align: center;" readonly />
-                                    <a href="#" class="btn btn-default btn-xs" role="button" data-value="1">+</a>
-                                 </p>
-                            </div>
-                        </label>
-                    </div>
-                {% endfor %}
-                </tbody>
-            </table>
+            {% for product in products %}
+                <div class="col-xs-6 col-md-2">
+                    <label class="thumbnail" style="cursor: pointer;">
+                        <img  data-toggle="tooltip" title="{{ product.title }}" alt="{{ product.title }}" src="{{ product.image }}" class="img-responsive" />
+                        <div class="caption" style="text-align: center;">
+                            <p class="quantity_changer clearfix" style="text-align: center;">
+                                <a href="#" class="btn btn-default btn-xs" role="button" data-value="-1">-</a>
+                                <input type="hidden" name="product_id" value="{{ product.id }}" />
+                                <input type="text" name="quantity" value="0" class="quantity_value" style="width: 20px; border: 0; text-align: center;" readonly />
+                                <a href="#" class="btn btn-default btn-xs" role="button" data-value="1">+</a>
+                             </p>
+                        </div>
+                    </label>
+                </div>
+            {% endfor %}
         </fieldset>
         <button class="btn btn-primary">Valider</button>
     </form>
 {% endblock list %}
 
 {% block script %}
+    {{ super() }}
     <script>
-        $('#retailer_choices input').on('change', function(e) {
-            console.log('Load me up');
+        $(document).ready(function() {
+            $('img').tooltip();
+            $('.quantity_changer').on('click', 'a', function(e) {
+                e.preventDefault();
+                var self = $(this),
+                    value = parseInt(self.data('value')),
+                    input = $(e.delegateTarget).find('input.quantity_value'),
+                    newValue = Math.max(0, parseInt(input.val()) + value);
+                input.val(newValue);
+            });
         });
     </script>
 {% endblock script %}

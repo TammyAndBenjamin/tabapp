@@ -43,50 +43,6 @@ def structure_from_rows(rows):
             yield product_order
 
 
-def add_product_order(form):
-    retailer_id = form.get('retailer_id')
-    if not retailer_id:
-        raise Exception('Please choose a retailer')
-    product_ids = [ int(v) for v in form.getlist('product_id') ]
-    quantities = [ int(v) for v in form.getlist('quantity') ]
-    cart = zip(product_ids, quantities)
-    for product_id, quantity in cart:
-        if not quantity:
-            continue
-        for i in range(quantity):
-            retailer_product = RetailerProduct()
-            retailer_product.retailer_id = retailer_id
-            retailer_product.product_id = product_id
-            retailer_product.order_date = date.today()
-            db.session.add(retailer_product)
-    db.session.commit()
-    return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
-
-
-def sold_product_order(form):
-    retailer_id = form.get('retailer_id')
-    if not retailer_id:
-        raise Exception('Please choose a retailer')
-    product_order_ids = form.getlist('product_order_id')
-    for product_order_id in product_order_ids:
-        retailer_product = RetailerProduct.query.get(product_order_id)
-        retailer_product.sold_date = date.today()
-    db.session.commit()
-    return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
-
-
-def pay_product_order(form):
-    retailer_id = form.get('retailer_id')
-    if not retailer_id:
-        raise Exception('Please choose a retailer')
-    product_order_ids = form.getlist('product_order_id')
-    for product_order_id in product_order_ids:
-        retailer_product = RetailerProduct.query.get(product_order_id)
-        retailer_product.payment_date = date.today()
-    db.session.commit()
-    return redirect(url_for('retailers_bp.invoices', **{'retailer_id': retailer_id}))
-
-
 @retailers_bp.route('/')
 @login_required
 def index():
@@ -95,17 +51,6 @@ def index():
         'retailers': retailers,
     }
     return render_template('retailers/index.html', **context)
-
-
-@retailers_bp.route('/new')
-@login_required
-def form():
-    form = RetailerForm(request.form)
-    context = {
-        'retailer_id': None,
-        'form': form,
-    }
-    return render_template('retailers/form.html', **context)
 
 
 @retailers_bp.route('/<int:retailer_id>', methods=['GET'])
@@ -148,7 +93,19 @@ def invoices(retailer_id):
     return render_template('retailers/invoices.html', **context)
 
 
+@retailers_bp.route('/new')
+@login_required
+def new_retailer():
+    form = RetailerForm()
+    context = {
+        'retailer_id': None,
+        'form': form,
+    }
+    return render_template('retailers/form.html', **context)
+
+
 @retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
+@retailers_bp.route('/<int:retailer_id>', methods=['POST'])
 @retailers_bp.route('/<int:retailer_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_retailer(retailer_id):
@@ -167,7 +124,7 @@ def edit_retailer(retailer_id):
             return redirect(url_for('retailers_bp.retailer', retailer_id=retailer.id))
     retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
     form = RetailerForm(obj=retailer) if not form else form
-    form.fees_proportion.data = form.fees_proportion.data * 100
+    form.fees_proportion.data = form.fees_proportion.data * 100 if form.fees_proportion.data else 0
     context = {
         'retailer_id': retailer.id,
         'form': form,

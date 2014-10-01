@@ -67,10 +67,58 @@ def retailer(retailer_id):
 @login_required
 def supplies(retailer_id):
     retailer = Retailer.query.get(retailer_id)
+    retailer_products = db.session.query(
+        RetailerProduct.product_id,
+        Retailer.name,
+        sqlalchemy.func.array_agg(
+            RetailerProduct.id,
+            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
+        ).label('product_order_ids')
+    ).filter(RetailerProduct.sold_date!=None).join(Retailer).group_by(
+        RetailerProduct.product_id,
+        Retailer.name
+    )
+    current_app.logger.debug(str(retailer_products))
+    retailer_products = structure_from_rows(retailer_products)
     context = {
         'retailer': retailer,
+        'retailer_products': retailer_products,
     }
     return render_template('retailers/supplies.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>/supplies/add', methods=['GET'])
+@login_required
+def add_supplies(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    page = int(request.args.get('page', 1))
+    fields = [
+        'id',
+        'title',
+        'images',
+    ]
+    resource = 'products'
+    limit = 50
+    params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
+        'fields': ','.join(fields),
+    })
+    max_page = math.ceil(tabapp.utils.list_from_resource(resource, params, count = True) / limit)
+    rows = tabapp.utils.list_from_resource(resource, params, limit=limit, page=page)
+    products = []
+    for row in rows:
+        product = {
+            'id': row.get('id'),
+            'title': row.get('title'),
+            'image': row.get('images')[0].get('src'),
+        }
+        products.append(product)
+    context = {
+        'page': page,
+        'max_page': max_page,
+        'retailer': retailer,
+        'products': products,
+    }
+    return render_template('retailers/products.html', **context)
 
 
 @retailers_bp.route('/<int:retailer_id>/sold', methods=['GET'])
@@ -154,27 +202,6 @@ def order():
             for msg in e.args:
                 flash(msg, 'error')
     retailers = Retailer.query.all()
-    page = int(request.args.get('page', 1))
-    fields = [
-        'id',
-        'title',
-        'images',
-    ]
-    resource = 'products'
-    limit = 50
-    params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
-        'fields': ','.join(fields),
-    })
-    max_page = math.ceil(tabapp.utils.list_from_resource(resource, params, count = True) / limit)
-    rows = tabapp.utils.list_from_resource(resource, params, limit=limit, page=page)
-    products = []
-    for row in rows:
-        product = {
-            'id': row.get('id'),
-            'title': row.get('title'),
-            'image': row.get('images')[0].get('src'),
-        }
-        products.append(product)
     context = {
         'page': page,
         'max_page': max_page,
@@ -193,19 +220,6 @@ def orders():
             for msg in e.args:
                 flash(msg, 'error')
     retailer_id = int(request.args.get('retailer_id'))
-    retailer_products = db.session.query(
-        RetailerProduct.product_id,
-        Retailer.name,
-        sqlalchemy.func.array_agg(
-            RetailerProduct.id,
-            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
-        ).label('product_order_ids')
-    ).filter(RetailerProduct.sold_date==None).join(Retailer).group_by(
-        RetailerProduct.product_id,
-        Retailer.name
-    )
-    current_app.logger.debug(str(retailer_products))
-    product_orders = structure_from_rows(retailer_products)
     retailers = Retailer.query.all()
     context = {
         'retailer_id': retailer_id,

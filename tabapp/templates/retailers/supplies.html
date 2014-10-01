@@ -1,3 +1,31 @@
 {% extends 'retailers/retailer.html' %}
 
 {% set retailer_tab = 'supplies' %}
+
+{% block list %}
+    <br />
+    <a class="btn btn-primary" href="{{ url_for('retailers_bp.add_supplies', retailer_id=retailer.id) }}">Add products</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product name</th>
+                <th>Retailer price HT</th>
+                <th>Retailer price TTC</th>
+                <th>TAB price HT</th>
+                <th>TAB price TTC</th>
+                <th></th>
+            </tr>
+        </thead>
+        {% for retailer_product in retailer_products %}
+            <tbody>
+                <tr>
+                    <td>{{ product.title }}</td>
+                    <td>
+                        <button class="btn btn-primary">Vendu</button>
+                        <button class="btn btn-danger btn-xs">X</button>
+                    </td>
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+{% endblock list %}

@@ -20,4 +20,5 @@
         <li{% if retailer_tab == 'sold' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.sold', retailer_id=retailer.id) }}">Sold</a></li>
         <li{% if retailer_tab == 'invoices' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.invoices', retailer_id=retailer.id) }}">Invoices</a></li>
     </ul>
+    {% block list %}{% endblock list %}
 {% endblock content %}

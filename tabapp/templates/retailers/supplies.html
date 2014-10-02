@@ -3,8 +3,6 @@
 {% set retailer_tab = 'supplies' %}
 
 {% block list %}
-    <br />
-    <a class="btn btn-primary" href="{{ url_for('retailers_bp.add_supplies', retailer_id=retailer.id) }}">Add products</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -13,23 +11,25 @@
                 <th>Retailer price TTC</th>
                 <th>TAB price HT</th>
                 <th>TAB price TTC</th>
-                <th></th>
+                <th><a class="btn btn-primary btn-sm" href="{{ url_for('retailers_bp.add_supplies', retailer_id=retailer.id) }}">Add products</a></th>
             </tr>
         </thead>
-        {% for retailer_product in retailer_products %}
-            <tbody>
-                <tr>
-                    <td>{{ retailer_product.product.title }}</td>
-                    <td>{{ '{:.2f} €'.format(retailer_product.product.retailer_price_excl_tax) }}</td>
-                    <td>{{ '{:.2f} €'.format(retailer_product.product.retailer_price_incl_tax) }}</td>
-                    <td>{{ '{:.2f} €'.format(retailer_product.product.tab_price_excl_tax) }}</td>
-                    <td>{{ '{:.2f} €'.format(retailer_product.product.tab_price_incl_tax) }}</td>
-                    <td>
-                        <button class="btn btn-success btn-sm">Vendu</button>
-                        <button class="btn btn-danger btn-sm">X</button>
-                    </td>
-                </tr>
-            </tbody>
-        {% endfor %}
+        <tbody>
+            {% for product in products %}
+                {% for product_order in product.orders %}
+                    <tr data-product-order-id="{{ product_order.id }}">
+                        <td>{{ product.title }}</td>
+                        <td>{{ '{:.2f} €'.format(product.retailer_price_excl_tax) }}</td>
+                        <td>{{ '{:.2f} €'.format(product.retailer_price_incl_tax) }}</td>
+                        <td>{{ '{:.2f} €'.format(product.tab_price_excl_tax) }}</td>
+                        <td>{{ '{:.2f} €'.format(product.tab_price_incl_tax) }}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm">Sold</button>
+                            <button class="btn btn-danger btn-sm">X</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock list %}

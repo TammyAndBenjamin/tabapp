@@ -16,9 +16,9 @@
         </div>
     </div>
     <ul class="nav nav-tabs">
-        <li{% if retailer_tab == 'supplies' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.supplies', retailer_id=retailer.id) }}">Supplies</a></li>
-        <li{% if retailer_tab == 'sold' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.sold', retailer_id=retailer.id) }}">Sold</a></li>
-        <li{% if retailer_tab == 'invoices' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.invoices', retailer_id=retailer.id) }}">Invoices</a></li>
+        <li{% if retailer_tab == 'supplies' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.supplies', retailer_id=retailer.id) }}">Supplies <span class="badge alert-info">{{ tab_counts.supplies }}</span></a></li>
+        <li{% if retailer_tab == 'sold' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.sold', retailer_id=retailer.id) }}">Sold <span class="badge alert-info">{{ tab_counts.sold }}</span></a></li>
+        <li{% if retailer_tab == 'invoices' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.invoices', retailer_id=retailer.id) }}">Invoices <span class="badge alert-info">{{ tab_counts.invoices }}</span></a></li>
     </ul>
     {% block list %}{% endblock list %}
 {% endblock content %}

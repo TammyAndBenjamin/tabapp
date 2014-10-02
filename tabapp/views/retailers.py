@@ -19,6 +19,7 @@ def structure_from_rows(rows):
     for row in rows:
         product_id = row.product_id
         product_order_ids = row.product_order_ids
+        product_order_dates = row.product_order_dates
         fields = [
             'id',
             'title',
@@ -29,25 +30,45 @@ def structure_from_rows(rows):
         params = '?fields={fields}'.format(**{
             'fields': ','.join(fields),
         })
-        product = tabapp.utils.list_from_resource(resource, params, key='product', page=1)
-        for product_order_id in product_order_ids:
-            price_incl_tax = decimal.Decimal(product.get('variants')[0].get('price'))
-            price_excl_tax = decimal.Decimal(price_incl_tax / decimal.Decimal(1.2))
-            fees_incl_tax = price_incl_tax * row.fees_proportion
-            fees_excl_tax = price_excl_tax * row.fees_proportion
-            product_order = {
+        _product = tabapp.utils.list_from_resource(resource, params, key='product', page=1)
+        price_incl_tax = decimal.Decimal(_product.get('variants')[0].get('price'))
+        price_excl_tax = decimal.Decimal(price_incl_tax / decimal.Decimal(1.2))
+        fees_incl_tax = price_incl_tax * row.fees_proportion
+        fees_excl_tax = price_excl_tax * row.fees_proportion
+        product = {
+            'id': _product.get('id'),
+            'title': _product.get('title'),
+            'retailer_price_excl_tax': price_excl_tax - fees_excl_tax,
+            'retailer_price_incl_tax': price_incl_tax - fees_incl_tax,
+            'tab_price_excl_tax': price_excl_tax,
+            'tab_price_incl_tax': price_incl_tax,
+            'orders': [],
+        }
+        product_orders = zip(product_order_ids, product_order_dates)
+        for product_order_id, product_order_date in product_orders:
+            product['orders'].append({
                 'id': product_order_id,
-                'product': {
-                    'id': product.get('id'),
-                    'title': product.get('title'),
-                    'image': product.get('images')[0].get('src'),
-                    'retailer_price_excl_tax': price_excl_tax - fees_excl_tax,
-                    'retailer_price_incl_tax': price_incl_tax - fees_incl_tax,
-                    'tab_price_excl_tax': price_excl_tax,
-                    'tab_price_incl_tax': price_incl_tax,
-                }
-            }
-            yield product_order
+                'order_date': product_order_date,
+            })
+        yield product
+
+
+def tab_counts(retailer):
+    counts = {
+        'supplies': RetailerProduct.query.filter(
+                RetailerProduct.retailer_id==retailer.id,
+                RetailerProduct.sold_date==None
+            ).count(),
+        'sold': RetailerProduct.query.filter(
+                RetailerProduct.retailer_id==retailer.id,
+                RetailerProduct.sold_date!=None
+            ).count(),
+        'invoices': RetailerProduct.query.filter(
+                RetailerProduct.retailer_id==retailer.id,
+                RetailerProduct.payment_date!=None
+            ).count(),
+    }
+    return counts
 
 
 @retailers_bp.route('/')
@@ -66,6 +87,7 @@ def retailer(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
+        'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/retailer.html', **context)
 
@@ -132,16 +154,24 @@ def supplies(retailer_id):
         sqlalchemy.func.array_agg(
             RetailerProduct.id,
             type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
-        ).label('product_order_ids')
-    ).filter(RetailerProduct.sold_date==None).join(Retailer).group_by(
+        ).label('product_order_ids'),
+        sqlalchemy.func.array_agg(
+            RetailerProduct.order_date,
+            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Date)
+        ).label('product_order_dates')
+    ).join(Retailer).filter(
+        RetailerProduct.retailer_id==retailer.id,
+        RetailerProduct.sold_date==None
+    ).group_by(
         RetailerProduct.product_id,
         Retailer.fees_proportion
     )
     current_app.logger.debug(str(retailer_products))
-    retailer_products = structure_from_rows(retailer_products)
+    products = structure_from_rows(retailer_products)
     context = {
         'retailer': retailer,
-        'retailer_products': retailer_products,
+        'products': products,
+        'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/supplies.html', **context)
 
@@ -193,6 +223,7 @@ def add_supplies(retailer_id):
         }
         products.append(product)
     context = {
+        'tab_counts': tab_counts(retailer),
         'page': page,
         'max_page': max_page,
         'retailer': retailer,
@@ -219,24 +250,6 @@ def invoices(retailer_id):
         'retailer': retailer,
     }
     return render_template('retailers/invoices.html', **context)
-
-
-@retailers_bp.route('/order', methods=['GET', 'POST'])
-@login_required
-def order():
-    if request.method == 'POST':
-        try: return add_product_order(request.form)
-        except Exception as e:
-            for msg in e.args:
-                flash(msg, 'error')
-    retailers = Retailer.query.all()
-    context = {
-        'page': page,
-        'max_page': max_page,
-        'retailers': retailers,
-        'products': products,
-    }
-    return render_template('retailers/index.html', **context)
 
 
 @retailers_bp.route('/orders', methods=['GET', 'POST'])

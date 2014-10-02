@@ -206,6 +206,7 @@ def add_supplies(retailer_id):
         'id',
         'title',
         'images',
+        'variants',
     ]
     resource = 'products'
     limit = 50
@@ -216,10 +217,13 @@ def add_supplies(retailer_id):
     rows = tabapp.utils.list_from_resource(resource, params, limit=limit, page=page)
     products = []
     for row in rows:
+        if not row.get('variants')[0].get('inventory_quantity'):
+            continue
         product = {
             'id': row.get('id'),
             'title': row.get('title'),
             'image': row.get('images')[0].get('src'),
+            'max': row.get('variants')[0].get('inventory_quantity'),
         }
         products.append(product)
     context = {

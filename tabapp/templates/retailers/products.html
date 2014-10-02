@@ -13,7 +13,7 @@
                     <label class="thumbnail" style="cursor: pointer;">
                         <img  data-toggle="tooltip" title="{{ product.title }}" alt="{{ product.title }}" src="{{ product.image }}" class="img-responsive" />
                         <div class="caption" style="text-align: center;">
-                            <p class="quantity_changer clearfix" style="text-align: center;">
+                            <p class="quantity_changer clearfix" style="text-align: center;" data-max-quantity="{{ product.max }}">
                                 <a href="#" class="btn btn-default btn-xs" role="button" data-value="-1">-</a>
                                 <input type="hidden" name="product_id" value="{{ product.id }}" />
                                 <input type="text" name="quantity" value="0" class="quantity_value" style="width: 20px; border: 0; text-align: center;" readonly />
@@ -36,9 +36,13 @@
             $('.quantity_changer').on('click', 'a', function(e) {
                 e.preventDefault();
                 var self = $(this),
+                    delegate = $(e.delegateTarget),
                     value = parseInt(self.data('value')),
-                    input = $(e.delegateTarget).find('input.quantity_value'),
+                    input = delegate.find('input.quantity_value'),
                     newValue = Math.max(0, parseInt(input.val()) + value);
+                if (newValue > delegate.data('maxQuantity')) {
+                    return;
+                }
                 input.val(newValue);
             });
         });

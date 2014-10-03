@@ -3,8 +3,7 @@
 from functools import wraps
 from flask import g, make_response, current_app, request
 from datetime import date
-from tabapp import db
-from tabapp.models import ProductCost
+from tabapp.models import db, ProductCost
 import decimal
 import requests
 import sqlalchemy

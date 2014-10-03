@@ -2,8 +2,7 @@
 
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
 from flask.ext.login import login_required, logout_user, login_user
-from tabapp import db
-from tabapp.models import Login
+from tabapp.models import db, Login
 
 users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 

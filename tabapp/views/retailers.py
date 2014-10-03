@@ -3,8 +3,7 @@
 from datetime import date
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app, jsonify
 from flask.ext.login import login_required
-from tabapp import db
-from tabapp.models import Retailer, RetailerProduct
+from tabapp.models import db, Retailer, RetailerProduct
 from tabapp.forms import RetailerForm
 import tabapp.utils
 import decimal

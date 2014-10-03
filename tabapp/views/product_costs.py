@@ -2,8 +2,7 @@
 
 from flask import Blueprint, request, render_template, jsonify, g, current_app
 from flask.ext.login import login_required
-from tabapp import db
-from tabapp.models import ProductCost
+from tabapp.models import db, ProductCost
 from datetime import date
 import tabapp.utils
 import math

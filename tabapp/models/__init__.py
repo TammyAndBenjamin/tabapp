@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from tabapp import app
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import SQLAlchemy, Model
 from sqlalchemy.orm.query import Query
 
 
@@ -24,11 +24,11 @@ class LimitingQuery(Query):
         mzero = self._mapper_zero()
         if mzero is not None:
             crit = mzero.class_.enabled == True
-
             return self.enable_assertions(False).filter(crit)
         else:
             return self
 
+Model.query_class = LimitingQuery
 db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
 
 from .login import Login

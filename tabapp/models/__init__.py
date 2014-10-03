@@ -31,4 +31,7 @@ class LimitingQuery(Query):
 
 db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
 
-__all__ = ['login', 'product_cost', 'retailer', 'retailer_product']
+from .login import Login
+from .product_cost import ProductCost
+from .retailer import Retailer
+from .retailer_product import RetailerProduct

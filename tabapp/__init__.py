@@ -11,15 +11,12 @@ app.config.from_pyfile('settings.py')
 app.secret_key = app.config['SECRET_KEY']
 CsrfProtect(app)
 
-from tabapp.models.login import Login
-from tabapp.views.main import main_bp
-from tabapp.views.orders import orders_bp
-from tabapp.views.retailers import retailers_bp
-from tabapp.views.users import users_bp
-from tabapp.views.supply import supply_bp
+from tabapp.models import Login
+from tabapp.views import main_bp, orders_bp, retailers_bp, users_bp, supply_bp, product_costs_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(orders_bp, url_prefix='/orders')
+app.register_blueprint(product_costs_bp, url_prefix='/product_costs')
 app.register_blueprint(retailers_bp, url_prefix='/retailers')
 app.register_blueprint(users_bp, url_prefix='/login')
 app.register_blueprint(supply_bp, url_prefix='/supplies')

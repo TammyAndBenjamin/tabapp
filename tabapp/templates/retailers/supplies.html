@@ -17,7 +17,7 @@
         <tbody>
             {% for product in products %}
                 {% for product_order in product.orders %}
-                    <tr data-product-order-id="{{ product_order.id }}">
+                    <tr class="retailer_product" data-product-order-id="{{ product_order.id }}">
                         <td>{{ product.title }}</td>
                         <td>{{ '{:.2f} €'.format(product.retailer_price_excl_tax) }}</td>
                         <td>{{ '{:.2f} €'.format(product.retailer_price_incl_tax) }}</td>
@@ -33,3 +33,51 @@
         </tbody>
     </table>
 {% endblock list %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            var csrf_token = '{{ csrf_token() }}';
+            $('.sold_retailer_product').on('click', function(e) {
+                e.preventDefault();
+                var self = $(this);
+                if (!confirm('Are you sure to sold this product ?')) {
+                    return true;
+                }
+                $.ajax({
+                    url: self.attr('href'),
+                    type: 'POST',
+                    dataType: 'json',
+                    beforeSend: function(xhr, settings) {
+                        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        }
+                    },
+                    success: function(response) {
+                        self.parents('.retailer_product').hide();
+                    }
+                });
+            });
+            $('.delete_retailer_product').on('click', function(e) {
+                e.preventDefault();
+                var self = $(this);
+                if (!confirm('Are you sure to delete this product from the stocks ?')) {
+                    return true;
+                }
+                $.ajax({
+                    url: self.attr('href'),
+                    type: 'DELETE',
+                    dataType: 'json',
+                    beforeSend: function(xhr, settings) {
+                        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        }
+                    },
+                    success: function(response) {
+                        self.parents('.retailer_product').hide();
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock script %}

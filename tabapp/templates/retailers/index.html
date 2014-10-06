@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             {% for retailer in retailers %}
-                <tr>
+                <tr class="retailer">
                     <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}">{{ retailer.name }}</a></td>
                     <td>{{ retailer.address }}</td>
                     <td>{{ retailer.zip }}</td>
@@ -52,7 +52,7 @@
                         }
                     },
                     success: function(response) {
-                        self.parent('tr').hide();
+                        self.parents('.retailer').hide();
                     }
                 });
             });

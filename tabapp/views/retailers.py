@@ -43,6 +43,8 @@ def index():
 @login_required
 def retailer(retailer_id):
     retailer = Retailer.query.get(retailer_id)
+    if not retailer:
+        return abort(404)
     context = {
         'retailer': retailer,
         'tab_counts': tab_counts(retailer),
@@ -94,6 +96,8 @@ def edit_retailer(retailer_id):
 @login_required
 def delete_retailer(retailer_id):
     retailer = Retailer.query.get(retailer_id)
+    if not retailer:
+        return abort(404)
     db.session.delete(retailer)
     db.session.commit()
     if tabapp.utils.request_wants_json():
@@ -106,6 +110,10 @@ def delete_retailer(retailer_id):
 @login_required
 def sold(retailer_id):
     retailer = Retailer.query.get(retailer_id)
+    if not retailer:
+        return abort(404)
+    if request.method == 'POST':
+        pass
     context = {
         'retailer': retailer,
     }
@@ -120,21 +128,3 @@ def invoices(retailer_id):
         'retailer': retailer,
     }
     return render_template('retailers/invoices.html', **context)
-
-
-@retailers_bp.route('/orders', methods=['GET', 'POST'])
-@login_required
-def orders():
-    if request.method == 'POST':
-        try: return sold_product_order(request.form)
-        except Exception as e:
-            for msg in e.args:
-                flash(msg, 'error')
-    retailer_id = int(request.args.get('retailer_id'))
-    retailers = Retailer.query.all()
-    context = {
-        'retailer_id': retailer_id,
-        'product_orders': product_orders,
-        'retailers': retailers,
-    }
-    return render_template('retailers/orders.html', **context)

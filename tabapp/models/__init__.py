@@ -28,8 +28,10 @@ class LimitingQuery(Query):
         else:
             return self
 
+
 Model.query_class = LimitingQuery
 db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
+
 
 from .login import Login
 from .product_cost import ProductCost

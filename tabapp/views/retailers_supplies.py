@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
-from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app, jsonify, abort
+from flask import Blueprint, request, render_template,\
+    redirect, url_for, flash, current_app, jsonify, abort
 from flask.ext.login import login_required
 from tabapp.models import db, Retailer, RetailerProduct
 import tabapp.utils
@@ -11,23 +12,24 @@ import sqlalchemy
 import sqlalchemy.dialects.postgresql
 
 
-retailers_supplies_bp = Blueprint('retailers_supplies_bp', __name__, subdomain='backyard')
+bp_name = 'retailers_supplies_bp'
+retailers_supplies_bp = Blueprint(bp_name, __name__, subdomain='backyard')
 
 
 def tab_counts(retailer):
     counts = {
         'supplies': RetailerProduct.query.filter(
-                RetailerProduct.retailer_id==retailer.id,
-                RetailerProduct.sold_date==None
-            ).count(),
+            RetailerProduct.retailer_id == retailer.id,
+            RetailerProduct.sold_date.is_(None)
+        ).count(),
         'sold': RetailerProduct.query.filter(
-                RetailerProduct.retailer_id==retailer.id,
-                RetailerProduct.sold_date!=None
-            ).count(),
+            RetailerProduct.retailer_id == retailer.id,
+            RetailerProduct.sold_date.isnot(None)
+        ).count(),
         'invoices': RetailerProduct.query.filter(
-                RetailerProduct.retailer_id==retailer.id,
-                RetailerProduct.payment_date!=None
-            ).count(),
+            RetailerProduct.retailer_id == retailer.id,
+            RetailerProduct.payment_date.isnot(None)
+        ).count(),
     }
     return counts
 
@@ -86,8 +88,8 @@ def index(retailer_id):
             type_=sqlalchemy.dialects.postgresql.ARRAY(db.Date)
         ).label('product_order_dates')
     ).join(Retailer).filter(
-        RetailerProduct.retailer_id==retailer.id,
-        RetailerProduct.sold_date==None
+        RetailerProduct.retailer_id == retailer.id,
+        RetailerProduct.sold_date.is_(None)
     ).group_by(
         RetailerProduct.product_id,
         Retailer.fees_proportion
@@ -108,8 +110,8 @@ def add(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     if request.method == 'POST':
         try:
-            product_ids = [ int(v) for v in request.form.getlist('product_id') ]
-            quantities = [ int(v) for v in request.form.getlist('quantity') ]
+            product_ids = [int(v) for v in request.form.getlist('product_id')]
+            quantities = [int(v) for v in request.form.getlist('quantity')]
             cart = zip(product_ids, quantities)
             for product_id, quantity in cart:
                 if not quantity:
@@ -123,7 +125,10 @@ def add(retailer_id):
                     retailer.stocks.append(retailer_product)
             current_app.logger.debug(str(retailer))
             db.session.commit()
-            return redirect(url_for('retailers_supplies_bp.index', **{'retailer_id': retailer_id}))
+            kwargs = {
+                retailer_id: retailer_id,
+            }
+            return redirect(url_for('retailers_supplies_bp.index', **kwargs))
         except Exception as e:
             for msg in e.args:
                 flash(msg, 'error')
@@ -139,7 +144,7 @@ def add(retailer_id):
     params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
         'fields': ','.join(fields),
     })
-    max_page = math.ceil(tabapp.utils.list_from_resource(resource, params, count = True) / limit)
+    max_page = math.ceil(tabapp.utils.list_from_resource(resource, params, count=True) / limit)
     rows = tabapp.utils.list_from_resource(resource, params, limit=limit, page=page)
     products = []
     for row in rows:
@@ -174,4 +179,7 @@ def delete(retailer_id, retailer_product_id):
     if tabapp.utils.request_wants_json():
         return jsonify(success='Product deleted from stocks.')
     flash('Product deleted from stocks.', 'success')
-    return redirect(url_for('retailers_supplies_bp.index', retailer_id=retailer.id))
+    kwargs = {
+        retailer_id: retailer.id,
+    }
+    return redirect(url_for('retailers_supplies_bp.index', **kwargs))

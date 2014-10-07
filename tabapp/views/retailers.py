@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
-from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app, jsonify, abort
+from flask import Blueprint, request, render_template, redirect,\
+    url_for, flash, jsonify, abort
 from flask.ext.login import login_required
 from tabapp.models import db, Retailer, RetailerProduct
 from tabapp.forms import RetailerForm
@@ -14,17 +15,17 @@ retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 def tab_counts(retailer):
     counts = {
         'supplies': RetailerProduct.query.filter(
-                RetailerProduct.retailer_id==retailer.id,
-                RetailerProduct.sold_date==None
-            ).count(),
+            RetailerProduct.retailer_id == retailer.id,
+            RetailerProduct.sold_date.is_(None)
+        ).count(),
         'sold': RetailerProduct.query.filter(
-                RetailerProduct.retailer_id==retailer.id,
-                RetailerProduct.sold_date!=None
-            ).count(),
+            RetailerProduct.retailer_id == retailer.id,
+            RetailerProduct.sold_date.isnot(None)
+        ).count(),
         'invoices': RetailerProduct.query.filter(
-                RetailerProduct.retailer_id==retailer.id,
-                RetailerProduct.payment_date!=None
-            ).count(),
+            RetailerProduct.retailer_id == retailer.id,
+            RetailerProduct.payment_date.isnot(None)
+        ).count(),
     }
     return counts
 
@@ -72,7 +73,8 @@ def edit_retailer(retailer_id):
     if request.method == 'POST':
         form = RetailerForm(request.form)
         if form.validate():
-            retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
+            retailer = Retailer.query.get(retailer_id)\
+                if retailer_id else Retailer()
             retailer.name = form.name.data
             retailer.fees_proportion = form.fees_proportion.data / 100
             retailer.address = form.address.data
@@ -80,10 +82,14 @@ def edit_retailer(retailer_id):
                 db.session.add(retailer)
             db.session.commit()
             flash('Retailer updated.', 'success')
-            return redirect(url_for('retailers_bp.retailer', retailer_id=retailer.id))
+            kwargs = {
+                retailer_id: retailer.id,
+            }
+            return redirect(url_for('retailers_bp.retailer', **kwargs))
     retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
     form = RetailerForm(obj=retailer) if not form else form
-    form.fees_proportion.data = form.fees_proportion.data * 100 if form.fees_proportion.data else 0
+    form.fees_proportion.data = form.fees_proportion.data * 100\
+        if form.fees_proportion.data else 0
     context = {
         'retailer_id': retailer.id,
         'form': form,

@@ -70,7 +70,7 @@ def structure_from_rows(rows):
         yield product
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/supplies', methods=['GET'])
+@retailers_supplies_bp.route('/<int:retailer_id>/supplies/', methods=['GET'])
 @login_required
 def index(retailer_id):
     retailer = Retailer.query.get(retailer_id)
@@ -162,7 +162,7 @@ def add(retailer_id):
     return render_template('retailers/products.html', **context)
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>', methods=['DELETE'])
+@retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/', methods=['DELETE'])
 @login_required
 def delete(retailer_id, retailer_product_id):
     retailer = Retailer.query.get(retailer_id)

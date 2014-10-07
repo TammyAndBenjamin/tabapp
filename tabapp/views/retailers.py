@@ -39,7 +39,7 @@ def index():
     return render_template('retailers/index.html', **context)
 
 
-@retailers_bp.route('/<int:retailer_id>', methods=['GET'])
+@retailers_bp.route('/<int:retailer_id>/', methods=['GET'])
 @login_required
 def retailer(retailer_id):
     retailer = Retailer.query.get(retailer_id)
@@ -64,7 +64,7 @@ def new_retailer():
 
 
 @retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
-@retailers_bp.route('/<int:retailer_id>', methods=['POST'])
+@retailers_bp.route('/<int:retailer_id>/', methods=['POST'])
 @retailers_bp.route('/<int:retailer_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_retailer(retailer_id):
@@ -91,7 +91,7 @@ def edit_retailer(retailer_id):
     return render_template('retailers/form.html', **context)
 
 
-@retailers_bp.route('/<int:retailer_id>', methods=['DELETE'])
+@retailers_bp.route('/<int:retailer_id>/', methods=['DELETE'])
 @retailers_bp.route('/<int:retailer_id>/delete', methods=['POST'])
 @login_required
 def delete_retailer(retailer_id):
@@ -106,7 +106,7 @@ def delete_retailer(retailer_id):
     return redirect(url_for('retailers_bp.index'))
 
 
-@retailers_bp.route('/<int:retailer_id>/sold', methods=['GET', 'POST'])
+@retailers_bp.route('/<int:retailer_id>/sold/', methods=['GET', 'POST'])
 @login_required
 def sold(retailer_id):
     retailer = Retailer.query.get(retailer_id)
@@ -116,11 +116,12 @@ def sold(retailer_id):
         pass
     context = {
         'retailer': retailer,
+        'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/sold.html', **context)
 
 
-@retailers_bp.route('/<int:retailer_id>/invoices', methods=['GET'])
+@retailers_bp.route('/<int:retailer_id>/invoices/', methods=['GET'])
 @login_required
 def invoices(retailer_id):
     retailer = Retailer.query.get(retailer_id)

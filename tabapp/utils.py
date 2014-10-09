@@ -98,8 +98,11 @@ def process_orders(orders):
             'benefits': 0,
         }
         for line in lines:
-            product_id = int(line.get('product_id'))
-            product_cost = current_product_cost(product_id)
+            product_id = line.get('product_id')
+            product_cost = None
+            if product_id:
+                product_id = int(line.get('product_id'))
+                product_cost = current_product_cost(product_id)
             row['cost_amount'] += product_cost.value if product_cost else 0
             taxes = line.get('tax_lines')
             row['products'].append(line.get('title'))

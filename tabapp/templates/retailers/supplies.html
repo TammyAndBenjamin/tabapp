@@ -24,7 +24,7 @@
                         <td>{{ '{:.2f} €'.format(product.tab_price_excl_tax) }}</td>
                         <td>{{ '{:.2f} €'.format(product.tab_price_incl_tax) }}</td>
                         <td>
-                            <a href="{{ url_for('retailers_bp.sold', retailer_id=retailer.id, retailer_product_id=product_order.id) }}" class="sold_retailer_product btn btn-success btn-sm">Sold</a>
+                            <a href="{{ url_for('retailers_supplies_bp.sell', retailer_id=retailer.id, retailer_product_id=product_order.id) }}" class="sell_retailer_product btn btn-success btn-sm">Sell</a>
                             <a href="{{ url_for('retailers_supplies_bp.delete', retailer_id=retailer.id, retailer_product_id=product_order.id) }}" class="delete_retailer_product btn btn-danger btn-sm">X</a>
                         </td>
                     </tr>
@@ -38,7 +38,7 @@
     <script>
         $(document).ready(function() {
             var csrf_token = '{{ csrf_token() }}';
-            $('.sold_retailer_product').on('click', function(e) {
+            $('.sell_retailer_product').on('click', function(e) {
                 e.preventDefault();
                 var self = $(this);
                 if (!confirm('Are you sure to sold this product ?')) {

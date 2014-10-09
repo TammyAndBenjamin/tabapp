@@ -167,6 +167,24 @@ def add(retailer_id):
     return render_template('retailers/products.html', **context)
 
 
+@retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/sell', methods=['POST'])
+@login_required
+def sell(retailer_id, retailer_product_id):
+    retailer = Retailer.query.get(retailer_id)
+    retailer_product = RetailerProduct.query.get(retailer_product_id)
+    if not retailer or not retailer_product or retailer.id != retailer_product.retailer_id:
+        return abort(404)
+    retailer_product.sold_date = date.today()
+    db.session.commit()
+    if tabapp.utils.request_wants_json():
+        return jsonify(success='Product sold.')
+    flash('Product sold.', 'success')
+    kwargs = {
+        retailer_id: retailer.id,
+    }
+    return redirect(url_for('retailers_supplies_bp.index', **kwargs))
+
+
 @retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/', methods=['DELETE'])
 @login_required
 def delete(retailer_id, retailer_product_id):

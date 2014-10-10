@@ -2,3 +2,33 @@
 
 {% set retailer_tab = 'sold' %}
 
+{% block list %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Product name</th>
+                <th>Retailer price HT</th>
+                <th>Retailer price TTC</th>
+                <th>TAB price HT</th>
+                <th>TAB price TTC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                {% for product_order in product.orders %}
+                    <tr class="retailer_product" data-product-order-id="{{ product_order.id }}">
+                        <td>
+                            <input type="checkbox" name="retailer_product_id" value="{{ product_order.id }}" />
+                        </td>
+                        <td>{{ product.title }}</td>
+                        <td>{{ '{:.2f} €'.format(product.retailer_price_excl_tax) }}</td>
+                        <td>{{ '{:.2f} €'.format(product.retailer_price_incl_tax) }}</td>
+                        <td>{{ '{:.2f} €'.format(product.tab_price_excl_tax) }}</td>
+                        <td>{{ '{:.2f} €'.format(product.tab_price_incl_tax) }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock list %}

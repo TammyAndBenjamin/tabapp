@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Products</h1>
+    <a href="{{ url_for('products_bp.sync') }}" class="btn btn-success refresh_products"><span class="glyphicon glyphicon-refresh"></span> Refresh from Shopify</a>
     <table id="sales" class="table table-condensed">
         <thead>
             <tr>
@@ -60,6 +61,7 @@
 
 {% block script %}
     <script>
+        var csrf_token = '{{ csrf_token() }}';
         $('.action_row')
             .on('click', '.cost_lookback', function(e) {
                 var self = $(this),
@@ -109,6 +111,23 @@
                 success: function(response) {
                     $('#product_cost_modal').modal('hide');
                     document.location = '{{ url_for('products_bp.index') }}';
+                }
+            });
+        });
+
+        $('.refresh_products').on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('href'),
+                method: 'POST',
+                dataType: 'json',
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    }
+                },
+                success: function(response) {
+                    console.log(response);
                 }
             });
         });

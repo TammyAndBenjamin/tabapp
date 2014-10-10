@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from tabapp import app
-from flask.ext.sqlalchemy import SQLAlchemy, Model
-from sqlalchemy.orm.query import Query
+from flask.ext.sqlalchemy import SQLAlchemy, Model, BaseQuery
 
 
-class LimitingQuery(Query):
+class LimitingQuery(BaseQuery):
     def get(self, ident):
         # override get() so that the flag is always checked in the 
         # DB as opposed to pulling from the identity map. - this is optional.
-        return Query.get(self.populate_existing(), ident)
+        return BaseQuery.get(self.populate_existing(), ident)
 
     def __iter__(self):
-        return Query.__iter__(self.private())
+        return BaseQuery.__iter__(self.private())
 
     def from_self(self, *ent):
         # override from_self() to automatically apply
         # the criterion too. This works with count() and
         # others.
-        return Query.from_self(self.private(), *ent)
+        return BaseQuery.from_self(self.private(), *ent)
 
     def private(self):
         mzero = self._mapper_zero()

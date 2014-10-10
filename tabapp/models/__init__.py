@@ -33,6 +33,7 @@ db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
 
 
 from .login import Login
+from .product import Product
 from .product_cost import ProductCost
 from .retailer import Retailer
 from .retailer_product import RetailerProduct

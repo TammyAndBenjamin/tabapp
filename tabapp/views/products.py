@@ -17,7 +17,7 @@ products_bp = Blueprint('products_bp', __name__, subdomain='backyard')
 @products_bp.route('/')
 @login_required
 def index():
-    page = request.args.get('page', 1)
+    page = int(request.args.get('page', 1))
     products = Product.query.paginate(page)
     context = {
         'products': products.items,

@@ -9,7 +9,6 @@
                     <li{% if main_tab == 'analytics' %} class="active"{% endif %}><a href="/">Analytics</a></li>
                     <li{% if main_tab == 'orders' %} class="active"{% endif %}><a href="{{ url_for('orders_bp.index') }}">Orders</a></li>
                     <li{% if main_tab == 'products' %} class="active"{% endif %}><a href="{{ url_for('products_bp.index') }}">Products</a></li>
-                    <li{% if main_tab == 'product_costs' %} class="active"{% endif %}><a href="{{ url_for('product_costs_bp.index') }}">Products Costs</a></li>
                     <li{% if main_tab == 'retailers' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.index') }}">Retailers</a></li>
                 </ul>
             </div>

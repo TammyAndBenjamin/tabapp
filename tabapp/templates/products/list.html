@@ -20,8 +20,8 @@
                 <tr class="action_row" data-product-id="{{ product.id }}" data-label="{{ product.title }}" data-value="{{ product.cost if product.cost != None else '' }}">
                     <td>{{ product.title }}</td>
                     <td>{{ product.unit_price }}</td>
-                    <td>{{ current_cost }}{% if product.costs %}&nbsp;<span class="glyphicon glyphicon-search cost_lookback" style="cursor: pointer;"></span>{% endif %}</td>
-                    <td><a class="edit_cost" href="#">Edit</a></td>
+                    <td>{{ current_cost }}{% if product.costs %}&nbsp;<a href="{{ url_for('products_bp.costs', product_id=product.id) }}" class="glyphicon glyphicon-search cost_lookback"></a>{% endif %}</td>
+                    <td><a class="edit_cost" href="{{ url_for('products_bp.costs', product_id=product.id) }}">Edit</a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -42,7 +42,7 @@
                     <h4 class="modal-title">Edit product cost</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="cost_form" role="form" class="form-inline">
+                    <form id="cost_form" role="form" class="form-inline" method="POST">
                         <div class="form-group">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                             <label for="product_cost" style="margin-right: 5px;">Product cost</label>
@@ -97,7 +97,7 @@
                     }
                     $.ajax({
                         type: 'GET',
-                        url: '{{ url_for('product_costs_bp.index') }}' + row.data('productId'),
+                        url: self.attr('href'),
                         success: function(response) {
                             var costs = response.costs;
                             if (!costs) {
@@ -119,25 +119,28 @@
                     e.preventDefault();
                     var row = $(e.delegateTarget);
                     $('#cost_form')
-                        .attr('action', '{{ url_for('product_costs_bp.index') }}' + row.data('productId'))
+                        .attr('action', $(this).attr('href'))
                         .find('label').html(row.data('label')).end()
                         .find('[name=product_cost]').val(row.data('value')).end();
                     $('#product_cost_modal').modal('show');
                 });
 
-            $('#product_cost_modal .validate_cost').on('click', function(e) {
-                var self = $(this),
-                    form = $('#cost_form'),
-                    data = form.serialize();
+            $('#cost_form').on('submit', function(e) {
+                e.preventDefault();
+                var self = $(this);
                 $.ajax({
                     type: 'POST',
-                    url: form.attr('action'),
-                    data: data,
+                    url: self.attr('action'),
+                    data: self.serialize(),
                     success: function(response) {
                         $('#product_cost_modal').modal('hide');
                         document.location = '{{ url_for('products_bp.index') }}';
                     }
                 });
+            });
+
+            $('#product_cost_modal .validate_cost').on('click', function(e) {
+                $('#cost_form').trigger('submit');
             });
 
             $('.refresh_products').on('click', function(e) {

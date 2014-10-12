@@ -3,6 +3,8 @@
 {% set retailer_tab = 'sold' %}
 
 {% block list %}
+    <br />
+    <a href="{{ url_for('retailers_bp.make_invoice', retailer_id=retailer.id) }}" class="pull-right btn btn-primary make_invoice">Make invoice</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -15,20 +17,54 @@
             </tr>
         </thead>
         <tbody>
-            {% for product in products %}
-                {% for product_order in product.orders %}
-                    <tr class="retailer_product" data-product-order-id="{{ product_order.id }}">
-                        <td>
-                            <input type="checkbox" name="retailer_product_id" value="{{ product_order.id }}" />
-                        </td>
-                        <td>{{ product.title }}</td>
-                        <td>{{ '{:.2f} €'.format(product.retailer_price_excl_tax) }}</td>
-                        <td>{{ '{:.2f} €'.format(product.retailer_price_incl_tax) }}</td>
-                        <td>{{ '{:.2f} €'.format(product.tab_price_excl_tax) }}</td>
-                        <td>{{ '{:.2f} €'.format(product.tab_price_incl_tax) }}</td>
-                    </tr>
-                {% endfor %}
+            {% for stock in stocks %}
+                {% set price_incl_tax = stock.product.unit_price|float %}
+                {% set price_excl_tax = price_incl_tax|float / 1.2 %}
+                {% set fees_incl_tax = (price_incl_tax|float) * (retailer.fees_proportion|float) %}
+                {% set fees_excl_tax = (price_excl_tax|float) * (retailer.fees_proportion|float) %}
+                <tr class="retailer_product" data-product-order-id="{{ stock.id }}">
+                    <td>
+                        <input type="checkbox" name="retailer_product_id" value="{{ stock.id }}" />
+                    </td>
+                    <td>{{ stock.product.title }}</td>
+                    <td>{{ '{:.2f} €'.format(price_excl_tax - fees_excl_tax) }}</td>
+                    <td>{{ '{:.2f} €'.format(price_incl_tax - fees_incl_tax) }}</td>
+                    <td>{{ '{:.2f} €'.format(price_excl_tax) }}</td>
+                    <td>{{ '{:.2f} €'.format(price_incl_tax) }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
 {% endblock list %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            var csrf_token = '{{ csrf_token() }}';
+            $('.make_invoice').on('click', function(e) {
+                e.preventDefault();
+                var self = $(this),
+                    retailer_product_ids = [];
+                $('input[name=retailer_product_id]:checked').each(function() {
+                    retailer_product_ids.push($(this).val());
+                });
+                $.ajax({
+                    url: self.attr('href'),
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        retailer_product_ids: retailer_product_ids
+                    },
+                    beforeSend: function(xhr, settings) {
+                        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        }
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock script %}

@@ -15,44 +15,6 @@ import sqlalchemy.dialects.postgresql
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 
-def structure_from_rows(rows):
-    for row in rows:
-        product_id = row.product_id
-        product_order_ids = row.product_order_ids
-        product_order_dates = row.product_order_dates
-        fields = [
-            'id',
-            'title',
-            'variants',
-            'images',
-        ]
-        resource = 'products/{}'.format(product_id)
-        params = '?fields={fields}'.format(**{
-            'fields': ','.join(fields),
-        })
-        _product = tabapp.utils.list_from_resource(resource, params, key='product', page=1)
-        price_incl_tax = decimal.Decimal(_product.get('variants')[0].get('price'))
-        price_excl_tax = decimal.Decimal(price_incl_tax / decimal.Decimal(1.2))
-        fees_incl_tax = price_incl_tax * row.fees_proportion
-        fees_excl_tax = price_excl_tax * row.fees_proportion
-        product = {
-            'id': _product.get('id'),
-            'title': _product.get('title'),
-            'retailer_price_excl_tax': price_excl_tax - fees_excl_tax,
-            'retailer_price_incl_tax': price_incl_tax - fees_incl_tax,
-            'tab_price_excl_tax': price_excl_tax,
-            'tab_price_incl_tax': price_incl_tax,
-            'orders': [],
-        }
-        product_orders = zip(product_order_ids, product_order_dates)
-        for product_order_id, product_order_date in product_orders:
-            product['orders'].append({
-                'id': product_order_id,
-                'order_date': product_order_date,
-            })
-        yield product
-
-
 def tab_counts(retailer):
     counts = {
         'supplies': RetailerProduct.query.filter(
@@ -157,40 +119,46 @@ def delete_retailer(retailer_id):
 @login_required
 def sold(retailer_id):
     retailer = Retailer.query.get(retailer_id)
-    retailer_products = db.session.query(
-        RetailerProduct.product_id,
-        Retailer.fees_proportion,
-        sqlalchemy.func.array_agg(
-            RetailerProduct.id,
-            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
-        ).label('product_order_ids'),
-        sqlalchemy.func.array_agg(
-            RetailerProduct.order_date,
-            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Date)
-        ).label('product_order_dates')
-    ).join(Retailer).filter(
-        RetailerProduct.retailer_id == retailer.id,
-        RetailerProduct.sold_date.isnot(None),
-        RetailerProduct.payment_date.is_(None)
-    ).group_by(
-        RetailerProduct.product_id,
-        Retailer.fees_proportion
-    )
-    current_app.logger.debug(str(retailer_products))
-    products = structure_from_rows(retailer_products)
     context = {
         'retailer': retailer,
+        'stocks': retailer.stocks.filter(
+            RetailerProduct.sold_date.isnot(None),
+            RetailerProduct.payment_date.is_(None)
+        ),
         'tab_counts': tab_counts(retailer),
-        'products': products,
     }
     return render_template('retailers/sold.html', **context)
 
 
-@retailers_bp.route('/<int:retailer_id>/invoices/', methods=['GET'])
+@retailers_bp.route('/<int:retailer_id>/invoices/')
 @login_required
 def invoices(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
+        'stocks': retailer.stocks.filter(
+            RetailerProduct.payment_date.isnot(None)
+        ),
+        'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/invoices.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>/invoices/', methods=['POST'])
+@login_required
+def make_invoice(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    retailer_product_ids = request.form.getlist('retailer_product_ids[]')
+    if not retailer:
+        return abort(404)
+    for retailer_product_id in retailer_product_ids:
+        retailer_product = RetailerProduct.query.get(retailer_product_id)
+        retailer_product.payment_date = date.today()
+    db.session.commit()
+    if tabapp.utils.request_wants_json():
+        return jsonify(success='Product pay.')
+    flash('Product pay.', 'success')
+    kwargs = {
+        retailer_id: retailer.id,
+    }
+    return redirect(url_for('retailers_bp.sold', **kwargs))

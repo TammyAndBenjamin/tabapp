@@ -4,7 +4,7 @@ from datetime import date
 from flask import Blueprint, request, render_template,\
     redirect, url_for, flash, current_app, jsonify, abort
 from flask.ext.login import login_required
-from tabapp.models import db, Retailer, RetailerProduct
+from tabapp.models import db, Retailer, Product, RetailerProduct
 import tabapp.utils
 import decimal
 import math
@@ -34,71 +34,13 @@ def tab_counts(retailer):
     return counts
 
 
-def structure_from_rows(rows):
-    for row in rows:
-        product_id = row.product_id
-        product_order_ids = row.product_order_ids
-        product_order_dates = row.product_order_dates
-        fields = [
-            'id',
-            'title',
-            'variants',
-            'images',
-        ]
-        resource = 'products/{}'.format(product_id)
-        params = '?fields={fields}'.format(**{
-            'fields': ','.join(fields),
-        })
-        _product = tabapp.utils.list_from_resource(resource, params, key='product', page=1)
-        price_incl_tax = decimal.Decimal(_product.get('variants')[0].get('price'))
-        price_excl_tax = decimal.Decimal(price_incl_tax / decimal.Decimal(1.2))
-        fees_incl_tax = price_incl_tax * row.fees_proportion
-        fees_excl_tax = price_excl_tax * row.fees_proportion
-        product = {
-            'id': _product.get('id'),
-            'title': _product.get('title'),
-            'retailer_price_excl_tax': price_excl_tax - fees_excl_tax,
-            'retailer_price_incl_tax': price_incl_tax - fees_incl_tax,
-            'tab_price_excl_tax': price_excl_tax,
-            'tab_price_incl_tax': price_incl_tax,
-            'orders': [],
-        }
-        product_orders = zip(product_order_ids, product_order_dates)
-        for product_order_id, product_order_date in product_orders:
-            product['orders'].append({
-                'id': product_order_id,
-                'order_date': product_order_date,
-            })
-        yield product
-
-
 @retailers_supplies_bp.route('/<int:retailer_id>/supplies/', methods=['GET'])
 @login_required
 def index(retailer_id):
     retailer = Retailer.query.get(retailer_id)
-    retailer_products = db.session.query(
-        RetailerProduct.product_id,
-        Retailer.fees_proportion,
-        sqlalchemy.func.array_agg(
-            RetailerProduct.id,
-            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Integer)
-        ).label('product_order_ids'),
-        sqlalchemy.func.array_agg(
-            RetailerProduct.order_date,
-            type_=sqlalchemy.dialects.postgresql.ARRAY(db.Date)
-        ).label('product_order_dates')
-    ).join(Retailer).filter(
-        RetailerProduct.retailer_id == retailer.id,
-        RetailerProduct.sold_date.is_(None)
-    ).group_by(
-        RetailerProduct.product_id,
-        Retailer.fees_proportion
-    )
-    current_app.logger.debug(str(retailer_products))
-    products = structure_from_rows(retailer_products)
     context = {
         'retailer': retailer,
-        'products': products,
+        'stocks': retailer.stocks.filter(RetailerProduct.sold_date.is_(None)),
         'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/supplies.html', **context)
@@ -133,36 +75,13 @@ def add(retailer_id):
             for msg in e.args:
                 flash(msg, 'error')
     page = int(request.args.get('page', 1))
-    fields = [
-        'id',
-        'title',
-        'images',
-        'variants',
-    ]
-    resource = 'products'
-    limit = 50
-    params = '?page={{page}}&limit={{limit}}&fields={fields}&published_status=published'.format(**{
-        'fields': ','.join(fields),
-    })
-    max_page = math.ceil(tabapp.utils.list_from_resource(resource, params, count=True) / limit)
-    rows = tabapp.utils.list_from_resource(resource, params, limit=limit, page=page)
-    products = []
-    for row in rows:
-        if not row.get('variants')[0].get('inventory_quantity'):
-            continue
-        product = {
-            'id': row.get('id'),
-            'title': row.get('title'),
-            'image': row.get('images')[0].get('src'),
-            'max': row.get('variants')[0].get('inventory_quantity'),
-        }
-        products.append(product)
+    products = Product.query.paginate(page)
     context = {
-        'tab_counts': tab_counts(retailer),
-        'page': page,
-        'max_page': max_page,
         'retailer': retailer,
-        'products': products,
+        'tab_counts': tab_counts(retailer),
+        'products': products.items,
+        'page': products.page,
+        'max_page': products.pages,
     }
     return render_template('retailers/products.html', **context)
 

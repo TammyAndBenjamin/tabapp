@@ -18,10 +18,10 @@
         </thead>
         <tbody>
             {% for stock in stocks %}
-                {% set price_incl_tax = stock.product.unit_price|float %}
-                {% set price_excl_tax = price_incl_tax|float / 1.2 %}
-                {% set fees_incl_tax = (price_incl_tax|float) * (retailer.fees_proportion|float) %}
-                {% set fees_excl_tax = (price_excl_tax|float) * (retailer.fees_proportion|float) %}
+                {% set price_incl_tax = stock.product.unit_price %}
+                {% set price_excl_tax = price_incl_tax / vat %}
+                {% set fees_incl_tax = price_incl_tax * retailer.fees_proportion %}
+                {% set fees_excl_tax = price_excl_tax * retailer.fees_proportion %}
                 <tr class="retailer_product" data-product-order-id="{{ stock.id }}">
                     <td>
                         <input type="checkbox" name="retailer_product_id" value="{{ stock.id }}" />

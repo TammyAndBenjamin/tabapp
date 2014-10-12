@@ -2,9 +2,9 @@
 
 from datetime import date
 from flask import Blueprint, request, render_template, redirect,\
-    url_for, flash, jsonify, abort, current_app
+    url_for, flash, jsonify, abort, current_app, g
 from flask.ext.login import login_required
-from tabapp.models import db, Invoice, Retailer, RetailerProduct
+from tabapp.models import db, Invoice, InvoiceItem, Retailer, RetailerProduct
 from tabapp.forms import RetailerForm
 import tabapp.utils
 import decimal
@@ -148,9 +148,21 @@ def make_invoice(retailer_id):
     retailer_product_ids = request.form.getlist('retailer_product_ids[]')
     if not retailer:
         return abort(404)
+    invoice = Invoice()
+    invoice.retailer_id = retailer.id
+    invoice.no = 'foobar'
     for retailer_product_id in retailer_product_ids:
         retailer_product = RetailerProduct.query.get(retailer_product_id)
-        retailer_product.payment_date = date.today()
+        invoice.orders.append(retailer_product)
+
+        invoice_item = InvoiceItem()
+        invoice_item.title = retailer_product.product.title
+        invoice_item.quantity = 1
+        invoice_item.excl_tax_price = retailer_product.product.unit_price / g.config['APP_VAT']
+        invoice_item.tax_price = retailer_product.product.unit_price - invoice_item.excl_tax_price
+        invoice_item.incl_tax_price = retailer_product.product.unit_price
+        invoice.items.append(invoice_item)
+    db.session.add(invoice)
     db.session.commit()
     if tabapp.utils.request_wants_json():
         return jsonify(success='Product pay.')

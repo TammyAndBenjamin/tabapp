@@ -36,5 +36,6 @@ from .login import Login
 from .product_cost import ProductCost
 from .product import Product
 from .retailer_product import RetailerProduct
+from .invoice_item import InvoiceItem
 from .invoice import Invoice
 from .retailer import Retailer

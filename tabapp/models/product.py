@@ -9,7 +9,7 @@ class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     title = db.Column(db.String, nullable=False)
     quantity = db.Column(db.Integer)

@@ -7,7 +7,7 @@ from tabapp.models import db
 class Login(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     username = db.Column(db.String, index = True, unique = True)
     password = db.Column(sqlalchemy_utils.PasswordType(

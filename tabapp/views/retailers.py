@@ -4,7 +4,7 @@ from datetime import date
 from flask import Blueprint, request, render_template, redirect,\
     url_for, flash, jsonify, abort, current_app
 from flask.ext.login import login_required
-from tabapp.models import db, Retailer, RetailerProduct
+from tabapp.models import db, Invoice, Retailer, RetailerProduct
 from tabapp.forms import RetailerForm
 import tabapp.utils
 import decimal
@@ -25,9 +25,8 @@ def tab_counts(retailer):
             RetailerProduct.retailer_id == retailer.id,
             RetailerProduct.sold_date.isnot(None)
         ).count(),
-        'invoices': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.payment_date.isnot(None)
+        'invoices': Invoice.query.filter(
+            Invoice.retailer_id == retailer.id
         ).count(),
     }
     return counts
@@ -123,7 +122,7 @@ def sold(retailer_id):
         'retailer': retailer,
         'stocks': retailer.stocks.filter(
             RetailerProduct.sold_date.isnot(None),
-            RetailerProduct.payment_date.is_(None)
+            RetailerProduct.invoice_id.is_(None)
         ),
         'tab_counts': tab_counts(retailer),
     }
@@ -136,9 +135,7 @@ def invoices(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
-        'stocks': retailer.stocks.filter(
-            RetailerProduct.payment_date.isnot(None)
-        ),
+        'invoices': retailer.invoices,
         'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/invoices.html', **context)

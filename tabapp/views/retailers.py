@@ -120,7 +120,6 @@ def sold(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
-        'vat': decimal.Decimal(1.2),
         'stocks': retailer.stocks.filter(
             RetailerProduct.sold_date.isnot(None),
             RetailerProduct.invoice_id.is_(None)

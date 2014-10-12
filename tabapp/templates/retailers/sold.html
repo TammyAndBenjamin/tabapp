@@ -19,7 +19,7 @@
         <tbody>
             {% for stock in stocks %}
                 {% set price_incl_tax = stock.product.unit_price %}
-                {% set price_excl_tax = price_incl_tax / vat %}
+                {% set price_excl_tax = price_incl_tax / g.config.get('APP_VAT') %}
                 {% set fees_incl_tax = price_incl_tax * retailer.fees_proportion %}
                 {% set fees_excl_tax = price_excl_tax * retailer.fees_proportion %}
                 <tr class="retailer_product" data-product-order-id="{{ stock.id }}">

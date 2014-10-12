@@ -67,7 +67,7 @@ def add(retailer_id):
             current_app.logger.debug(str(retailer))
             db.session.commit()
             kwargs = {
-                retailer_id: retailer_id,
+                'retailer_id': retailer_id,
             }
             return redirect(url_for('retailers_supplies_bp.index', **kwargs))
         except Exception as e:

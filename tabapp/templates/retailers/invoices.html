@@ -1,3 +1,28 @@
 {% extends 'retailers/retailer.html' %}
 
 {% set retailer_tab = 'invoices' %}
+
+{% block list %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Retailer</th>
+                <th>HT</th>
+                <th>TVA</th>
+                <th>TTV</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.no }}</td>
+                    <td>{{ invoice.issue_date }}</td>
+                    <td>{{ '{:.2f} €'.format(invoice.excl_tax_price) }}</td>
+                    <td>{{ '{:.2f} €'.format(invoice.tax_price) }}</td>
+                    <td>{{ '{:.2f} €'.format(invoice.incl_tax_price) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock list %}

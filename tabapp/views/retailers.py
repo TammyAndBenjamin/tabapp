@@ -23,7 +23,8 @@ def tab_counts(retailer):
         ).count(),
         'sold': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.isnot(None)
+            RetailerProduct.sold_date.isnot(None),
+            RetailerProduct.invoice_id.is_(None)
         ).count(),
         'invoices': Invoice.query.filter(
             Invoice.retailer_id == retailer.id
@@ -150,7 +151,6 @@ def make_invoice(retailer_id):
         return abort(404)
     invoice = Invoice()
     invoice.retailer_id = retailer.id
-    invoice.no = 'foobar'
     for retailer_product_id in retailer_product_ids:
         retailer_product = RetailerProduct.query.get(retailer_product_id)
         invoice.orders.append(retailer_product)

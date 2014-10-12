@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import sqlalchemy
-from datetime import datetime
+from datetime import datetime, date
 from tabapp.models import db, InvoiceItem
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy_utils import aggregated
+
+
+def generate_no(context):
+    today = date.today()
+    idx = Invoice.query.filter(Invoice.issue_date == today).count()
+    return '{}{}{:03d}'.format(today.year, today.month, idx + 1)
 
 
 class Invoice(db.Model):
@@ -15,7 +21,8 @@ class Invoice(db.Model):
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     retailer_id = db.Column(db.Integer, db.ForeignKey('retailer.id'))
     retailer = relationship('Retailer', backref=backref('invoices', lazy='dynamic'))
-    no = db.Column(db.String)
+    issue_date = db.Column(db.Date, nullable=False, default=date.today())
+    no = db.Column(db.String, nullable=False, default=generate_no)
 
     @aggregated('items', db.Column(db.Numeric))
     def excl_tax_price(self):

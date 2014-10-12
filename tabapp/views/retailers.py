@@ -86,7 +86,7 @@ def edit_retailer(retailer_id):
             db.session.commit()
             flash('Retailer updated.', 'success')
             kwargs = {
-                retailer_id: retailer.id,
+                'retailer_id': retailer.id,
             }
             return redirect(url_for('retailers_bp.retailer', **kwargs))
     retailer = Retailer.query.get(retailer_id) if retailer_id else Retailer()
@@ -168,6 +168,6 @@ def make_invoice(retailer_id):
         return jsonify(success='Product pay.')
     flash('Product pay.', 'success')
     kwargs = {
-        retailer_id: retailer.id,
+        'retailer_id': retailer.id,
     }
     return redirect(url_for('retailers_bp.sold', **kwargs))

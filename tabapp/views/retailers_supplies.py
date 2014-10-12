@@ -98,7 +98,7 @@ def sell(retailer_id, retailer_product_id):
         return jsonify(success='Product sold.')
     flash('Product sold.', 'success')
     kwargs = {
-        retailer_id: retailer.id,
+        'retailer_id': retailer.id,
     }
     return redirect(url_for('retailers_supplies_bp.index', **kwargs))
 
@@ -116,6 +116,6 @@ def delete(retailer_id, retailer_product_id):
         return jsonify(success='Product deleted from stocks.')
     flash('Product deleted from stocks.', 'success')
     kwargs = {
-        retailer_id: retailer.id,
+        'retailer_id': retailer.id,
     }
     return redirect(url_for('retailers_supplies_bp.index', **kwargs))

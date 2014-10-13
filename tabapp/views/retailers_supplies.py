@@ -64,7 +64,8 @@ def add(retailer_id):
                     retailer_product.order_date = date.today()
                     current_app.logger.debug(str(retailer_product))
                     retailer.stocks.append(retailer_product)
-            current_app.logger.debug(str(retailer))
+                product = Product.query.get(product_id)
+                product.quantity = product.quantity - quantity
             db.session.commit()
             kwargs = {
                 'retailer_id': retailer_id,

@@ -3,6 +3,8 @@
 from datetime import datetime
 from tabapp.models import db
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy_utils import aggregated
+import sqlalchemy
 
 
 class InvoiceItem(db.Model):
@@ -15,7 +17,10 @@ class InvoiceItem(db.Model):
     invoice = relationship('Invoice', backref=backref('items', lazy='dynamic'))
     title = db.Column(db.String)
     unit_price = db.Column(db.Numeric)
-    quantity = db.Column(db.Integer)
     excl_tax_price = db.Column(db.Numeric)
     tax_price = db.Column(db.Numeric)
     incl_tax_price = db.Column(db.Numeric)
+
+    @aggregated('orders', db.Column(db.Integer))
+    def quantity(self):
+        return sqlalchemy.func.count(InvoiceItem.orders)

@@ -24,7 +24,8 @@ def tab_counts(retailer):
         ).count(),
         'sold': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.isnot(None)
+            RetailerProduct.sold_date.isnot(None),
+            RetailerProduct.invoice_item_id.is_(None)
         ).count(),
         'invoices': Invoice.query.filter(
             Invoice.retailer_id == retailer.id

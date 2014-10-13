@@ -17,5 +17,5 @@ class RetailerProduct(db.Model):
     retailer = relationship('Retailer', backref=backref('stocks', lazy='dynamic'))
     order_date = db.Column(db.Date)
     sold_date = db.Column(db.Date)
-    invoice_id = db.Column(db.Integer, db.ForeignKey('invoice.id'))
-    invoice = relationship('Invoice', backref=backref('orders', lazy='dynamic'))
+    invoice_item_id = db.Column(db.Integer, db.ForeignKey('invoice_item.id'))
+    invoice_item = relationship('InvoiceItem', backref=backref('orders', lazy='dynamic'))

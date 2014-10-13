@@ -24,7 +24,7 @@ def tab_counts(retailer):
         'sold': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
             RetailerProduct.sold_date.isnot(None),
-            RetailerProduct.invoice_id.is_(None)
+            RetailerProduct.invoice_item_id.is_(None)
         ).count(),
         'invoices': Invoice.query.filter(
             Invoice.retailer_id == retailer.id
@@ -123,7 +123,7 @@ def sold(retailer_id):
         'retailer': retailer,
         'stocks': retailer.stocks.filter(
             RetailerProduct.sold_date.isnot(None),
-            RetailerProduct.invoice_id.is_(None)
+            RetailerProduct.invoice_item_id.is_(None)
         ),
         'tab_counts': tab_counts(retailer),
     }
@@ -153,14 +153,17 @@ def make_invoice(retailer_id):
     invoice.retailer_id = retailer.id
     for retailer_product_id in retailer_product_ids:
         retailer_product = RetailerProduct.query.get(retailer_product_id)
-        invoice.orders.append(retailer_product)
 
-        invoice_item = InvoiceItem()
+        invoice_item = invoice.items.filter(
+            InvoiceItem.orders.product_id == retailer_product.product_id).first()
+        if not invoice_item:
+            invoice_item = InvoiceItem()
         invoice_item.title = retailer_product.product.title
-        invoice_item.quantity = 1
         invoice_item.excl_tax_price = retailer_product.product.unit_price / g.config['APP_VAT']
         invoice_item.tax_price = retailer_product.product.unit_price - invoice_item.excl_tax_price
         invoice_item.incl_tax_price = retailer_product.product.unit_price
+        invoice_item.orders.append(retailer_product)
+
         invoice.items.append(invoice_item)
     db.session.add(invoice)
     db.session.commit()

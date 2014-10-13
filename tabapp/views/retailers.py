@@ -150,12 +150,14 @@ def make_invoice(retailer_id):
     if not retailer:
         return abort(404)
     invoice = Invoice()
+    db.session.add(invoice)
     invoice.retailer_id = retailer.id
     for retailer_product_id in retailer_product_ids:
         retailer_product = RetailerProduct.query.get(retailer_product_id)
 
         invoice_item = invoice.items.filter(
-            InvoiceItem.orders.product_id == retailer_product.product_id).first()
+            InvoiceItem.orders.any(
+                RetailerProduct.product_id == retailer_product.product_id)).first()
         if not invoice_item:
             invoice_item = InvoiceItem()
         invoice_item.title = retailer_product.product.title
@@ -165,7 +167,6 @@ def make_invoice(retailer_id):
         invoice_item.orders.append(retailer_product)
 
         invoice.items.append(invoice_item)
-    db.session.add(invoice)
     db.session.commit()
     if tabapp.utils.request_wants_json():
         return jsonify(success='Product pay.')

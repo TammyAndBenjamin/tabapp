@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <title></title>
+        <style>
+            body { padding-top: 50px; }
+        </style>
+    </head>
+    <body>
+        <div class="container" style="border: 1px solid #000;">
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <img src="https://cdn.shopify.com/s/files/1/0343/0553/files/TAMMY_AND_BENJAMIN_EMAIL_LOGO_1.jpg?8893" />
+                    <br /><br /><br />
+                    <address>
+                        <strong>TAMMY & BENJAMIN SAS</strong><br />
+                        305 rue du Faubourg Saint-Antoine<br />
+                        75011 PARIS - FRANCE<br />
+                        Téléphone: +33 6 42 21 32 47<br />
+                        e-mail : order@tammyandbenjamin.com<br />
+                        R.C.S: 514813880 Paris – N.I.I : FR86514813880
+                    </address>
+                    <br />
+                    <address class="text-left">
+                        Banque : Société Générale, Paris France<br />
+                        N° de compte: 30003 01668 00027000185 26<br />
+                        Swift SOGEFRPP ; Titulaire de compte: TAMMY AND BENJAMIN SAS<br />
+                        IBAN FR76 3000 3016 6800 0270 0018 526
+                    </address>
+                </div>
+                <div class="col-md-6">
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit price</th>
+                        <th>Qty</th>
+                        <th>Price HT</th>
+                        <th>VAT</th>
+                        <th>Price TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice_item in invoice.items %}
+                        <tr>
+                            <td>{{ invoice_item.title }}</td>
+                            <td>{{ '{:.2f} €'.format(invoice_item.unit_price) }}</td>
+                            <td>{{ invoice_item.quantity }}</td>
+                            <td>{{ '{:.2f} €'.format(invoice_item.excl_tax_price) }}</td>
+                            <td>{{ '{:.2f} €'.format(invoice_item.tax_price) }}</td>
+                            <td>{{ '{:.2f} €'.format(invoice_item.incl_tax_price) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

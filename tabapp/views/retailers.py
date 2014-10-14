@@ -142,6 +142,18 @@ def invoices(retailer_id):
     return render_template('retailers/invoices.html', **context)
 
 
+@retailers_bp.route('/<int:retailer_id>/invoices/<int:invoice_id>/')
+@login_required
+def invoice(retailer_id, invoice_id):
+    retailer = Retailer.query.get(retailer_id)
+    invoice = Invoice.query.get(invoice_id)
+    context = {
+        'retailer': retailer,
+        'invoice': invoice,
+    }
+    return render_template('retailers/invoice.html', **context)
+
+
 @retailers_bp.route('/<int:retailer_id>/invoices/', methods=['POST'])
 @login_required
 def make_invoice(retailer_id):
@@ -154,17 +166,22 @@ def make_invoice(retailer_id):
     invoice.retailer_id = retailer.id
     for retailer_product_id in retailer_product_ids:
         retailer_product = RetailerProduct.query.get(retailer_product_id)
+        excl_tax_unit_price = retailer_product.product.unit_price / g.config['APP_VAT']
+        tax = retailer_product.product.unit_price - excl_tax_unit_price
 
         invoice_item = invoice.items.filter(
             InvoiceItem.orders.any(
                 RetailerProduct.product_id == retailer_product.product_id)).first()
         if not invoice_item:
             invoice_item = InvoiceItem()
-        invoice_item.title = retailer_product.product.title
-        invoice_item.excl_tax_price = retailer_product.product.unit_price / g.config['APP_VAT']
-        invoice_item.tax_price = retailer_product.product.unit_price - invoice_item.excl_tax_price
-        invoice_item.incl_tax_price = retailer_product.product.unit_price
+            invoice_item.title = retailer_product.product.title
+            invoice_item.unit_price = excl_tax_unit_price
         invoice_item.orders.append(retailer_product)
+
+        invoice_item.quantity = invoice_item.orders.count()
+        invoice_item.excl_tax_price = excl_tax_unit_price * invoice_item.quantity
+        invoice_item.tax_price = tax * invoice_item.quantity
+        invoice_item.incl_tax_price = invoice_item.excl_tax_price + invoice_item.tax_price
 
         invoice.items.append(invoice_item)
     db.session.commit()

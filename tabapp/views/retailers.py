@@ -78,9 +78,8 @@ def edit_retailer(retailer_id):
         if form.validate():
             retailer = Retailer.query.get(retailer_id)\
                 if retailer_id else Retailer()
-            retailer.name = form.name.data
+            form.populate_obj(retailer)
             retailer.fees_proportion = form.fees_proportion.data / 100
-            retailer.address = form.address.data
             if not retailer.id:
                 db.session.add(retailer)
             db.session.commit()

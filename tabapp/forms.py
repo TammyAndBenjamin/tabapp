@@ -6,6 +6,7 @@ from wtforms.validators import DataRequired, NumberRange
 
 class RetailerForm(Form):
     name = TextField('Name', validators=[DataRequired()])
+    code = TextField('Code', validators=[DataRequired()])
     fees_proportion = DecimalField('Fees', validators=[DataRequired(), NumberRange(0, 100)])
     address = TextField('Address')
     zip = TextField('Zip')

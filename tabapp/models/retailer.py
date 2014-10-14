@@ -9,6 +9,7 @@ class Retailer(db.Model):
     version = db.Column(db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now)
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String, nullable=False)
+    code = db.Column(db.String, nullable=False)
     fees_proportion = db.Column(db.Numeric, nullable=False)
     address = db.Column(db.String)
     zip = db.Column(db.String)

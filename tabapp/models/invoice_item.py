@@ -11,7 +11,7 @@ class InvoiceItem(db.Model):
     __tablename__ = 'invoice_item'
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now())
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now)
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     invoice_id = db.Column(db.Integer, db.ForeignKey('invoice.id'))
     invoice = relationship('Invoice', backref=backref('items', lazy='dynamic'))

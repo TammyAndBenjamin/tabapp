@@ -44,6 +44,9 @@
             var csrf_token = '{{ csrf_token() }}';
             $('.make_invoice').on('click', function(e) {
                 e.preventDefault();
+                if (!confirm('Are you sure to create an invoice with these items ?')) {
+                    return true;
+                }
                 var self = $(this),
                     retailer_product_ids = [],
                     checked_inputs = $('input[name=retailer_product_id]:checked');

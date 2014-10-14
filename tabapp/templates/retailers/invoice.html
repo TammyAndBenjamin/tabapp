@@ -4,15 +4,15 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <title></title>
         <style>
-            body { padding-top: 50px; }
+            body { font-size: 13px; }
+            .table .total_line > td { border-top: none; }
+            .import_export { font-size: 10px; }
         </style>
     </head>
     <body>
-        <div class="container" style="border: 1px solid #000;">
+        <div class="container" style="position: relative; height: 1000px;">
             <div class="row">
-                <div class="col-md-6 text-center">
-                    <img src="https://cdn.shopify.com/s/files/1/0343/0553/files/TAMMY_AND_BENJAMIN_EMAIL_LOGO_1.jpg?8893" />
-                    <br /><br /><br />
+                <div class="col-xs-6">
                     <address>
                         <strong>TAMMY & BENJAMIN SAS</strong><br />
                         305 rue du Faubourg Saint-Antoine<br />
@@ -21,18 +21,38 @@
                         e-mail : order@tammyandbenjamin.com<br />
                         R.C.S: 514813880 Paris – N.I.I : FR86514813880
                     </address>
-                    <br />
-                    <address class="text-left">
-                        Banque : Société Générale, Paris France<br />
-                        N° de compte: 30003 01668 00027000185 26<br />
-                        Swift SOGEFRPP ; Titulaire de compte: TAMMY AND BENJAMIN SAS<br />
-                        IBAN FR76 3000 3016 6800 0270 0018 526
-                    </address>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-6 text-center">
+                    <img src="https://cdn.shopify.com/s/files/1/0343/0553/files/TAMMY_AND_BENJAMIN_EMAIL_LOGO_1.jpg?8893" />
                 </div>
             </div>
-            <table class="table">
+            <div class="row" style="margin-top: 80px;">
+                <div class="col-xs-6 text-center">
+                    <table class="table table-bordered table-condensed">
+                        <tbody>
+                            <tr class="active">
+                                <td>N° de facture</td>
+                                <td>Date</td>
+                                <td>Code client</td>
+                            </tr>
+                            <tr>
+                                <td>{{ invoice.no }}</td>
+                                <td>{{ invoice.issue_date }}</td>
+                                <td>{{ invoice.retailer.code }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-offset-1 col-xs-5">
+                    <address>
+                        {{ invoice.retailer.name }}<br />
+                        {{ invoice.retailer.address }}<br />
+                        {{ invoice.retailer.zip }} {{ invoice.retailer.city }}<br />
+                        {{ invoice.retailer.country }}
+                    </address>
+                </div>
+            </div>
+            <table class="table" style="margin-top: 80px;">
                 <thead>
                     <tr>
                         <th>Product</th>
@@ -54,8 +74,49 @@
                             <td>{{ '{:.2f} €'.format(invoice_item.incl_tax_price) }}</td>
                         </tr>
                     {% endfor %}
+                    <tr class="total_line">
+                        <td class="text-right" colspan="5">Total HT</td>
+                        <td>{{ '{:.2f} €'.format(invoice.excl_tax_price) }}</td>
+                    </tr>
+                    <tr class="total_line">
+                        <td class="text-right" colspan="5">TVA 20%</td>
+                        <td>{{ '{:.2f} €'.format(invoice.tax_price) }}</td>
+                    </tr>
+                    <tr class="total_line">
+                        <td class="text-right" colspan="5"><strong>Total TTC</strong></td>
+                        <td class="active"><strong>{{ '{:.2f} €'.format(invoice.incl_tax_price) }}</strong></td>
+                    </tr>
                 </tbody>
             </table>
+            <div class="row" style="position: absolute; bottom: 0; left: 0; right: 0;">
+                <div class="col-xs-4 text-center">
+                    <table class="import_export table table-bordered table-condensed">
+                        <thead>
+                            <tr class="active">
+                                <th class="text-center" colspan="2">Informations d'import/export</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Pays d'export</td><td>France</td></tr>
+                            <tr><td>Pays de fabrication</td><td>France</td></tr>
+                            <tr><td>Pays de destination finale</td><td>France</td></tr>
+                            <tr><td>Date de livraison</td><td>/</td></tr>
+                            <tr><td>Méthode de paiement</td><td>virement</td></tr>
+                            <tr><td>Monnaie</td><td>€</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-offset-2 col-xs-6 text-center" style="padding-top: 70px;">
+                    <address class="text-left">
+                        Banque : Société Générale, Paris France<br />
+                        N° de compte: 30003 01668 00027000185 26<br />
+                        Swift SOGEFRPP<br />
+                        Titulaire de compte: TAMMY AND BENJAMIN SAS<br />
+                        IBAN FR76 3000 3016 6800 0270 0018 526<br />
+                        Paypal : pro@tammyandbenjamin.com
+                    </address>
+                </div>
+            </div>
         </div>
     </body>
 </html>

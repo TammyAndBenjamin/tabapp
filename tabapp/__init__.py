@@ -9,19 +9,23 @@ from flask.ext.login import LoginManager, login_required, current_user
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
 app.secret_key = app.config['SECRET_KEY']
-CsrfProtect(app)
+csrf = CsrfProtect(app)
 
 from tabapp.models import Login
 from tabapp.views import main_bp, orders_bp, retailers_bp,\
-    retailers_supplies_bp, users_bp, supply_bp, products_bp
+    retailers_supplies_bp, users_bp, supply_bp, products_bp, hooks_bp
 
+# Backyard
 app.register_blueprint(main_bp)
 app.register_blueprint(orders_bp, url_prefix='/orders')
 app.register_blueprint(products_bp, url_prefix='/products')
 app.register_blueprint(retailers_bp, url_prefix='/retailers')
 app.register_blueprint(retailers_supplies_bp, url_prefix='/retailers')
 app.register_blueprint(users_bp, url_prefix='/login')
+# Data
 app.register_blueprint(supply_bp, url_prefix='/supplies')
+# Hooks
+app.register_blueprint(hooks_bp)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

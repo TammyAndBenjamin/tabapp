@@ -38,14 +38,16 @@
 {% endblock list %}
 
 {% block script %}
+    {{ super() }}
     <script>
         $(document).ready(function() {
             var csrf_token = '{{ csrf_token() }}';
             $('.make_invoice').on('click', function(e) {
                 e.preventDefault();
                 var self = $(this),
-                    retailer_product_ids = [];
-                $('input[name=retailer_product_id]:checked').each(function() {
+                    retailer_product_ids = [],
+                    checked_inputs = $('input[name=retailer_product_id]:checked');
+                checked_inputs.each(function() {
                     retailer_product_ids.push($(this).val());
                 });
                 $.ajax({
@@ -61,7 +63,8 @@
                         }
                     },
                     success: function(response) {
-                        console.log(response);
+                        checked_inputs.parents('.retailer_product').hide();
+                        $(document).trigger('update-tab-counts', [response.tab_counts]);
                     }
                 });
             });

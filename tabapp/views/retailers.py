@@ -169,7 +169,7 @@ def make_invoice(retailer_id):
         invoice.items.append(invoice_item)
     db.session.commit()
     if tabapp.utils.request_wants_json():
-        return jsonify(success='Product pay.')
+        return jsonify(success='Product pay.', tab_counts=tab_counts(retailer))
     flash('Product pay.', 'success')
     kwargs = {
         'retailer_id': retailer.id,

@@ -97,7 +97,7 @@ def sell(retailer_id, retailer_product_id):
     retailer_product.sold_date = date.today()
     db.session.commit()
     if tabapp.utils.request_wants_json():
-        return jsonify(success='Product sold.')
+        return jsonify(success='Product sold.', tab_counts=tab_counts(retailer))
     flash('Product sold.', 'success')
     kwargs = {
         'retailer_id': retailer.id,
@@ -115,7 +115,7 @@ def delete(retailer_id, retailer_product_id):
     db.session.delete(retailer_product)
     db.session.commit()
     if tabapp.utils.request_wants_json():
-        return jsonify(success='Product deleted from stocks.')
+        return jsonify(success='Product deleted from stocks.', tab_counts=tab_counts(retailer))
     flash('Product deleted from stocks.', 'success')
     kwargs = {
         'retailer_id': retailer.id,

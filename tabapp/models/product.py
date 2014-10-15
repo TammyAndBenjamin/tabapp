@@ -43,7 +43,7 @@ class Product(db.Model):
             'variants',
         ]
         resource = 'products'
-        params = '?page={{page}}&fields={fields}&published_status=published'.format(**{
+        params = '?page={{page}}&fields={fields}'.format(**{
             'fields': ','.join(fields),
         })
         rows = tabapp.utils.list_from_resource(resource, params)

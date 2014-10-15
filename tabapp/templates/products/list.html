@@ -16,11 +16,11 @@
         </thead>
         <tbody>
             {% for product in products %}
-                {% set current_cost = product.costs[0].value if product.costs else 'No cost' %}
+                {% set current_cost = product.costs.first().value if product.costs.count() else 'No cost' %}
                 <tr class="action_row" data-product-id="{{ product.id }}" data-label="{{ product.title }}" data-value="{{ product.cost if product.cost != None else '' }}">
                     <td>{{ product.title }}</td>
                     <td>{{ product.unit_price }}</td>
-                    <td>{{ current_cost }}{% if product.costs %}&nbsp;<a href="{{ url_for('products_bp.costs', product_id=product.id) }}" class="glyphicon glyphicon-search cost_lookback"></a>{% endif %}</td>
+                    <td>{{ current_cost }}{% if product.costs.count() %}&nbsp;<a href="{{ url_for('products_bp.costs', product_id=product.id) }}" class="glyphicon glyphicon-search cost_lookback"></a>{% endif %}</td>
                     <td><a class="edit_cost" href="{{ url_for('products_bp.costs', product_id=product.id) }}">Edit</a></td>
                 </tr>
             {% endfor %}
@@ -89,6 +89,7 @@
             });
             $('.action_row')
                 .on('click', '.cost_lookback', function(e) {
+                    e.preventDefault();
                     var self = $(this),
                         row = $(e.delegateTarget);
                     if (self.data('content')) {

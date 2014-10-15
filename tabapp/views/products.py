@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, jsonify, g, current_app, redirect, url_for
+from flask import Blueprint, request, render_template,\
+    jsonify, g, current_app, redirect, url_for, abort
 from flask.ext.login import login_required
 from tabapp.models import db, Product, ProductCost
 from datetime import datetime, date
@@ -50,25 +51,13 @@ def costs(product_id):
         db.session.add(product_cost)
         db.session.commit()
         return jsonify(result=True)
-    rows = db.session.query(
-        ProductCost.id,
-        ProductCost.value,
-        ProductCost.start_date
-    ).filter(
-        ProductCost.product_id==int(product_id),
-        sqlalchemy.sql.expression.cast(sqlalchemy.func.daterange(
-            ProductCost.start_date,
-            ProductCost.end_date
-        ), sqlalchemy.dialects.postgresql.DATERANGE).contains(date.today())
-    ).order_by(
-        sqlalchemy.desc(ProductCost.end_date).nullsfirst(),
-        sqlalchemy.desc(ProductCost.start_date)
-    )
-    product_costs = []
-    for row in rows:
-        product_cost = {
-            'date': row.start_date.isoformat(),
-            'value': row.value,
-        }
-        product_costs.append(product_cost)
-    return jsonify(costs=product_costs)
+    product = Product.query.get(product_id)
+    if not product:
+        return abort(404)
+    costs = []
+    for product_cost in product.costs:
+        costs.append({
+            'date': product_cost.start_date.isoformat(),
+            'value': product_cost.value,
+        })
+    return jsonify(costs=costs)

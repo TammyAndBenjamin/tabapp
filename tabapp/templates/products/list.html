@@ -155,7 +155,7 @@
                         }
                     },
                     success: function(response) {
-                        location.reload(true);
+                        document.location = '{{ url_for('products_bp.index') }}';
                     }
                 });
             });

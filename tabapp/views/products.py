@@ -31,6 +31,8 @@ def index():
 @login_required
 def sync():
     Product.sync_from_remote()
+    if tabapp.utils.request_wants_json():
+        return jsonify(success='Products sync.')
     return redirect(url_for('products_bp.index'))
 
 

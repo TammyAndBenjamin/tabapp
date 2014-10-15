@@ -26,6 +26,14 @@
         </fieldset>
         <button class="btn btn-primary">Valider</button>
     </form>
+    <ul id="pager" class="pagination">
+        <li{% if page == 1 %} class="disabled"{% endif %}><a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=page - 1) }}">&laquo;</a></li>
+        {% for i in range(0, max_page) %}
+            {% set real_i = i + 1 %}
+            <li{% if page == real_i %} class="active"{% endif %}><a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=real_i) }}">{{ real_i }}</a></li>
+        {% endfor %}
+        <li{% if page == max_page %} class="disabled"{% endif %}><a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=page + 1) }}">&raquo;</a></li>
+    </ul>
 {% endblock list %}
 
 {% block script %}

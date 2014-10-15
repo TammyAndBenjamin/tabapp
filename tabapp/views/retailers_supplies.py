@@ -115,13 +115,20 @@ def delete(retailer_id, retailer_product_id):
     retailer_product = RetailerProduct.query.get(retailer_product_id)
     if not retailer or not retailer_product or retailer.id != retailer_product.retailer_id:
         return abort(404)
-    db.session.delete(retailer_product)
-    product = Product.query.get(retailer_product.product_id)
-    product.quantity = product.quantity + 1
-    db.session.commit()
-    if tabapp.utils.request_wants_json():
-        return jsonify(success='Product deleted from stocks.', tab_counts=tab_counts(retailer))
-    flash('Product deleted from stocks.', 'success')
+    try:
+        db.session.delete(retailer_product)
+        product = Product.query.get(retailer_product.product_id)
+        product.quantity = product.quantity + 1
+        remote_url = '{}variants/{{}}.json'.format(g.config['SHOPIFY_URL'])
+        product.push_to_remote(remote_url, 1)
+        db.session.commit()
+        if tabapp.utils.request_wants_json():
+            return jsonify(success='Product deleted from stocks.', tab_counts=tab_counts(retailer))
+        flash('Product deleted from stocks.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        for msg in e.args:
+            flash(msg, 'error')
     kwargs = {
         'retailer_id': retailer.id,
     }

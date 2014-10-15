@@ -2,7 +2,7 @@
 
 from datetime import date
 from flask import Blueprint, request, render_template,\
-    redirect, url_for, flash, current_app, jsonify, abort
+    redirect, url_for, flash, current_app, jsonify, abort, g
 from flask.ext.login import login_required
 from tabapp.models import db, Invoice, Retailer, Product, RetailerProduct
 import tabapp.utils
@@ -67,12 +67,15 @@ def add(retailer_id):
                     retailer.stocks.append(retailer_product)
                 product = Product.query.get(product_id)
                 product.quantity = product.quantity - quantity
+                remote_url = '{}variants/{{}}.json'.format(g.config['SHOPIFY_URL'])
+                product.push_to_remote(remote_url, quantity * -1)
             db.session.commit()
             kwargs = {
                 'retailer_id': retailer_id,
             }
             return redirect(url_for('retailers_supplies_bp.index', **kwargs))
         except Exception as e:
+            db.session.rollback()
             for msg in e.args:
                 flash(msg, 'error')
     page = int(request.args.get('page', 1))
@@ -113,6 +116,8 @@ def delete(retailer_id, retailer_product_id):
     if not retailer or not retailer_product or retailer.id != retailer_product.retailer_id:
         return abort(404)
     db.session.delete(retailer_product)
+    product = Product.query.get(retailer_product.product_id)
+    product.quantity = product.quantity + 1
     db.session.commit()
     if tabapp.utils.request_wants_json():
         return jsonify(success='Product deleted from stocks.', tab_counts=tab_counts(retailer))

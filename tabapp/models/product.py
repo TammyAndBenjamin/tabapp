@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import json
 import tabapp.utils
+import requests
 from datetime import datetime
 from tabapp.models import db
 
@@ -16,7 +18,20 @@ class Product(db.Model):
     unit_price = db.Column(db.Numeric)
     image = db.Column(db.String)
     remote_id = db.Column(db.Integer, nullable=False)
+    remote_variant_id = db.Column(db.Integer, nullable=False)
     last_sync = db.Column(db.DateTime, nullable=False, default=datetime.now())
+
+    def push_to_remote(self, url, quantity):
+        url = url.format(self.remote_variant_id)
+        data = {
+            'variant': {
+                'id': self.remote_variant_id,
+                'inventory_quantity_adjustment': quantity,
+            },
+        }
+        headers = {'Content-Type': 'application/json'}
+        r = requests.put(url, data=json.dumps(data), headers=headers)
+        return r.json()
 
     @staticmethod
     def sync_from_remote():
@@ -39,6 +54,7 @@ class Product(db.Model):
             if not product:
                 product = Product()
                 product.remote_id = row.get('id')
+                product.remote_variant_id = row.get('variants')[0].get('id')
             product.title = row.get('title')
             product.quantity = row.get('variants')[0].get('inventory_quantity')
             product.unit_price = row.get('variants')[0].get('price')

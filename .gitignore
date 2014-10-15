@@ -1,2 +1,3 @@
 *.swp
 *.pyc
+init_db.py

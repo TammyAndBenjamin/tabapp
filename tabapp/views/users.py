@@ -13,8 +13,9 @@ def login():
         return render_template('login.html')
     username = request.form.get('username')
     password = request.form.get('password')
-    login = db.session.query(Login).filter(username==username, password==password).first()
-    if not login:
+    login = Login.query.filter(Login.username==username).first()
+    if not login or login.password != password:
+        flash('Unknown user', 'error')
         return render_template('login.html')
     login_user(login)
     return redirect(request.args.get('next') or url_for('index'))

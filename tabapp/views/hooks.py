@@ -30,7 +30,8 @@ def add(product_id, data):
     product.title = data.get('title')
     product.quantity = data.get('variants')[0].get('inventory_quantity')
     product.unit_price = data.get('variants')[0].get('price')
-    product.image = data.get('images')[0].get('src')
+    if data.get('images'):
+        product.image = data.get('images')[0].get('src')
     product.last_sync = datetime.now()
     db.session.add(product)
     db.session.commit()
@@ -43,7 +44,8 @@ def update(product_id, data):
     product.title = data.get('title')
     product.quantity = data.get('variants')[0].get('inventory_quantity')
     product.unit_price = data.get('variants')[0].get('price')
-    product.image = data.get('images')[0].get('src')
+    if data.get('images'):
+        product.image = data.get('images')[0].get('src')
     product.last_sync = datetime.now()
     db.session.commit()
 

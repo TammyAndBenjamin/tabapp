@@ -4,7 +4,7 @@ from datetime import date
 from flask import Blueprint, request, render_template,\
     redirect, url_for, flash, current_app, jsonify, abort, g
 from flask.ext.login import login_required
-from tabapp.models import db, Invoice, Retailer, Product, RetailerProduct
+from tabapp.models import db, Invoice, Retailer, Product, RetailerProduct, DeliverySlip
 import tabapp.utils
 import decimal
 import math
@@ -55,9 +55,12 @@ def add(retailer_id):
             product_ids = [int(v) for v in request.form.getlist('product_id')]
             quantities = [int(v) for v in request.form.getlist('quantity')]
             cart = zip(product_ids, quantities)
+            delivery_slip = DeliverySlip()
+            delivery_slip.retailer_id = retailer.id
             for product_id, quantity in cart:
                 if not quantity:
                     continue
+                delivery_slip.product_id = product_id
                 for i in range(quantity):
                     retailer_product = RetailerProduct()
                     retailer_product.retailer_id = retailer.id
@@ -65,6 +68,7 @@ def add(retailer_id):
                     retailer_product.order_date = date.today()
                     current_app.logger.debug(str(retailer_product))
                     retailer.stocks.append(retailer_product)
+                    delivery_slip.orders.append(retailer_product)
                 product = Product.query.get(product_id)
                 product.quantity = product.quantity - quantity
                 remote_url = '{}variants/{{}}.json'.format(g.config['SHOPIFY_URL'])
@@ -88,6 +92,18 @@ def add(retailer_id):
         'max_page': products.pages,
     }
     return render_template('retailers/products.html', **context)
+
+
+@retailers_supplies_bp.route('/<int:retailer_id>/delivery_slips/<delivery_slip_no>/')
+@login_required
+def delivery_slip(retailer_id, delivery_slip_no):
+    retailer = Retailer.query.get(retailer_id)
+    delivery_slip = DeliverySlip.query.filter(DeliverySlip.no == delivery_slip_no)
+    context = {
+        'retailer': retailer,
+        'delivery_slip': delivery_slip,
+    }
+    return render_template('retailers/delivery_slip.html', **context)
 
 
 @retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/sell', methods=['POST'])

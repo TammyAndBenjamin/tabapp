@@ -18,9 +18,9 @@
                 <tr>
                     <td><a href="{{ url_for('retailers_bp.invoice', retailer_id=retailer.id, invoice_id=invoice.id) }}">{{ invoice.no }}</a></td>
                     <td>{{ invoice.issue_date }}</td>
-                    <td>{{ '{:.2f} €'.format(invoice.excl_tax_price) }}</td>
-                    <td>{{ '{:.2f} €'.format(invoice.tax_price) }}</td>
-                    <td>{{ '{:.2f} €'.format(invoice.incl_tax_price) }}</td>
+                    <td>{{ invoice.excl_tax_price|currency }}</td>
+                    <td>{{ invoice.tax_price|currency }}</td>
+                    <td>{{ invoice.incl_tax_price|currency }}</td>
                 </tr>
             {% endfor %}
         </tbody>

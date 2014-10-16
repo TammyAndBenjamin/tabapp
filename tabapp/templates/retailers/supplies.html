@@ -22,10 +22,10 @@
                 {% set fees_excl_tax = (price_excl_tax|float) * (retailer.fees_proportion|float) %}
                 <tr class="retailer_product" data-product-order-id="{{ stock.id }}">
                     <td>{{ stock.product.title }}</td>
-                    <td>{{ '{:.2f} €'.format(price_excl_tax - fees_excl_tax) }}</td>
-                    <td>{{ '{:.2f} €'.format(price_incl_tax - fees_incl_tax) }}</td>
-                    <td>{{ '{:.2f} €'.format(price_excl_tax) }}</td>
-                    <td>{{ '{:.2f} €'.format(price_incl_tax) }}</td>
+                    <td>{{ (price_excl_tax - fees_excl_tax)|currency }}</td>
+                    <td>{{ (price_incl_tax - fees_incl_tax)|currency }}</td>
+                    <td>{{ price_excl_tax|currency }}</td>
+                    <td>{{ price_incl_tax|currency }}</td>
                     <td>
                         <a href="{{ url_for('retailers_supplies_bp.sell', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="sell_retailer_product btn btn-success btn-sm">Sell</a>
                         <a href="{{ url_for('retailers_supplies_bp.delete', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="delete_retailer_product btn btn-danger btn-sm">X</a>

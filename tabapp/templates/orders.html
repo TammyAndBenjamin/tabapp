@@ -38,10 +38,10 @@
                     <td>{{ order.customer_lastname }}</td>
                     <td>{{ order.customer_email }}</td>
                     <td>{{ order.products | join(', ') }}</td>
-                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.excluding_taxes_amount) }}</td>
-                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.discount_amount) }}</td>
-                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.cost_amount) }}</td>
-                    <td style="white-space: nowrap; text-align: right;">{{ '%.2f €' | format(order.benefits) }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ order.excluding_taxes_amount|currency }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ order.discount_amount|currency }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ order.cost_amount|currency }}</td>
+                    <td style="white-space: nowrap; text-align: right;">{{ order.benefits|currency }}</td>
                 </tr>
             {% endfor %}
         </tbody>

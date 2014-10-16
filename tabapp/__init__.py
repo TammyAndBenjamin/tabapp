@@ -41,3 +41,8 @@ def load_user(userid):
 def init_request():
     g.config = app.config
     g.current_user = current_user
+
+
+@app.template_filter('currency')
+def currency_filter(s):
+    return '{:.2f} €'.format(s)

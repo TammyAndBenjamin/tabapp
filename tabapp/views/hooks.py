@@ -11,6 +11,8 @@ hooks_bp = Blueprint('hooks_bp', __name__, subdomain='hooks')
 @csrf.exempt
 @hooks_bp.route('/products/', methods=['POST'])
 def products():
+    if not g.config['SYNC_ACTIVE']:
+        return ''
     h = request.headers.get('X-Shopify-Hmac-Sha256')
     topic = request.headers.get('X-Shopify-Topic')
     product_id = request.headers.get('X-Shopify-Product-Id')

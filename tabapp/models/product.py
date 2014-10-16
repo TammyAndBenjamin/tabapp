@@ -5,6 +5,7 @@ import tabapp.utils
 import requests
 from datetime import datetime
 from tabapp.models import db
+from flask import g
 
 
 class Product(db.Model):
@@ -22,6 +23,8 @@ class Product(db.Model):
     last_sync = db.Column(db.DateTime, nullable=False, default=datetime.now())
 
     def push_to_remote(self, url, quantity):
+        if not g.config['SYNC_ACTIVE']:
+            return {}
         url = url.format(self.remote_variant_id)
         data = {
             'variant': {
@@ -31,7 +34,7 @@ class Product(db.Model):
         }
         headers = {'Content-Type': 'application/json'}
         r = requests.put(url, data=json.dumps(data), headers=headers)
-        return r.json()
+        return r.get_json()
 
     @staticmethod
     def sync_from_remote():

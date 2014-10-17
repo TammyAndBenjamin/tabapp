@@ -34,7 +34,7 @@ class Product(db.Model):
         }
         headers = {'Content-Type': 'application/json'}
         r = requests.put(url, data=json.dumps(data), headers=headers)
-        return r.get_json()
+        return r.json()
 
     @staticmethod
     def sync_from_remote():

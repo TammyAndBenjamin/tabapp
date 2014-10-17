@@ -57,34 +57,34 @@
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Unit price</th>
-                        <th>Qty</th>
-                        <th>Price HT</th>
-                        <th>VAT</th>
-                        <th>Price TTC</th>
+                        <th class="text-right">Unit price</th>
+                        <th class="text-right">Qty</th>
+                        <th class="text-right">Price HT</th>
+                        <th class="text-right">VAT</th>
+                        <th class="text-right">Price TTC</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for invoice_item in invoice.items %}
                         <tr>
                             <td>{{ invoice_item.title }}</td>
-                            <td>{{ invoice_item.unit_price|currency }}</td>
-                            <td>{{ invoice_item.quantity }}</td>
-                            <td>{{ invoice_item.excl_tax_price|currency }}</td>
-                            <td>{{ invoice_item.tax_price|currency }}</td>
-                            <td>{{ invoice_item.incl_tax_price|currency }}</td>
+                            <td class="text-right">{{ invoice_item.unit_price|currency }}</td>
+                            <td class="text-right">{{ invoice_item.quantity }}</td>
+                            <td class="text-right">{{ invoice_item.excl_tax_price|currency }}</td>
+                            <td class="text-right">{{ invoice_item.tax_price|currency }}</td>
+                            <td class="text-right">{{ invoice_item.incl_tax_price|currency }}</td>
                         </tr>
                     {% endfor %}
-                    <tr class="total_line">
-                        <td class="text-right" colspan="5">Total HT</td>
+                    <tr class="total_line text-right">
+                        <td colspan="5">Total HT</td>
                         <td>{{ invoice.excl_tax_price|currency }}</td>
                     </tr>
-                    <tr class="total_line">
-                        <td class="text-right" colspan="5">TVA 20%</td>
+                    <tr class="total_line text-right">
+                        <td colspan="5">TVA 20%</td>
                         <td>{{ invoice.tax_price|currency }}</td>
                     </tr>
-                    <tr class="total_line">
-                        <td class="text-right" colspan="5"><strong>Total TTC</strong></td>
+                    <tr class="total_line text-right">
+                        <td colspan="5"><strong>Total TTC</strong></td>
                         <td class="active"><strong>{{ invoice.incl_tax_price|currency }}</strong></td>
                     </tr>
                 </tbody>

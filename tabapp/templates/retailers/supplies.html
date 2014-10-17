@@ -3,6 +3,8 @@
 {% set retailer_tab = 'supplies' %}
 
 {% block list %}
+    <br />
+    <a class="btn btn-primary" href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id) }}">Add products</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -11,7 +13,7 @@
                 <th>Retailer price TTC</th>
                 <th>TAB price HT</th>
                 <th>TAB price TTC</th>
-                <th><a class="btn btn-primary btn-sm" href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id) }}">Add products</a></th>
+                <th style="width: 200px;"></th>
             </tr>
         </thead>
         <tbody>

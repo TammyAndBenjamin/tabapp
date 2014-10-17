@@ -4,7 +4,8 @@ from datetime import date
 from flask import Blueprint, request, render_template, redirect,\
     url_for, flash, jsonify, abort, current_app, g
 from flask.ext.login import login_required
-from tabapp.models import db, Invoice, InvoiceItem, Retailer, RetailerProduct
+from tabapp.models import db, Invoice, InvoiceItem, Retailer,\
+    RetailerProduct, DeliverySlip
 from tabapp.forms import RetailerForm
 import tabapp.utils
 import decimal
@@ -112,6 +113,20 @@ def delete_retailer(retailer_id):
         return jsonify(success='Retailer deleted.')
     flash('Retailer deleted.', 'success')
     return redirect(url_for('retailers_bp.index'))
+
+
+@retailers_bp.route('/<int:retailer_id>/delivery_slips/<delivery_slip_no>/')
+@login_required
+def delivery_slip(retailer_id, delivery_slip_no):
+    retailer = Retailer.query.get(retailer_id)
+    delivery_slip = DeliverySlip.query.filter(DeliverySlip.no == delivery_slip_no)
+    products_count = sum([line.quantity for line in delivery_slip])
+    context = {
+        'retailer': retailer,
+        'delivery_slip': delivery_slip,
+        'products_count': products_count,
+    }
+    return render_template('retailers/delivery_slip.html', **context)
 
 
 @retailers_bp.route('/<int:retailer_id>/sold/')

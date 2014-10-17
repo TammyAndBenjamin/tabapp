@@ -9,7 +9,11 @@ import sqlalchemy
 
 def generate_no(context):
     today = date.today()
-    return 'BD{}{}{}'.format(today.year, today.month, today.day)
+    return 'BD{}{}{}{}'.format(
+        context.current_parameters['retailer_id'],
+        today.year,
+        today.month,
+        today.day)
 
 
 class DeliverySlip(db.Model):

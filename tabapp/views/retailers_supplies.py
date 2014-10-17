@@ -55,12 +55,13 @@ def add(retailer_id):
             product_ids = [int(v) for v in request.form.getlist('product_id')]
             quantities = [int(v) for v in request.form.getlist('quantity')]
             cart = zip(product_ids, quantities)
-            delivery_slip = DeliverySlip()
-            delivery_slip.retailer_id = retailer.id
             for product_id, quantity in cart:
                 if not quantity:
                     continue
+                delivery_slip = DeliverySlip()
+                delivery_slip.retailer_id = retailer.id
                 delivery_slip.product_id = product_id
+                db.session.add(delivery_slip)
                 for i in range(quantity):
                     retailer_product = RetailerProduct()
                     retailer_product.retailer_id = retailer.id
@@ -92,18 +93,6 @@ def add(retailer_id):
         'max_page': products.pages,
     }
     return render_template('retailers/products.html', **context)
-
-
-@retailers_supplies_bp.route('/<int:retailer_id>/delivery_slips/<delivery_slip_no>/')
-@login_required
-def delivery_slip(retailer_id, delivery_slip_no):
-    retailer = Retailer.query.get(retailer_id)
-    delivery_slip = DeliverySlip.query.filter(DeliverySlip.no == delivery_slip_no)
-    context = {
-        'retailer': retailer,
-        'delivery_slip': delivery_slip,
-    }
-    return render_template('retailers/delivery_slip.html', **context)
 
 
 @retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/sell', methods=['POST'])

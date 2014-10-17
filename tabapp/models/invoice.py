@@ -10,7 +10,7 @@ from sqlalchemy_utils import aggregated
 def generate_no(context):
     today = date.today()
     idx = Invoice.query.filter(Invoice.issue_date == today).count()
-    return 'FC{}{}{:03d}'.format(today.year, today.month, idx + 1)
+    return 'FC{}{}{}{:03d}'.format(today.year, today.month, today.day, idx + 1)
 
 
 class Invoice(db.Model):

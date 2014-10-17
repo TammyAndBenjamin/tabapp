@@ -4,7 +4,8 @@ from datetime import date
 from flask import Blueprint, request, render_template,\
     redirect, url_for, flash, current_app, jsonify, abort, g
 from flask.ext.login import login_required
-from tabapp.models import db, Invoice, Retailer, Product, RetailerProduct, DeliverySlip
+from tabapp.models import db, Invoice, Retailer, Product,\
+    RetailerProduct, DeliverySlip, DeliverySlipLine
 import tabapp.utils
 import decimal
 import math
@@ -55,21 +56,30 @@ def add(retailer_id):
             product_ids = [int(v) for v in request.form.getlist('product_id')]
             quantities = [int(v) for v in request.form.getlist('quantity')]
             cart = zip(product_ids, quantities)
+            delivery_slip = DeliverySlip()
+            db.session.add(delivery_slip)
+            delivery_slip.retailer_id = retailer.id
             for product_id, quantity in cart:
                 if not quantity:
                     continue
-                delivery_slip = DeliverySlip()
-                delivery_slip.retailer_id = retailer.id
-                delivery_slip.product_id = product_id
-                db.session.add(delivery_slip)
+                product = Product.query.get(product_id)
+                delivery_slip_line = DeliverySlipLine()
+                delivery_slip_line.product_id = product.id
+                delivery_slip_line.fees = retailer.fees_proportion
+                delivery_slip_line.quantity = delivery_slip_line.orders.count()
                 for i in range(quantity):
                     retailer_product = RetailerProduct()
                     retailer_product.retailer_id = retailer.id
                     retailer_product.product_id = product_id
                     retailer_product.order_date = date.today()
-                    current_app.logger.debug(str(retailer_product))
                     retailer.stocks.append(retailer_product)
-                    delivery_slip.orders.append(retailer_product)
+                    delivery_slip_line.orders.append(retailer_product)
+                delivery_slip_line.quantity = quantity
+                delivery_slip_line.recommanded_price = product.unit_price * delivery_slip_line.quantity
+                delivery_slip_line.incl_tax_price = delivery_slip_line.recommanded_price * (1 + delivery_slip_line.fees)
+                delivery_slip_line.excl_tax_price = delivery_slip_line.incl_tax_price / g.config['APP_VAT']
+                delivery_slip_line.tax_price = delivery_slip_line.incl_tax_price - delivery_slip_line.excl_tax_price
+                delivery_slip.lines.append(delivery_slip_line)
                 product = Product.query.get(product_id)
                 product.quantity = product.quantity - quantity
                 remote_url = '{}variants/{{}}.json'.format(g.config['SHOPIFY_URL'])

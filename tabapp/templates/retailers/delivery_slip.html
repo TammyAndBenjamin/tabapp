@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <title>Bon de dépôt - {{ retailer.name }} - {{ delivery_slip.first().delivery_date }}</title>
+        <title>Bon de dépôt - {{ retailer.name }} - {{ delivery_slip.delivery_date }}</title>
         <style>
             body {}
             .table .total_line > td { border-top: none; }
@@ -27,58 +27,51 @@
                 </div>
                 <div class="col-xs-6 text-right">
                     <address>
-                        {{ delivery_slip.first().delivery_date }}<br />
-                        {{ delivery_slip.first().no }}
+                        {{ delivery_slip.delivery_date }}<br />
+                        {{ delivery_slip.no }}
                     </address>
                 </div>
             </div>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Produit</th>
-                        <th>Ref</th>
-                        <th>Qté</th>
-                        <th>Prix de vente<br />conseillé</th>
-                        <th>Comm</th>
-                        <th>Prix T&B HT</th>
-                        <th>TVA</th>
-                        <th>Total TTC</th>
+                        <th class="text-center">Produit</th>
+                        <th class="text-center">Ref</th>
+                        <th class="text-center">Qté</th>
+                        <th class="text-center">Prix de vente<br />conseillé</th>
+                        <th class="text-center">Comm</th>
+                        <th class="text-center">Prix T&B HT</th>
+                        <th class="text-center">TVA</th>
+                        <th class="text-center">Total TTC</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% set incl_tax_amount = 0 %}
-                    {% set excl_tax_amount = 0 %}
-                    {% set tax_amount = 0 %}
-                    {% for line in delivery_slip %}
-                        {% set recomanded_price = (line.product.unit_price * line.quantity) %}
-                        {% set incl_tax_price = (recomanded_price * (1 - retailer.fees_proportion)) %}
-                        {% set excl_tax_price = incl_tax_price / g.config['APP_VAT'] %}
-                        {% set tax_price = incl_tax_price - excl_tax_price %}
+                    {% for line in delivery_slip.lines %}
                         <tr>
                             <td>{{ line.product.title }}</td>
                             <td>{{ line.product.sku }}</td>
-                            <td>{{ line.quantity }}</td>
-                            <td>{{ recomanded_price|currency }}</td>
-                            <td>{{ '%.0f%%'|format(retailer.fees_proportion * 100) }}</td>
-                            <td>{{ excl_tax_price|currency }}</td>
-                            <td>{{ tax_price|currency }}</td>
-                            <td>{{ incl_tax_price|currency }}</td>
+                            <td class="text-right">{{ line.quantity }}</td>
+                            <td class="text-right">{{ line.recommanded_price|currency }}</td>
+                            <td class="text-right">{{ '%.0f%%'|format(line.fees * 100) }}</td>
+                            <td class="text-right">{{ line.excl_tax_price|currency }}</td>
+                            <td class="text-right">{{ line.tax_price|currency }}</td>
+                            <td class="text-right">{{ line.incl_tax_price|currency }}</td>
                         </tr>
                     {% endfor %}
-                    <tr class="total_line">
-                        <td class="text-right" colspan="2">Total produits</td>
+                    <tr class="total_line text-right">
+                        <td colspan="2">Total produits</td>
                         <td>{{ products_count }}</td>
-                        <td class="text-right" colspan="3"></td>
-                        <td class="text-right">Total HT</td>
-                        <td>{{ excl_tax_amount|currency }}</td>
+                        <td colspan="3"></td>
+                        <td>Total HT</td>
+                        <td>{{ delivery_slip.excl_tax_price|currency }}</td>
                     </tr>
-                    <tr class="total_line">
-                        <td class="text-right" colspan="7">TVA 20%</td>
-                        <td>{{ tax_amount|currency }}</td>
+                    <tr class="total_line text-right">
+                        <td colspan="7">TVA 20%</td>
+                        <td>{{ delivery_slip.tax_price|currency }}</td>
                     </tr>
-                    <tr class="total_line">
-                        <td class="text-right" colspan="7"><strong>Total TTC</strong></td>
-                        <td class="active"><strong>{{ incl_tax_amount|currency }}</strong></td>
+                    <tr class="total_line text-right">
+                        <td colspan="7"><strong>Total TTC</strong></td>
+                        <td class="active"><strong>{{ delivery_slip.incl_tax_price|currency }}</strong></td>
                     </tr>
                 </tbody>
             </table>

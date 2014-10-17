@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, date
-from tabapp.models import db
+from tabapp.models import db, DeliverySlipLine
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy_utils import aggregated
 import sqlalchemy
@@ -9,11 +9,8 @@ import sqlalchemy
 
 def generate_no(context):
     today = date.today()
-    return 'BD{}{}{}{}'.format(
-        context.current_parameters['retailer_id'],
-        today.year,
-        today.month,
-        today.day)
+    idx = DeliverySlip.query.filter(DeliverySlip.delivery_date == today).count()
+    return 'BD{}{}{}{:03d}'.format(today.year, today.month, today.day, idx + 1)
 
 
 class DeliverySlip(db.Model):
@@ -24,11 +21,17 @@ class DeliverySlip(db.Model):
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     retailer_id = db.Column(db.Integer, db.ForeignKey('retailer.id'), nullable=False)
     retailer = relationship('Retailer')
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    product = relationship('Product')
-    no = db.Column(db.String, nullable=False, default=generate_no)
     delivery_date = db.Column(db.Date, nullable=False, default=date.today())
+    no = db.Column(db.String, nullable=False, default=generate_no)
 
-    @aggregated('orders', db.Column(db.Integer))
-    def quantity(self):
-        return sqlalchemy.func.count(DeliverySlip.orders)
+    @aggregated('lines', db.Column(db.Numeric))
+    def excl_tax_price(self):
+        return sqlalchemy.func.sum(DeliverySlipLine.excl_tax_price)
+
+    @aggregated('lines', db.Column(db.Numeric))
+    def tax_price(self):
+        return sqlalchemy.func.sum(DeliverySlipLine.tax_price)
+
+    @aggregated('lines', db.Column(db.Numeric))
+    def incl_tax_price(self):
+        return sqlalchemy.func.sum(DeliverySlipLine.incl_tax_price)

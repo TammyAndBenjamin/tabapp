@@ -39,4 +39,5 @@ from .retailer_product import RetailerProduct
 from .invoice_item import InvoiceItem
 from .invoice import Invoice
 from .retailer import Retailer
+from .delivery_slip_line import DeliverySlipLine
 from .delivery_slip import DeliverySlip

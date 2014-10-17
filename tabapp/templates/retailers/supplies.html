@@ -29,7 +29,7 @@
                     <td>{{ price_excl_tax|currency }}</td>
                     <td>{{ price_incl_tax|currency }}</td>
                     <td>
-                        <a href="{{ url_for('retailers_supplies_bp.delivery_slip', retailer_id=retailer.id, delivery_slip_no=stock.delivery_slip.no) }}" class="btn btn-default btn-sm">Delivery slip</a>
+                        <a href="{{ url_for('retailers_bp.delivery_slip', retailer_id=retailer.id, delivery_slip_id=stock.delivery_slip_line.delivery_slip_id) }}" class="btn btn-default btn-sm">Delivery slip</a>
                         <a href="{{ url_for('retailers_supplies_bp.sell', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="sell_retailer_product btn btn-success btn-sm">Sell</a>
                         <a href="{{ url_for('retailers_supplies_bp.delete', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="delete_retailer_product btn btn-danger btn-sm">X</a>
                     </td>

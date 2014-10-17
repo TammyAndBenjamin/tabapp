@@ -115,12 +115,12 @@ def delete_retailer(retailer_id):
     return redirect(url_for('retailers_bp.index'))
 
 
-@retailers_bp.route('/<int:retailer_id>/delivery_slips/<delivery_slip_no>/')
+@retailers_bp.route('/<int:retailer_id>/delivery_slips/<int:delivery_slip_id>/')
 @login_required
-def delivery_slip(retailer_id, delivery_slip_no):
+def delivery_slip(retailer_id, delivery_slip_id):
     retailer = Retailer.query.get(retailer_id)
-    delivery_slip = DeliverySlip.query.filter(DeliverySlip.no == delivery_slip_no)
-    products_count = sum([line.quantity for line in delivery_slip])
+    delivery_slip = DeliverySlip.query.get(delivery_slip_id)
+    products_count = sum([line.quantity for line in delivery_slip.lines])
     context = {
         'retailer': retailer,
         'delivery_slip': delivery_slip,

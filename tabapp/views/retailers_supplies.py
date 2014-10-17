@@ -76,7 +76,7 @@ def add(retailer_id):
                     delivery_slip_line.orders.append(retailer_product)
                 delivery_slip_line.quantity = quantity
                 delivery_slip_line.recommanded_price = product.unit_price * delivery_slip_line.quantity
-                delivery_slip_line.incl_tax_price = delivery_slip_line.recommanded_price * (1 + delivery_slip_line.fees)
+                delivery_slip_line.incl_tax_price = delivery_slip_line.recommanded_price * (1 - delivery_slip_line.fees)
                 delivery_slip_line.excl_tax_price = delivery_slip_line.incl_tax_price / g.config['APP_VAT']
                 delivery_slip_line.tax_price = delivery_slip_line.incl_tax_price - delivery_slip_line.excl_tax_price
                 delivery_slip.lines.append(delivery_slip_line)

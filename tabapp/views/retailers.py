@@ -164,6 +164,8 @@ def make_invoice(retailer_id):
     retailer_product_ids = request.form.getlist('retailer_product_ids[]')
     if not retailer:
         return abort(404)
+    if not retailer_product_ids:
+        return abort(400)
     invoice = Invoice()
     db.session.add(invoice)
     invoice.retailer_id = retailer.id

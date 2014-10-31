@@ -8,9 +8,9 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <fieldset>
             <legend>Products</legend>
-            <div class="row">
+            <div class="row products_list infinite-container">
                 {% for product in products %}
-                    <div class="col-xs-6 col-md-2">
+                    <div class="col-xs-6 col-md-2 infinite-item">
                         <label class="thumbnail" style="cursor: pointer;">
                             <img  data-toggle="tooltip" title="{{ product.title }}" alt="{{ product.title }}" src="{{ product.image }}" class="img-responsive" />
                             <div class="caption" style="text-align: center;">
@@ -24,24 +24,18 @@
                         </label>
                     </div>
                     {% if loop.index is divisibleby(2) %}
-                        <div class="clearfix visible-xs-block"></div>
+                        <div class="clearfix visible-xs-block infinite-item"></div>
                         {% if loop.index is divisibleby(3) %}
-                            <div class="clearfix visible-md-block"></div>
+                            <div class="clearfix visible-md-block infinite-item"></div>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>
         </fieldset>
+        {% if page < max_page %}<a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=page + 1) }}" class="infinite-more-link">&raquo;</a>{% endif %}
         <button class="btn btn-primary">Valider</button>
     </form>
-    <ul id="pager" class="pagination">
-        <li{% if page == 1 %} class="disabled"{% endif %}><a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=page - 1) }}">&laquo;</a></li>
-        {% for i in range(0, max_page) %}
-            {% set real_i = i + 1 %}
-            <li{% if page == real_i %} class="active"{% endif %}><a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=real_i) }}">{{ real_i }}</a></li>
-        {% endfor %}
-        <li{% if page == max_page %} class="disabled"{% endif %}><a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=page + 1) }}">&raquo;</a></li>
-    </ul>
+    <br /><br />
 {% endblock list %}
 
 {% block script %}
@@ -49,10 +43,10 @@
     <script>
         $(document).ready(function() {
             $('img').tooltip();
-            $('.quantity_changer').on('click', 'a', function(e) {
+            $('.products_list').on('click', '.quantity_changer a', function(e) {
                 e.preventDefault();
                 var self = $(this),
-                    delegate = $(e.delegateTarget),
+                    delegate = self.parents('.quantity_changer'),
                     value = parseInt(self.data('value')),
                     input = delegate.find('input.quantity_value'),
                     newValue = Math.max(0, parseInt(input.val()) + value);
@@ -60,6 +54,14 @@
                     return;
                 }
                 input.val(newValue);
+            });
+
+            $('.infinite-container').waypoint('infinite', {
+                container: 'auto',
+                items: '.infinite-item',
+                more: '.infinite-more-link',
+                offset: 'bottom-in-view',
+                loadingClass: 'infinite-loading'
             });
         });
     </script>

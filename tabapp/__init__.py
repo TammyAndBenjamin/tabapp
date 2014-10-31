@@ -8,6 +8,7 @@ from flask.ext.login import LoginManager, login_required, current_user
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
+app.config.from_envvar('SETTINGS')
 app.secret_key = app.config['SECRET_KEY']
 csrf = CsrfProtect(app)
 

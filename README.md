@@ -28,7 +28,7 @@ server {
 }
 ```
 
-## INTALL
+## INSTALL
 
 * Clone the repo
 * Setup a virtualenv name py34-tabapp

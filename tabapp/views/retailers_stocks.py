@@ -13,8 +13,8 @@ import sqlalchemy
 import sqlalchemy.dialects.postgresql
 
 
-bp_name = 'retailers_supplies_bp'
-retailers_supplies_bp = Blueprint(bp_name, __name__, subdomain='backyard')
+bp_name = 'retailers_stocks_bp'
+retailers_stocks_bp = Blueprint(bp_name, __name__, subdomain='backyard')
 
 
 def tab_counts(retailer):
@@ -38,7 +38,7 @@ def tab_counts(retailer):
     return counts
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/stocks/', methods=['GET'])
+@retailers_stocks_bp.route('/<int:retailer_id>/stocks/', methods=['GET'])
 @login_required
 def index(retailer_id):
     retailer = Retailer.query.get(retailer_id)
@@ -47,10 +47,10 @@ def index(retailer_id):
         'stocks': retailer.stocks.filter(RetailerProduct.sold_date.is_(None)),
         'tab_counts': tab_counts(retailer),
     }
-    return render_template('retailers/supplies.html', **context)
+    return render_template('retailers/stocks.html', **context)
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/sell', methods=['POST'])
+@retailers_stocks_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/sell', methods=['POST'])
 @login_required
 def sell(retailer_id, retailer_product_id):
     retailer = Retailer.query.get(retailer_id)
@@ -65,10 +65,10 @@ def sell(retailer_id, retailer_product_id):
     kwargs = {
         'retailer_id': retailer.id,
     }
-    return redirect(url_for('retailers_supplies_bp.index', **kwargs))
+    return redirect(url_for('retailers_stocks_bp.index', **kwargs))
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/', methods=['DELETE'])
+@retailers_stocks_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/', methods=['DELETE'])
 @login_required
 def delete(retailer_id, retailer_product_id):
     retailer = Retailer.query.get(retailer_id)
@@ -92,4 +92,4 @@ def delete(retailer_id, retailer_product_id):
     kwargs = {
         'retailer_id': retailer.id,
     }
-    return redirect(url_for('retailers_supplies_bp.index', **kwargs))
+    return redirect(url_for('retailers_stocks_bp.index', **kwargs))

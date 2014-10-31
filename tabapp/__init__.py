@@ -14,7 +14,7 @@ csrf = CsrfProtect(app)
 
 from tabapp.models import Login
 from tabapp.views import main_bp, orders_bp, retailers_bp,\
-    retailers_supplies_bp, users_bp, supply_bp, \
+    retailers_stocks_bp, users_bp, supply_bp, \
     retailers_deliveries_bp, products_bp, hooks_bp
 
 # Backyard
@@ -23,7 +23,7 @@ app.register_blueprint(orders_bp, url_prefix='/orders')
 app.register_blueprint(products_bp, url_prefix='/products')
 app.register_blueprint(retailers_bp, url_prefix='/retailers')
 app.register_blueprint(retailers_deliveries_bp, url_prefix='/retailers')
-app.register_blueprint(retailers_supplies_bp, url_prefix='/retailers')
+app.register_blueprint(retailers_stocks_bp, url_prefix='/retailers')
 app.register_blueprint(users_bp, url_prefix='/login')
 # Data
 app.register_blueprint(supply_bp, url_prefix='/supplies')

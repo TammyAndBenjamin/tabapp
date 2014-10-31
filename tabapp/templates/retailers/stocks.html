@@ -27,8 +27,8 @@
                     <td>{{ price_excl_tax|currency }}</td>
                     <td>{{ price_incl_tax|currency }}</td>
                     <td>
-                        <a href="{{ url_for('retailers_supplies_bp.sell', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="sell_retailer_product btn btn-success btn-sm">Sell</a>
-                        <a href="{{ url_for('retailers_supplies_bp.delete', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="delete_retailer_product btn btn-danger btn-sm">X</a>
+                        <a href="{{ url_for('retailers_stocks_bp.sell', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="sell_retailer_product btn btn-success btn-sm">Sell</a>
+                        <a href="{{ url_for('retailers_stocks_bp.delete', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="delete_retailer_product btn btn-danger btn-sm">X</a>
                     </td>
                 </tr>
             {% endfor %}

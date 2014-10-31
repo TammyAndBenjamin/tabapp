@@ -1,6 +1,6 @@
 {% extends 'retailers/retailer.html' %}
 
-{% set retailer_tab = 'supplies' %}
+{% set retailer_tab = 'delivery_slips' %}
 
 {% block list %}
     <h2>Add in stock</h2>
@@ -32,8 +32,8 @@
                 {% endfor %}
             </div>
         </fieldset>
-        {% if page < max_page %}<a href="{{ url_for('retailers_supplies_bp.add', retailer_id=retailer.id, page=page + 1) }}" class="infinite-more-link">&raquo;</a>{% endif %}
-        <button class="btn btn-primary">Valider</button>
+        {% if page < max_page %}<a href="{{ url_for('retailers_deliveries_bp.add', retailer_id=retailer.id, page=page + 1) }}" class="infinite-more-link">&raquo;</a>{% endif %}
+        <button class="btn btn-primary">Validate</button>
     </form>
     <br /><br />
 {% endblock list %}

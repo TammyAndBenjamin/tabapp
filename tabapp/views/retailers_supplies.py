@@ -19,6 +19,9 @@ retailers_supplies_bp = Blueprint(bp_name, __name__, subdomain='backyard')
 
 def tab_counts(retailer):
     counts = {
+        'delivery_slips': DeliverySlip.query.filter(
+            DeliverySlip.retailer_id == retailer.id
+        ).count(),
         'supplies': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
             RetailerProduct.sold_date.is_(None)
@@ -45,64 +48,6 @@ def index(retailer_id):
         'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/supplies.html', **context)
-
-
-@retailers_supplies_bp.route('/<int:retailer_id>/supplies/add', methods=['GET', 'POST'])
-@login_required
-def add(retailer_id):
-    retailer = Retailer.query.get(retailer_id)
-    if request.method == 'POST':
-        try:
-            product_ids = [int(v) for v in request.form.getlist('product_id')]
-            quantities = [int(v) for v in request.form.getlist('quantity')]
-            cart = zip(product_ids, quantities)
-            delivery_slip = DeliverySlip()
-            db.session.add(delivery_slip)
-            delivery_slip.retailer_id = retailer.id
-            for product_id, quantity in cart:
-                if not quantity:
-                    continue
-                product = Product.query.get(product_id)
-                delivery_slip_line = DeliverySlipLine()
-                delivery_slip_line.product_id = product.id
-                delivery_slip_line.fees = retailer.fees_proportion
-                delivery_slip_line.quantity = delivery_slip_line.orders.count()
-                for i in range(quantity):
-                    retailer_product = RetailerProduct()
-                    retailer_product.retailer_id = retailer.id
-                    retailer_product.product_id = product_id
-                    retailer_product.order_date = date.today()
-                    retailer.stocks.append(retailer_product)
-                    delivery_slip_line.orders.append(retailer_product)
-                delivery_slip_line.quantity = quantity
-                delivery_slip_line.recommanded_price = product.unit_price
-                delivery_slip_line.incl_tax_price = product.unit_price * delivery_slip_line.quantity * (1 - delivery_slip_line.fees)
-                delivery_slip_line.excl_tax_price = delivery_slip_line.incl_tax_price / g.config['APP_VAT']
-                delivery_slip_line.tax_price = delivery_slip_line.incl_tax_price - delivery_slip_line.excl_tax_price
-                delivery_slip.lines.append(delivery_slip_line)
-                product = Product.query.get(product_id)
-                product.quantity = product.quantity - quantity
-                remote_url = '{}variants/{{}}.json'.format(g.config['SHOPIFY_URL'])
-                product.push_to_remote(remote_url, quantity * -1)
-            db.session.commit()
-            kwargs = {
-                'retailer_id': retailer_id,
-            }
-            return redirect(url_for('retailers_supplies_bp.index', **kwargs))
-        except Exception as e:
-            db.session.rollback()
-            for msg in e.args:
-                flash(msg, 'error')
-    page = int(request.args.get('page', 1))
-    products = Product.query.filter(Product.quantity > 0).order_by(Product.title).paginate(page, per_page=12)
-    context = {
-        'retailer': retailer,
-        'tab_counts': tab_counts(retailer),
-        'products': products.items,
-        'page': products.page,
-        'max_page': products.pages,
-    }
-    return render_template('retailers/products.html', **context)
 
 
 @retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/sell', methods=['POST'])

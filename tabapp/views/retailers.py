@@ -18,6 +18,9 @@ retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
 
 def tab_counts(retailer):
     counts = {
+        'delivery_slips': DeliverySlip.query.filter(
+            DeliverySlip.retailer_id == retailer.id
+        ).count(),
         'supplies': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
             RetailerProduct.sold_date.is_(None)
@@ -113,20 +116,6 @@ def delete_retailer(retailer_id):
         return jsonify(success='Retailer deleted.')
     flash('Retailer deleted.', 'success')
     return redirect(url_for('retailers_bp.index'))
-
-
-@retailers_bp.route('/<int:retailer_id>/delivery_slips/<int:delivery_slip_id>/')
-@login_required
-def delivery_slip(retailer_id, delivery_slip_id):
-    retailer = Retailer.query.get(retailer_id)
-    delivery_slip = DeliverySlip.query.get(delivery_slip_id)
-    products_count = sum([line.quantity for line in delivery_slip.lines])
-    context = {
-        'retailer': retailer,
-        'delivery_slip': delivery_slip,
-        'products_count': products_count,
-    }
-    return render_template('retailers/delivery_slip.html', **context)
 
 
 @retailers_bp.route('/<int:retailer_id>/sold/')

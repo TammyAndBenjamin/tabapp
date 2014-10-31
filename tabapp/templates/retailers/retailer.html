@@ -16,6 +16,7 @@
         </div>
     </div>
     <ul class="nav nav-tabs">
+        <li{% if retailer_tab == 'delivery_slips' %} class="active"{% endif %}><a href="{{ url_for('retailers_deliveries_bp.index', retailer_id=retailer.id) }}">Delivery Slips <span class="tab_counts supplies badge alert-info">{{ tab_counts.delivery_slips }}</span></a></li>
         <li{% if retailer_tab == 'supplies' %} class="active"{% endif %}><a href="{{ url_for('retailers_supplies_bp.index', retailer_id=retailer.id) }}">Supplies <span class="tab_counts supplies badge alert-info">{{ tab_counts.supplies }}</span></a></li>
         <li{% if retailer_tab == 'sold' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.sold', retailer_id=retailer.id) }}">Sold <span class="tab_counts sold badge alert-info">{{ tab_counts.sold }}</span></a></li>
         <li{% if retailer_tab == 'invoices' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.invoices', retailer_id=retailer.id) }}">Invoices <span class="tab_counts invoices badge alert-info">{{ tab_counts.invoices }}</span></a></li>

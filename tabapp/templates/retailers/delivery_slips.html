@@ -1,0 +1,30 @@
+{% extends 'retailers/retailer.html' %}
+
+{% set retailer_tab = 'delivery_slips' %}
+
+{% block list %}
+    <br />
+    <a class="btn btn-primary" href="{{ url_for('retailers_deliveries_bp.add', retailer_id=retailer.id) }}">Create new</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Delivery date</th>
+                <th>HT</th>
+                <th>TVA</th>
+                <th>TTV</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for delivery_slip in delivery_slips %}
+                <tr>
+                    <td><a href="{{ url_for('retailers_deliveries_bp.one', retailer_id=retailer.id, delivery_slip_id=delivery_slip.id) }}">{{ delivery_slip.no }}</a></td>
+                    <td>{{ delivery_slip.delivery_date }}</td>
+                    <td>{{ delivery_slip.excl_tax_price|currency }}</td>
+                    <td>{{ delivery_slip.tax_price|currency }}</td>
+                    <td>{{ delivery_slip.incl_tax_price|currency }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock list %}

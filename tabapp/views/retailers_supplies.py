@@ -22,7 +22,7 @@ def tab_counts(retailer):
         'delivery_slips': DeliverySlip.query.filter(
             DeliverySlip.retailer_id == retailer.id
         ).count(),
-        'supplies': RetailerProduct.query.filter(
+        'stocks': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
             RetailerProduct.sold_date.is_(None)
         ).count(),
@@ -38,7 +38,7 @@ def tab_counts(retailer):
     return counts
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/supplies/', methods=['GET'])
+@retailers_supplies_bp.route('/<int:retailer_id>/stocks/', methods=['GET'])
 @login_required
 def index(retailer_id):
     retailer = Retailer.query.get(retailer_id)
@@ -50,7 +50,7 @@ def index(retailer_id):
     return render_template('retailers/supplies.html', **context)
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/sell', methods=['POST'])
+@retailers_supplies_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/sell', methods=['POST'])
 @login_required
 def sell(retailer_id, retailer_product_id):
     retailer = Retailer.query.get(retailer_id)
@@ -68,7 +68,7 @@ def sell(retailer_id, retailer_product_id):
     return redirect(url_for('retailers_supplies_bp.index', **kwargs))
 
 
-@retailers_supplies_bp.route('/<int:retailer_id>/supplies/<int:retailer_product_id>/', methods=['DELETE'])
+@retailers_supplies_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/', methods=['DELETE'])
 @login_required
 def delete(retailer_id, retailer_product_id):
     retailer = Retailer.query.get(retailer_id)

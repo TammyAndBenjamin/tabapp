@@ -22,7 +22,7 @@ def tab_counts(retailer):
         'delivery_slips': DeliverySlip.query.filter(
             DeliverySlip.retailer_id == retailer.id
         ).count(),
-        'supplies': RetailerProduct.query.filter(
+        'stocks': RetailerProduct.query.filter(
             RetailerProduct.retailer_id == retailer.id,
             RetailerProduct.sold_date.is_(None)
         ).count(),

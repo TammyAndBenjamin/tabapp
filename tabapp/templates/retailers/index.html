@@ -18,7 +18,7 @@
         <tbody>
             {% for retailer in retailers %}
                 <tr class="retailer">
-                    <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}" target="_blank">{{ retailer.name }}</a></td>
+                    <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}">{{ retailer.name }}</a></td>
                     <td>{{ retailer.address }}</td>
                     <td>{{ retailer.zip }}</td>
                     <td>{{ retailer.city }}</td>

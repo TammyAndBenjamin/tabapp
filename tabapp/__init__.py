@@ -4,7 +4,7 @@
 from flask import Flask, render_template, g, request
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import LoginManager, login_required, current_user
-from flask.ext.babel import Babel
+from flask.ext.babel import Babel, format_date, format_datetime, format_time
 
 
 app = Flask(__name__)
@@ -68,3 +68,18 @@ def get_timezone():
 @app.template_filter('currency')
 def currency_filter(s):
     return '{:.2f} €'.format(s)
+
+
+@app.template_filter('date')
+def date_filter(date, format = None, locale = None):
+    return format_date(date, format, locale)
+
+
+@app.template_filter('datetime')
+def datetime_filter(datetime, format = None, locale = None):
+    return format_datetime(datetime, format, locale)
+
+
+@app.template_filter('time')
+def time_filter(time, format = None, locale = None):
+    return format_time(time, format, locale)

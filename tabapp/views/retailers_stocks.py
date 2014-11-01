@@ -4,6 +4,7 @@ from datetime import date
 from flask import Blueprint, request, render_template,\
     redirect, url_for, flash, current_app, jsonify, abort, g
 from flask.ext.login import login_required
+from flask.ext.babel import gettext as _
 from tabapp.models import db, Invoice, Retailer, Product,\
     RetailerProduct, DeliverySlip, DeliverySlipLine
 import tabapp.utils
@@ -60,8 +61,8 @@ def sell(retailer_id, retailer_product_id):
     retailer_product.sold_date = date.today()
     db.session.commit()
     if tabapp.utils.request_wants_json():
-        return jsonify(success='Product sold.', tab_counts=tab_counts(retailer))
-    flash('Product sold.', 'success')
+        return jsonify(success=_('Product sold.'), tab_counts=tab_counts(retailer))
+    flash(_('Product sold.'), 'success')
     kwargs = {
         'retailer_id': retailer.id,
     }
@@ -83,8 +84,8 @@ def delete(retailer_id, retailer_product_id):
         product.push_to_remote(remote_url, 1)
         db.session.commit()
         if tabapp.utils.request_wants_json():
-            return jsonify(success='Product deleted from stocks.', tab_counts=tab_counts(retailer))
-        flash('Product deleted from stocks.', 'success')
+            return jsonify(success=_('Product deleted from stocks.'), tab_counts=tab_counts(retailer))
+        flash(_('Product deleted from stocks.'), 'success')
     except Exception as e:
         db.session.rollback()
         for msg in e.args:

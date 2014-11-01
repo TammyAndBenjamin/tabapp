@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block page %}
-    <div style="width: 500px; margin: 0 auto;">
+    <div style="width: 500px; margin: 10px auto;">
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+                {% for message in errors %}
+                    <div class="alert alert-danger" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <h1>{{ _('Who are you ?') }}</h1>
         <form name="login" method="POST" class="form-horizontal" role="form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />

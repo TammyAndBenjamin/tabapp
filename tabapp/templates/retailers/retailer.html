@@ -11,7 +11,7 @@
             </ul>
             <ul class="list-unstyled col-sm-6">
                 <li><strong>{{ _('Contact:') }}</strong> {{ retailer.contact_firstname }} {{ retailer.contact_lastname }}</li>
-                <li><strong>{{ _('Fees:') }}</strong> {{ '%.0f%%'|format(retailer.fees_proportion * 100) }}</li>
+                <li><strong>{{ _('Fees:') }}</strong> {{ retailer.fees_proportion|percent }}</li>
             </ul>
         </div>
     </div>

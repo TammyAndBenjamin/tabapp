@@ -5,7 +5,7 @@ from flask import Flask, render_template, g, request
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import LoginManager, login_required, current_user
 from flask.ext.babel import Babel, format_date, format_datetime, format_time,\
-    format_currency
+    format_currency, format_percent
 
 
 app = Flask(__name__)
@@ -84,3 +84,8 @@ def datetime_filter(datetime, format = None, locale = None):
 @app.template_filter('time')
 def time_filter(time, format = None, locale = None):
     return format_time(time, format, locale)
+
+
+@app.template_filter('percent')
+def percent_filter(value):
+    return format_percent(value)

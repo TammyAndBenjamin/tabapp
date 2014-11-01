@@ -22,7 +22,7 @@
                     <td>{{ retailer.address }}</td>
                     <td>{{ retailer.zip }}</td>
                     <td>{{ retailer.city }}</td>
-                    <td>{{ '%.0f%%'|format(retailer.fees_proportion * 100) }}</td>
+                    <td>{{ retailer.fees_proportion|percent }}</td>
                     <td>{{ retailer.contact_firstname|default('') }} {{ retailer.contact_lastname|default('') }}</td>
                     <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}" class="glyphicon glyphicon-minus text-danger delete_retailer"></a></td>
                 </tr>

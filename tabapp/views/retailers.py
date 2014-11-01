@@ -4,6 +4,7 @@ from datetime import date
 from flask import Blueprint, request, render_template, redirect,\
     url_for, flash, jsonify, abort, current_app, g
 from flask.ext.login import login_required
+from flask.ext.babel import gettext as _
 from tabapp.models import db, Invoice, InvoiceItem, Retailer,\
     RetailerProduct, DeliverySlip
 from tabapp.forms import RetailerForm
@@ -87,7 +88,7 @@ def edit_retailer(retailer_id):
             if not retailer.id:
                 db.session.add(retailer)
             db.session.commit()
-            flash('Retailer updated.', 'success')
+            flash(_('Retailer updated.'), 'success')
             kwargs = {
                 'retailer_id': retailer.id,
             }
@@ -113,8 +114,8 @@ def delete_retailer(retailer_id):
     db.session.delete(retailer)
     db.session.commit()
     if tabapp.utils.request_wants_json():
-        return jsonify(success='Retailer deleted.')
-    flash('Retailer deleted.', 'success')
+        return jsonify(success=_('Retailer deleted.'))
+    flash(_('Retailer deleted.'), 'success')
     return redirect(url_for('retailers_bp.index'))
 
 
@@ -191,8 +192,8 @@ def make_invoice(retailer_id):
         invoice.items.append(invoice_item)
     db.session.commit()
     if tabapp.utils.request_wants_json():
-        return jsonify(success='Product pay.', tab_counts=tab_counts(retailer))
-    flash('Product pay.', 'success')
+        return jsonify(success=_('Product pay.'), tab_counts=tab_counts(retailer))
+    flash(_('Product pay.'), 'success')
     kwargs = {
         'retailer_id': retailer.id,
     }

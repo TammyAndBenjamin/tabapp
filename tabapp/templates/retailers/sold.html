@@ -9,11 +9,11 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Product name</th>
-                <th>Retailer price HT</th>
-                <th>Retailer price TTC</th>
-                <th>TAB price HT</th>
-                <th>TAB price TTC</th>
+                <th>{{ _('Product name') }}</th>
+                <th>{{ _('Retailer price excl. VAT') }}</th>
+                <th>{{ _('Retailer price incl. VATC') }}</th>
+                <th>{{ _('TAB price excl. VAT') }}</th>
+                <th>{{ _('TAB price incl. VAT') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -47,7 +47,7 @@
                 var self = $(this),
                     retailer_product_ids = [],
                     checked_inputs = $('input[name=retailer_product_id]:checked');
-                if (!checked_inputs.length || !confirm('Are you sure to create an invoice with these items ?')) {
+                if (!checked_inputs.length || !confirm('{{ _('Are you sure to create an invoice with these items ?') }}')) {
                     return true;
                 }
                 checked_inputs.each(function() {

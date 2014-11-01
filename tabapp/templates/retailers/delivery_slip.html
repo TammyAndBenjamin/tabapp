@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <title>Bon de dépôt - {{ retailer.name }} - {{ delivery_slip.delivery_date }}</title>
+        <title>Bon de dépôt - {{ retailer.name }} - {{ delivery_slip.delivery_date|date('dd/MM/YYYY') }}</title>
         <style>
             body {}
             .table .total_line > td { border-top: none; }
@@ -27,7 +27,7 @@
                 </div>
                 <div class="col-xs-6 text-right">
                     <address>
-                        {{ delivery_slip.delivery_date }}<br />
+                        {{ delivery_slip.delivery_date|date('dd/MM/YYYY') }}<br />
                         {{ delivery_slip.no }}
                     </address>
                 </div>
@@ -52,7 +52,7 @@
                             <td>{{ line.product.sku }}</td>
                             <td class="text-right">{{ line.quantity }}</td>
                             <td class="text-right">{{ line.recommanded_price|currency }}</td>
-                            <td class="text-right">{{ '%.0f%%'|format(line.fees * 100) }}</td>
+                            <td class="text-right">{{ line.fees|percent }}</td>
                             <td class="text-right">{{ line.excl_tax_price|currency }}</td>
                             <td class="text-right">{{ line.tax_price|currency }}</td>
                             <td class="text-right">{{ line.incl_tax_price|currency }}</td>

@@ -2,7 +2,7 @@
 
 {% block content %}
     {{ super() }}
-    <h2>Edit retailer</h2>
+    <h2>{{ _('Edit retailer') }}</h2>
     <form class="form-horizontal" role="form" method="POST" action="{{ url_for('retailers_bp.edit_retailer', retailer_id=retailer_id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="form-group">
@@ -58,9 +58,9 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default">Save</button>
+                <button type="submit" class="btn btn-default">{{ _('Save') }}</button>
                 {% if retailer_id %}
-                    <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-xs">{{ _('Delete') }}</button>
                 {% endif %}
             </div>
         </div>

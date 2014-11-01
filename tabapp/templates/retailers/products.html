@@ -3,11 +3,11 @@
 {% set retailer_tab = 'delivery_slips' %}
 
 {% block list %}
-    <h2>Add in stock</h2>
+    <h2>{{ _('Add in stock') }}</h2>
     <form name="quantity_form" method="POST" class="form-horizontal" role="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <fieldset>
-            <legend>Products</legend>
+            <legend>{{ _('Products') }}</legend>
             <div class="row products_list infinite-container">
                 {% for product in products %}
                     <div class="col-xs-6 col-md-2 infinite-item">
@@ -33,7 +33,7 @@
             </div>
         </fieldset>
         {% if page < max_page %}<a href="{{ url_for('retailers_deliveries_bp.add', retailer_id=retailer.id, page=page + 1) }}" class="infinite-more-link">&raquo;</a>{% endif %}
-        <button class="btn btn-primary">Validate</button>
+        <button class="btn btn-primary">{{ _('Validate') }}</button>
     </form>
     <br /><br />
 {% endblock list %}

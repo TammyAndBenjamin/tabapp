@@ -3,6 +3,7 @@
 from flask import Blueprint, request, render_template,\
     jsonify, g, current_app, redirect, url_for, abort
 from flask.ext.login import login_required
+from flask.ext.babel import format_date, format_currency
 from tabapp.models import db, Product, ProductCost
 from datetime import datetime, date
 import tabapp.utils
@@ -57,7 +58,7 @@ def costs(product_id):
     costs = []
     for product_cost in product.costs:
         costs.append({
-            'date': product_cost.start_date.isoformat(),
-            'value': product_cost.value,
+            'date': format_date(product_cost.start_date),
+            'value': format_currency(product_cost.value, 'EUR'),
         })
     return jsonify(costs=costs)

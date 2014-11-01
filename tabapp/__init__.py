@@ -1,9 +1,11 @@
 #!/usr/bin/env python                                                                                                                                                                                                                                                         [98/217]
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, request
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import LoginManager, login_required, current_user
+from flask.ext.babel import Babel, format_date, format_datetime, format_time,\
+    format_currency, format_percent
 
 
 app = Flask(__name__)
@@ -46,6 +48,44 @@ def init_request():
     g.current_user = current_user
 
 
+babel = Babel(app)
+
+
+@babel.localeselector
+def get_locale():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.locale
+    return request.accept_languages.best_match(['fr', 'en'])
+
+
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
+
+
 @app.template_filter('currency')
-def currency_filter(s):
-    return '{:.2f} €'.format(s)
+def currency_filter(value):
+    return format_currency(value, 'EUR')
+
+
+@app.template_filter('date')
+def date_filter(date, format = None, locale = None):
+    return format_date(date, format, locale)
+
+
+@app.template_filter('datetime')
+def datetime_filter(datetime, format = None, locale = None):
+    return format_datetime(datetime, format, locale)
+
+
+@app.template_filter('time')
+def time_filter(time, format = None, locale = None):
+    return format_time(time, format, locale)
+
+
+@app.template_filter('percent')
+def percent_filter(value):
+    return format_percent(value)

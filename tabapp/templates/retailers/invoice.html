@@ -3,7 +3,7 @@
     <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <title></title>
-        <title>Facture - {{ retailer.name }} - {{ invoice.issue_date }}</title>
+        <title>Facture - {{ retailer.name }} - {{ invoice.issue_date|date('dd/MM/YYYY') }}</title>
         <style>
             body { font-size: 13px; }
             .table .total_line > td { border-top: none; }
@@ -38,7 +38,7 @@
                             </tr>
                             <tr>
                                 <td>{{ invoice.no }}</td>
-                                <td>{{ invoice.issue_date }}</td>
+                                <td>{{ invoice.issue_date|date('dd/MM/YYYY') }}</td>
                                 <td>{{ invoice.retailer.code }}</td>
                             </tr>
                         </tbody>

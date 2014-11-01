@@ -3,31 +3,31 @@
 {% set main_tab = 'orders' %}
 
 {% block content %}
-    <h1>Suivi des ventes</h1>
-    <a href="/orders/add">Ajouter une commande</a>
+    <h1>{{ _('Sales') }}</h1>
+    <a href="/orders/add">{{ _('Add order') }}</a>
     <form id="filters" class="form-inline" role="form" action="/orders/">
         <div class="form-group">
-            <label for="date_lbound">Du</label>
+            <label for="date_lbound">{{ _('From') }}</label>
             <input type="date" class="form-control" name="date_lbound" value="{{ date_lbound }}" style="width: 160px;" />
         </div>
         <div class="form-group">
-            <label for="date_ubound">au</label>
+            <label for="date_ubound">{{ _('to') }}</label>
             <input type="date" class="form-control" name="date_ubound" value="{{ date_ubound }}" style="width: 160px;" />
         </div>
-        <button class="btn btn-small">Filtrer</button>
+        <button class="btn btn-small">{{ _('Filter') }}</button>
     </form>
     <table id="sales" class="table table-condensed">
         <thead>
             <tr>
                 <th>Order no.</th>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Produits</th>
-                <th style="white-space: nowrap;">Sous-total</th>
-                <th style="white-space: nowrap;">Remises HT</th>
-                <th style="white-space: nowrap;">Coût</th>
-                <th style="white-space: nowrap;">Marge</th>
+                <th>{{ _('Firstname') }}</th>
+                <th>{{ _('Lastname') }}</th>
+                <th>{{ _('Email') }}</th>
+                <th>{{ _('Products') }}</th>
+                <th style="white-space: nowrap;">{{ _('excl. VAT') }}</th>
+                <th style="white-space: nowrap;">{{ _('excl. VAT discount') }}</th>
+                <th style="white-space: nowrap;">{{ _('Cost') }}</th>
+                <th style="white-space: nowrap;">{{ _('Profit') }}</th>
             </tr>
         </thead>
         <tbody>

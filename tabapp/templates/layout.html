@@ -10,6 +10,7 @@
                     <li{% if main_tab == 'orders' %} class="active"{% endif %}><a href="{{ url_for('orders_bp.index') }}">{{ _('Orders') }}</a></li>
                     <li{% if main_tab == 'products' %} class="active"{% endif %}><a href="{{ url_for('products_bp.index') }}">{{ _('Products') }}</a></li>
                     <li{% if main_tab == 'retailers' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.index') }}">{{ _('Retailers') }}</a></li>
+                    <li{% if main_tab == 'admin' %} class="active"{% endif %}><a href="{{ url_for('admin_bp.index') }}">{{ _('Admin') }}</a></li>
                 </ul>
             </div>
             <div class="col-md-10">

@@ -1,9 +1,10 @@
 #!/usr/bin/env python                                                                                                                                                                                                                                                         [98/217]
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, request
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import LoginManager, login_required, current_user
+from flask.ext.babel import Babel
 
 
 app = Flask(__name__)
@@ -44,6 +45,24 @@ def load_user(userid):
 def init_request():
     g.config = app.config
     g.current_user = current_user
+
+
+babel = Babel(app)
+
+
+@babel.localeselector
+def get_locale():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.locale
+    return request.accept_languages.best_match(['fr', 'en'])
+
+
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
 
 
 @app.template_filter('currency')

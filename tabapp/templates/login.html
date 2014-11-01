@@ -2,18 +2,18 @@
 
 {% block page %}
     <div style="width: 500px; margin: 0 auto;">
-        <h1>Who are you ?</h1>
+        <h1>{{ _('Who are you ?') }}</h1>
         <form name="login" method="POST" class="form-horizontal" role="form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" name="username" placeholder="Enter email">
+                <input type="text" class="form-control" name="username" placeholder="{{ _('Enter email') }}">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password">
+                <input type="password" class="form-control" name="password" placeholder="{{ _('Password') }}">
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-default">{{ _('Submit') }}</button>
         </form>
     </div>
 {% endblock page %}

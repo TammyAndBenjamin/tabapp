@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <title></title>
+        <title>TAMMY & BENJAMIN - Backyard</title>
         <style>
             body { padding-top: 50px; }
         </style>
@@ -15,7 +15,7 @@
                 </div>
                 {% if g.current_user.is_authenticated() %}
                     <div class="navbar-right">
-                        <a class="navbar-brand" href="{{ url_for('users_bp.logout') }}">Logout</a>
+                        <a class="navbar-brand" href="{{ url_for('users_bp.logout') }}">{{ _('Logout') }}</a>
                     </div>
                 {% endif %}
             </div>

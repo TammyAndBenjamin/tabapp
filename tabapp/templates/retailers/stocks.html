@@ -6,11 +6,11 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Product name</th>
-                <th>Retailer price HT</th>
-                <th>Retailer price TTC</th>
-                <th>TAB price HT</th>
-                <th>TAB price TTC</th>
+                <th>{{ _('Product name') }}</th>
+                <th>{{ _('Retailer price excl. VAT') }}</th>
+                <th>{{ _('Retailer price incl. VAT') }}</th>
+                <th>{{ _('TAB price excl. VAT') }}</th>
+                <th>{{ _('TAB price incl. VAT') }}</th>
                 <th style="width: 95px;"></th>
             </tr>
         </thead>
@@ -27,7 +27,7 @@
                     <td>{{ price_excl_tax|currency }}</td>
                     <td>{{ price_incl_tax|currency }}</td>
                     <td>
-                        <a href="{{ url_for('retailers_stocks_bp.sell', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="sell_retailer_product btn btn-success btn-sm">Sell</a>
+                        <a href="{{ url_for('retailers_stocks_bp.sell', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="sell_retailer_product btn btn-success btn-sm">{{ _('Sell') }}</a>
                         <a href="{{ url_for('retailers_stocks_bp.delete', retailer_id=retailer.id, retailer_product_id=stock.id) }}" class="delete_retailer_product btn btn-danger btn-sm">X</a>
                     </td>
                 </tr>
@@ -44,7 +44,7 @@
             $('.sell_retailer_product').on('click', function(e) {
                 e.preventDefault();
                 var self = $(this);
-                if (!confirm('Are you sure to sold this product ?')) {
+                if (!confirm('{{ _('Are you sure to sold this product ?') }}')) {
                     return true;
                 }
                 $.ajax({
@@ -65,7 +65,7 @@
             $('.delete_retailer_product').on('click', function(e) {
                 e.preventDefault();
                 var self = $(this);
-                if (!confirm('Are you sure to delete this product from the stocks ?')) {
+                if (!confirm('{{ _('Are you sure to delete this product from the stocks ?') }}')) {
                     return true;
                 }
                 $.ajax({

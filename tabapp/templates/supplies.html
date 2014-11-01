@@ -10,17 +10,17 @@
     <body>
         <div style="text-align: center"><img src="http://cdn.shopify.com/s/files/1/0343/0553/t/5/assets/logo.png?7945"></div>
         <div style="padding: 40px 0 0 0; width:600px; height: 100px; margin: auto;">
-            <div class="bg-danger pull-left" style="width: 150px; margin: 5px 0; text-align: center;">Rupture de stock</div>
+            <div class="bg-danger pull-left" style="width: 150px; margin: 5px 0; text-align: center;">{{ _('Out of stock') }}</div>
             <form id="product_filter_form" class="form-inline pull-right" role="form">
                 <div class="form-group">
-                    <label class="sr-only" for="product_filter">Filtrer les produits</label>
-                    <input type="search" class="form-control" id="product_filter" placeholder="Filtrer les produits">
+                    <label class="sr-only" for="product_filter">{{ _('Filter products') }}</label>
+                    <input type="search" class="form-control" id="product_filter" placeholder="{{ _('Filter products') }}">
                 </div>
             </form>
             <table class="table table-bordered table table-hover table table-condensed">
                 <thead>
                     <tr>
-                        <th>Produit</th>
+                        <th>{{ _('Product') }}</th>
                     <tr>
                 </thead>
                 <tbody id="products">

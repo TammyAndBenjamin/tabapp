@@ -2,16 +2,16 @@
 
 {% block content %}
     {{ super() }}
-    <h2>Retailers list</h2>
+    <h2>{{ _('Retailers list') }}</h2>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Zip</th>
-                <th>City</th>
-                <th>Fees</th>
-                <th>Contact</th>
+                <th>{{ _('Name') }}</th>
+                <th>{{ _('Address') }}</th>
+                <th>{{ _('Zip') }}</th>
+                <th>{{ _('City') }}</th>
+                <th>{{ _('Fees') }}</th>
+                <th>{{ _('Contact') }}</th>
                 <th><a href="{{ url_for('retailers_bp.new_retailer') }}" class="glyphicon glyphicon-plus text-success"></a></th>
             </tr>
         </thead>
@@ -39,7 +39,7 @@
             $('.delete_retailer').on('click', function(e) {
                 e.preventDefault();
                 var self = $(this);
-                if (!confirm('Are you sure to delete this retailer ?')) {
+                if (!confirm('{{ _('Are you sure to delete this retailer ?') }}')) {
                     return true;
                 }
                 $.ajax({

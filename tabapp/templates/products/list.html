@@ -16,11 +16,11 @@
         </thead>
         <tbody>
             {% for product in products %}
-                {% set current_cost = product.costs.first().value if product.costs.count() else _('No cost') %}
-                <tr class="action_row" data-product-id="{{ product.id }}" data-label="{{ product.title }}" data-value="{{ product.cost if product.cost != None else '' }}">
+                {% set current_cost = product.costs.first().value if product.costs.count() else None %}
+                <tr class="action_row" data-product-id="{{ product.id }}" data-label="{{ product.title }}" data-value="{{ current_cost if current_cost else '' }}">
                     <td>{{ product.title }}</td>
-                    <td>{{ product.unit_price }}</td>
-                    <td>{{ current_cost }}{% if product.costs.count() %}&nbsp;<a href="{{ url_for('products_bp.costs', product_id=product.id) }}" class="glyphicon glyphicon-search cost_lookback"></a>{% endif %}</td>
+                    <td>{{ product.unit_price|currency }}</td>
+                    <td>{{ current_cost|currency if current_cost else 'No cost' }}{% if product.costs.count() %}&nbsp;<a href="{{ url_for('products_bp.costs', product_id=product.id) }}" class="glyphicon glyphicon-search cost_lookback"></a>{% endif %}</td>
                     <td><a class="edit_cost" href="{{ url_for('products_bp.costs', product_id=product.id) }}">{{ _('Edit') }}</a></td>
                 </tr>
             {% endfor %}

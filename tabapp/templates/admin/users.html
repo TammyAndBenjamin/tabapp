@@ -4,4 +4,27 @@
 
 {% block content %}
     {{ super() }}
+    <h2>{{ _('Users list') }}</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{ _('Firstname') }}</th>
+                <th>{{ _('Lastname') }}</th>
+                <th>{{ _('Email') }}</th>
+                <th>{{ _('Phone') }}</th>
+                <th>{{ _('Has login') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr class="retailer">
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ _('Yes') if user.logins.count() else _('No') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}

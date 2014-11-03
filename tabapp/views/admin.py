@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, request, g, current_app, abort
-from tabapp import csrf
+from tabapp.models import db, Contact
 
 admin_bp = Blueprint('admin_bp', __name__, subdomain='backyard')
 
@@ -13,4 +13,8 @@ def index():
 
 @admin_bp.route('/users/')
 def users():
-    return render_template('admin/users.html')
+    users = Contact.query.all()
+    context = {
+        'users': users,
+    }
+    return render_template('admin/users.html', **context)

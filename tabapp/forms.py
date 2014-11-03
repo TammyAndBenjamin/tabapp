@@ -1,7 +1,7 @@
 from flask_wtf import Form
 from wtforms import TextField
 from wtforms.fields.html5 import DecimalField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange, Email
 from flask.ext.babel import lazy_gettext
 
 
@@ -15,3 +15,10 @@ class RetailerForm(Form):
     country = TextField(lazy_gettext('Country'))
     contact_firstname = TextField(lazy_gettext('Contact firstname'), validators=[DataRequired()])
     contact_lastname = TextField(lazy_gettext('Contact lastname'), validators=[DataRequired()])
+
+
+class ContactForm(Form):
+    firstname = TextField(lazy_gettext('Firstname'), validators=[DataRequired()])
+    lastname = TextField(lazy_gettext('Lastname'), validators=[DataRequired()])
+    email = TextField(lazy_gettext('Email'), validators=[DataRequired(), Email()])
+    phone = TextField(lazy_gettext('Phone'))

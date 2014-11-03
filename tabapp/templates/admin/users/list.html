@@ -13,6 +13,7 @@
                 <th>{{ _('Email') }}</th>
                 <th>{{ _('Phone') }}</th>
                 <th>{{ _('Has login') }}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,7 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.phone }}</td>
                     <td>{{ _('Yes') if user.logins.count() else _('No') }}</td>
+                    <td><a href="{{ url_for('users_bp.user', user_id=user.id) }}" class="glyphicon glyphicon-pencil"></a></td>
                 </tr>
             {% endfor %}
         </tbody>

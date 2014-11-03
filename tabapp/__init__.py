@@ -27,7 +27,7 @@ app.register_blueprint(retailers_bp, url_prefix='/retailers')
 app.register_blueprint(retailers_deliveries_bp, url_prefix='/retailers')
 app.register_blueprint(retailers_stocks_bp, url_prefix='/retailers')
 app.register_blueprint(admin_bp, url_prefix='/admin')
-app.register_blueprint(users_bp, url_prefix='/login')
+app.register_blueprint(users_bp, url_prefix='/admin')
 # Data
 app.register_blueprint(supply_bp, url_prefix='/supplies')
 # Hooks
@@ -39,8 +39,8 @@ login_manager.login_view = 'users_bp.login'
 
 
 @login_manager.user_loader
-def load_user(userid):
-    return Login.query.get(userid)
+def load_user(login_id):
+    return Login.query.get(login_id)
 
 
 @app.before_request

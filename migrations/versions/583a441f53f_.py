@@ -25,7 +25,7 @@ def upgrade():
         sa.Column('firstname', sa.String(), nullable=False),
         sa.Column('lastname', sa.String(), nullable=False),
         sa.Column('email', sa.String(), nullable=False),
-        sa.Column('phone', db.String(), nullable=True),
+        sa.Column('phone', sa.String(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
     op.add_column('login', sa.Column('contact_id', sa.Integer(), sa.ForeignKey('contact.id'), nullable=True))

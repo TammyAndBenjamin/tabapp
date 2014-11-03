@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import calendar
 import sqlalchemy
 from datetime import datetime, date
 from tabapp.models import db, InvoiceItem
@@ -9,8 +10,12 @@ from sqlalchemy_utils import aggregated
 
 def generate_no(context):
     today = date.today()
-    idx = Invoice.query.filter(Invoice.issue_date == today).count()
-    return 'FC{}{:02d}{:02d}{:03d}'.format(today.year, today.month, today.day, idx + 1)
+    month_range = calendar.monthrange(today.year, today.month)
+    first_day = date(today.year, today.month, 1)
+    last_day = date(today.year, today.month, month_range[1])
+    idx = Invoice.query.filter(Invoice.issue_date >= first_day,
+        Invoice.issue_date <= last_day).count()
+    return 'FC{}{:02d}{:03d}'.format(today.year, today.month, idx + 1)
 
 
 class Invoice(db.Model):

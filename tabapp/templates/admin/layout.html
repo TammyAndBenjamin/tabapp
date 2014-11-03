@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% set main_tab = 'admin' %}
+
+{% block content %}
+    <ul class="nav nav-pills">
+        <li{% if sub_tab == 'users' %} class="active"{% endif %}><a href="{{ url_for('users_bp.list') }}">{{ _('Users') }}</a></li>
+    </ul>
+{% endblock content %}

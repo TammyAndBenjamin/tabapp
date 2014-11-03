@@ -11,8 +11,8 @@ from flask import g
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now(), onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     title = db.Column(db.String, nullable=False)
     quantity = db.Column(db.Integer)
@@ -20,7 +20,7 @@ class Product(db.Model):
     image = db.Column(db.String)
     remote_id = db.Column(db.Integer, nullable=False)
     remote_variant_id = db.Column(db.Integer, nullable=False)
-    last_sync = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    last_sync = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def push_to_remote(self, url, quantity):
         if not g.config['SYNC_ACTIVE']:

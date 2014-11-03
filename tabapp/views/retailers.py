@@ -172,8 +172,9 @@ def make_invoice(retailer_id):
     invoice.retailer_id = retailer.id
     for retailer_product_id in retailer_product_ids:
         retailer_product = RetailerProduct.query.get(retailer_product_id)
-        excl_tax_unit_price = retailer_product.product.unit_price / g.config['APP_VAT']
-        tax = retailer_product.product.unit_price - excl_tax_unit_price
+        incl_tax_unit_price = retailer_product.product.unit_price * (1 - retailer.fees_proportion)
+        excl_tax_unit_price = incl_tax_unit_price / g.config['APP_VAT']
+        tax = incl_tax_unit_price - excl_tax_unit_price
 
         invoice_item = invoice.items.filter(
             InvoiceItem.orders.any(

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  1.0\n"
 "Report-Msgid-Bugs-To: b.pincemaille@tammyandbenjamin.com\n"
-"POT-Creation-Date: 2014-11-01 10:55+0000\n"
+"POT-Creation-Date: 2014-11-03 22:21+0000\n"
 "PO-Revision-Date: 2014-11-01 10:02+0000\n"
 "Last-Translator: Jonathan CAMILE <jonathan.camile@gmail.com>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -38,6 +38,10 @@ msgstr "Produits"
 #: tabapp/templates/layout.html:12
 msgid "Retailers"
 msgstr "Distribiteurs"
+
+#: tabapp/templates/layout.html:13
+msgid "Admin"
+msgstr "Admin"
 
 #: tabapp/templates/login.html:12
 msgid "Who are you ?"
@@ -87,15 +91,15 @@ msgstr "au"
 msgid "Filter"
 msgstr "Filtrer"
 
-#: tabapp/templates/orders.html:23
+#: tabapp/templates/orders.html:23 tabapp/templates/admin/users/list.html:11
 msgid "Firstname"
 msgstr "Prénom"
 
-#: tabapp/templates/orders.html:24
+#: tabapp/templates/orders.html:24 tabapp/templates/admin/users/list.html:12
 msgid "Lastname"
 msgstr "Nom"
 
-#: tabapp/templates/orders.html:25
+#: tabapp/templates/orders.html:25 tabapp/templates/admin/users/list.html:13
 msgid "Email"
 msgstr "Email"
 
@@ -129,6 +133,54 @@ msgstr "Filtrer les produits"
 msgid "Product"
 msgstr "Produit"
 
+#: tabapp/templates/admin/layout.html:7
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: tabapp/templates/admin/users/form.html:7
+msgid "Edit user"
+msgstr "Modification utilisateur"
+
+#: tabapp/templates/admin/users/form.html:36
+#: tabapp/templates/retailers/form.html:61
+msgid "Save"
+msgstr "Enregistrer"
+
+#: tabapp/templates/admin/users/form.html:38
+#: tabapp/templates/retailers/form.html:63
+msgid "Delete"
+msgstr "Supprimer"
+
+#: tabapp/templates/admin/users/form.html:43
+msgid "Logins"
+msgstr "Identifiants"
+
+#: tabapp/templates/admin/users/form.html:47
+msgid "Username"
+msgstr "Username"
+
+#: tabapp/templates/admin/users/list.html:7
+msgid "Users list"
+msgstr "Liste des utilisateurs"
+
+#: tabapp/templates/admin/users/list.html:14
+msgid "Phone"
+msgstr "Téléphone"
+
+#: tabapp/templates/admin/users/list.html:15
+msgid "Has login"
+msgstr "Avec identifiant"
+
+#: tabapp/templates/admin/users/list.html:26
+msgid "Yes"
+msgstr "Oui"
+
+#: tabapp/templates/admin/users/list.html:26
+#: tabapp/templates/retailers/delivery_slips.html:11
+#: tabapp/templates/retailers/invoices.html:9
+msgid "No"
+msgstr "Non"
+
 #: tabapp/templates/products/list.html:7
 msgid "Refresh from Shopify"
 msgstr "Raffraichir"
@@ -137,10 +189,6 @@ msgstr "Raffraichir"
 #: tabapp/templates/products/list.html:68
 msgid "Price"
 msgstr "Prix"
-
-#: tabapp/templates/products/list.html:19
-msgid "No cost"
-msgstr "Pas de coût"
 
 #: tabapp/templates/products/list.html:24
 msgid "Edit"
@@ -166,11 +214,6 @@ msgstr "Modifier"
 msgid "Date"
 msgstr "Date"
 
-#: tabapp/templates/retailers/delivery_slips.html:11
-#: tabapp/templates/retailers/invoices.html:9
-msgid "No"
-msgstr "Non"
-
 #: tabapp/templates/retailers/delivery_slips.html:12
 msgid "Delivery date"
 msgstr "Date de livraison"
@@ -188,14 +231,6 @@ msgstr "TTC"
 #: tabapp/templates/retailers/form.html:5
 msgid "Edit retailer"
 msgstr "Edition distributeur"
-
-#: tabapp/templates/retailers/form.html:61
-msgid "Save"
-msgstr "Enregistrer"
-
-#: tabapp/templates/retailers/form.html:63
-msgid "Delete"
-msgstr "Supprimer"
 
 #: tabapp/templates/retailers/index.html:5
 msgid "Retailers list"
@@ -307,11 +342,11 @@ msgstr "Êtes-vous sûr de retirer ce produit des stocks ?"
 
 #: tabapp/views/retailers.py:91
 msgid "Retailer updated."
-msgstr "Distribiteur mis à jour."
+msgstr "Distributeur mis à jour."
 
 #: tabapp/views/retailers.py:117 tabapp/views/retailers.py:118
 msgid "Retailer deleted."
-msgstr "Distribiteur supprimé."
+msgstr "Distributeur supprimé."
 
 #: tabapp/views/retailers.py:195 tabapp/views/retailers.py:196
 msgid "Product pay."
@@ -325,6 +360,14 @@ msgstr "Produit vendu."
 msgid "Product deleted from stocks."
 msgstr "Produit supprimé des stocks."
 
-#: tabapp/views/users.py:19
+#: tabapp/views/users.py:45
+msgid "User updated."
+msgstr "Distributeur mis à jour."
+
+#: tabapp/views/users.py:68
 msgid "Unknown user"
 msgstr "Utilisateur inconnu"
+
+#~ msgid "No cost"
+#~ msgstr "Pas de coût"
+

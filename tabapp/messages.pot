@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-01 10:55+0000\n"
+"POT-Creation-Date: 2014-11-03 22:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,10 @@ msgstr ""
 
 #: tabapp/templates/layout.html:12
 msgid "Retailers"
+msgstr ""
+
+#: tabapp/templates/layout.html:13
+msgid "Admin"
 msgstr ""
 
 #: tabapp/templates/login.html:12
@@ -87,15 +91,15 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: tabapp/templates/orders.html:23
+#: tabapp/templates/orders.html:23 tabapp/templates/admin/users/list.html:11
 msgid "Firstname"
 msgstr ""
 
-#: tabapp/templates/orders.html:24
+#: tabapp/templates/orders.html:24 tabapp/templates/admin/users/list.html:12
 msgid "Lastname"
 msgstr ""
 
-#: tabapp/templates/orders.html:25
+#: tabapp/templates/orders.html:25 tabapp/templates/admin/users/list.html:13
 msgid "Email"
 msgstr ""
 
@@ -129,6 +133,54 @@ msgstr ""
 msgid "Product"
 msgstr ""
 
+#: tabapp/templates/admin/layout.html:7
+msgid "Users"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:7
+msgid "Edit user"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:36
+#: tabapp/templates/retailers/form.html:61
+msgid "Save"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:38
+#: tabapp/templates/retailers/form.html:63
+msgid "Delete"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:43
+msgid "Logins"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:47
+msgid "Username"
+msgstr ""
+
+#: tabapp/templates/admin/users/list.html:7
+msgid "Users list"
+msgstr ""
+
+#: tabapp/templates/admin/users/list.html:14
+msgid "Phone"
+msgstr ""
+
+#: tabapp/templates/admin/users/list.html:15
+msgid "Has login"
+msgstr ""
+
+#: tabapp/templates/admin/users/list.html:26
+msgid "Yes"
+msgstr ""
+
+#: tabapp/templates/admin/users/list.html:26
+#: tabapp/templates/retailers/delivery_slips.html:11
+#: tabapp/templates/retailers/invoices.html:9
+msgid "No"
+msgstr ""
+
 #: tabapp/templates/products/list.html:7
 msgid "Refresh from Shopify"
 msgstr ""
@@ -136,10 +188,6 @@ msgstr ""
 #: tabapp/templates/products/list.html:12
 #: tabapp/templates/products/list.html:68
 msgid "Price"
-msgstr ""
-
-#: tabapp/templates/products/list.html:19
-msgid "No cost"
 msgstr ""
 
 #: tabapp/templates/products/list.html:24
@@ -166,11 +214,6 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: tabapp/templates/retailers/delivery_slips.html:11
-#: tabapp/templates/retailers/invoices.html:9
-msgid "No"
-msgstr ""
-
 #: tabapp/templates/retailers/delivery_slips.html:12
 msgid "Delivery date"
 msgstr ""
@@ -187,14 +230,6 @@ msgstr ""
 
 #: tabapp/templates/retailers/form.html:5
 msgid "Edit retailer"
-msgstr ""
-
-#: tabapp/templates/retailers/form.html:61
-msgid "Save"
-msgstr ""
-
-#: tabapp/templates/retailers/form.html:63
-msgid "Delete"
 msgstr ""
 
 #: tabapp/templates/retailers/index.html:5
@@ -325,7 +360,11 @@ msgstr ""
 msgid "Product deleted from stocks."
 msgstr ""
 
-#: tabapp/views/users.py:19
+#: tabapp/views/users.py:45
+msgid "User updated."
+msgstr ""
+
+#: tabapp/views/users.py:68
 msgid "Unknown user"
 msgstr ""
 

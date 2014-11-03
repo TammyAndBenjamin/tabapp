@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="retailer_address" class="control-label col-sm-2">{{ form.phone.label }}</label>
+            <label for="user_phone" class="control-label col-sm-2">{{ form.phone.label }}</label>
             <div class="col-sm-6">
                 {{ form.phone(id='user_phone', class='form-control', type="tel")|safe }}
             </div>
@@ -40,4 +40,19 @@
             </div>
         </div>
     </form>
+    <h2>{{ _('Logins') }}</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{ _('Username') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for login in contact.logins %}
+                <tr>
+                    <td>{{ login.username }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}

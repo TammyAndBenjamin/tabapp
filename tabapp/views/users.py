@@ -28,6 +28,7 @@ def new():
     return render_template('admin/users/form.html', **context)
 
 
+@users_bp.route('/users/new', defaults={'user_id': None}, methods=['GET', 'POST'])
 @users_bp.route('/users/<int:user_id>', methods=['GET', 'POST'])
 def user(user_id):
     form = None
@@ -37,6 +38,7 @@ def user(user_id):
             contact = Contact.query.get(user_id)\
                 if user_id else Contact()
             form.populate_obj(contact)
+            contact.phone = form.phone.data
             if not contact.id:
                 db.session.add(contact)
             db.session.commit()
@@ -49,6 +51,7 @@ def user(user_id):
     form = ContactForm(obj=contact) if not form else form
     context = {
         'user_id': contact.id,
+        'contact': contact,
         'form': form,
     }
     return render_template('admin/users/form.html', **context)

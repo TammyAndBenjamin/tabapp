@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sqlalchemy_utils
 from datetime import datetime
 from tabapp.models import db
 
@@ -12,4 +11,4 @@ class Contact(db.Model):
     firstname = db.Column(db.String, nullable=False)
     lastname = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
-    phone = db.Column(sqlalchemy_utils.PhoneNumberType())
+    phone = db.Column(db.String())

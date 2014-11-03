@@ -14,7 +14,6 @@ from datetime import datetime
 from alembic import op
 from sqlalchemy import text
 import sqlalchemy as sa
-import sqlalchemy_utils
 
 
 def upgrade():
@@ -26,7 +25,7 @@ def upgrade():
         sa.Column('firstname', sa.String(), nullable=False),
         sa.Column('lastname', sa.String(), nullable=False),
         sa.Column('email', sa.String(), nullable=False),
-        sa.Column('phone', sqlalchemy_utils.PhoneNumberType(), nullable=True),
+        sa.Column('phone', db.String(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
     op.add_column('login', sa.Column('contact_id', sa.Integer(), sa.ForeignKey('contact.id'), nullable=True))

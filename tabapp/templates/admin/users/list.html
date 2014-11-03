@@ -13,12 +13,12 @@
                 <th>{{ _('Email') }}</th>
                 <th>{{ _('Phone') }}</th>
                 <th>{{ _('Has login') }}</th>
-                <th></th>
+                <th><a href="{{ url_for('users_bp.user') }}" class="glyphicon glyphicon-plus text-success"></a></th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
-                <tr class="retailer">
+                <tr>
                     <td>{{ user.firstname }}</td>
                     <td>{{ user.lastname }}</td>
                     <td>{{ user.email }}</td>

@@ -32,6 +32,7 @@ Model.query_class = LimitingQuery
 db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
 
 
+from .contact import Contact
 from .login import Login
 from .product_cost import ProductCost
 from .product import Product

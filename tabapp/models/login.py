@@ -3,6 +3,7 @@
 import sqlalchemy_utils
 from datetime import datetime
 from tabapp.models import db
+from sqlalchemy.orm import relationship, backref
 
 class Login(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
@@ -15,6 +16,8 @@ class Login(db.Model):
             'pbkdf2_sha512',
         ],
     ))
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
+    contact = relationship('Contact', backref=backref('logins', lazy='dynamic'))
 
 
     def is_authenticated(self):

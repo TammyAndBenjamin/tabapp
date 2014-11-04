@@ -14,6 +14,8 @@ urls_bp = Blueprint('urls_bp', __name__, subdomain='backyard')
 def index():
     if request.method == 'POST':
         long_url = request.form['long_url']
+        if not long_url[:4] == 'http':
+            long_url = 'http://{}'.format(long_url)
         m = hashlib.sha256()
         m.update(datetime.now().isoformat().encode())
         m.update(long_url.encode())

@@ -25,7 +25,7 @@ def load_user(login_id):
 
 from tabapp.models import Login
 from tabapp.views import main_bp, orders_bp, retailers_bp,\
-    retailers_stocks_bp, users_bp, supply_bp, urls_bp, \
+    retailers_stocks_bp, users_bp, supply_bp, urls_bp, url_bp, \
     retailers_deliveries_bp, products_bp, hooks_bp, admin_bp
 
 # Backyard
@@ -40,6 +40,7 @@ app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(users_bp, url_prefix='/admin')
 # Data
 app.register_blueprint(supply_bp, url_prefix='/supplies')
+app.register_blueprint(url_bp, url_prefix='/u')
 # Hooks
 app.register_blueprint(hooks_bp)
 

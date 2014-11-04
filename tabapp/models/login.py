@@ -16,7 +16,7 @@ class Login(db.Model):
             'pbkdf2_sha512',
         ],
     ))
-    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)
     contact = relationship('Contact', backref=backref('logins', lazy='dynamic'))
 
 

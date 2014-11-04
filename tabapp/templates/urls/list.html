@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% set main_tab = 'urls' %}
+
+{% block content %}
+    {{ super() }}
+    <h2>{{ _('Urls list') }}</h2>
+    <form class="form-inline" role="form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="form-group">
+            <label class="sr-only" for="long_url">{{ _('Long URL') }}</label>
+            <input type="text" class="form-control" name="long_url" placeholder="{{ _('Enter URL') }}" />
+        </div>
+        <button type="submit" class="btn btn-default">{{ _('Validate') }}</button>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{ _('Long URL') }}</th>
+                <th>{{ _('Created') }}</th>
+                <th>{{ _('UUID') }}</th>
+                <th>{{ _('Clicks') }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for url in urls %}
+                <tr class="url">
+                    <td>{{ url.long_url }}</td>
+                    <td>{{ url.date|date }}</td>
+                    <td>{{ url.uuid }}</td>
+                    <td>{{ url.clicks.count() }}</td>
+                    <td><a href="{{ url_for('urls_bp.one', url_id=url.id) }}" class="glyphicon glyphicon-eye-open"></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

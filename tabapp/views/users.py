@@ -10,6 +10,7 @@ users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 
 
 @users_bp.route('/users/')
+@login_required
 def list():
     users = Contact.query.all()
     context = {
@@ -19,6 +20,7 @@ def list():
 
 
 @users_bp.route('/users/new')
+@login_required
 def new():
     form = ContactForm()
     context = {
@@ -30,6 +32,7 @@ def new():
 
 @users_bp.route('/users/new', defaults={'user_id': None}, methods=['GET', 'POST'])
 @users_bp.route('/users/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def user(user_id):
     form = None
     if request.method == 'POST':

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-03 22:21+0000\n"
+"POT-Creation-Date: 2014-11-04 17:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,6 +40,10 @@ msgid "Retailers"
 msgstr ""
 
 #: tabapp/templates/layout.html:13
+msgid "Urls"
+msgstr ""
+
+#: tabapp/templates/layout.html:14
 msgid "Admin"
 msgstr ""
 
@@ -151,11 +155,11 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:43
+#: tabapp/templates/admin/users/form.html:44
 msgid "Logins"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:47
+#: tabapp/templates/admin/users/form.html:48
 msgid "Username"
 msgstr ""
 
@@ -188,6 +192,10 @@ msgstr ""
 #: tabapp/templates/products/list.html:12
 #: tabapp/templates/products/list.html:68
 msgid "Price"
+msgstr ""
+
+#: tabapp/templates/products/list.html:23
+msgid "No cost"
 msgstr ""
 
 #: tabapp/templates/products/list.html:24
@@ -269,6 +277,7 @@ msgid "Add in stock"
 msgstr ""
 
 #: tabapp/templates/retailers/products.html:36
+#: tabapp/templates/urls/list.html:14
 msgid "Validate"
 msgstr ""
 
@@ -340,6 +349,30 @@ msgstr ""
 msgid "Are you sure to delete this product from the stocks ?"
 msgstr ""
 
+#: tabapp/templates/urls/list.html:7
+msgid "Urls list"
+msgstr ""
+
+#: tabapp/templates/urls/list.html:11 tabapp/templates/urls/list.html:19
+msgid "Long URL"
+msgstr ""
+
+#: tabapp/templates/urls/list.html:12
+msgid "Enter URL"
+msgstr ""
+
+#: tabapp/templates/urls/list.html:20
+msgid "Created"
+msgstr ""
+
+#: tabapp/templates/urls/list.html:21
+msgid "UUID"
+msgstr ""
+
+#: tabapp/templates/urls/list.html:22
+msgid "Clicks"
+msgstr ""
+
 #: tabapp/views/retailers.py:91
 msgid "Retailer updated."
 msgstr ""
@@ -348,7 +381,7 @@ msgstr ""
 msgid "Retailer deleted."
 msgstr ""
 
-#: tabapp/views/retailers.py:195 tabapp/views/retailers.py:196
+#: tabapp/views/retailers.py:196 tabapp/views/retailers.py:197
 msgid "Product pay."
 msgstr ""
 
@@ -360,11 +393,11 @@ msgstr ""
 msgid "Product deleted from stocks."
 msgstr ""
 
-#: tabapp/views/users.py:45
+#: tabapp/views/users.py:48
 msgid "User updated."
 msgstr ""
 
-#: tabapp/views/users.py:68
+#: tabapp/views/users.py:71
 msgid "Unknown user"
 msgstr ""
 

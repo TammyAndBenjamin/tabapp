@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  1.0\n"
 "Report-Msgid-Bugs-To: b.pincemaille@tammyandbenjamin.com\n"
-"POT-Creation-Date: 2014-11-03 22:21+0000\n"
+"POT-Creation-Date: 2014-11-04 17:39+0000\n"
 "PO-Revision-Date: 2014-11-01 10:02+0000\n"
 "Last-Translator: Jonathan CAMILE <jonathan.camile@gmail.com>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -40,6 +40,10 @@ msgid "Retailers"
 msgstr "Distribiteurs"
 
 #: tabapp/templates/layout.html:13
+msgid "Urls"
+msgstr "Urls"
+
+#: tabapp/templates/layout.html:14
 msgid "Admin"
 msgstr "Admin"
 
@@ -151,11 +155,11 @@ msgstr "Enregistrer"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: tabapp/templates/admin/users/form.html:43
+#: tabapp/templates/admin/users/form.html:44
 msgid "Logins"
 msgstr "Identifiants"
 
-#: tabapp/templates/admin/users/form.html:47
+#: tabapp/templates/admin/users/form.html:48
 msgid "Username"
 msgstr "Username"
 
@@ -189,6 +193,10 @@ msgstr "Raffraichir"
 #: tabapp/templates/products/list.html:68
 msgid "Price"
 msgstr "Prix"
+
+#: tabapp/templates/products/list.html:23
+msgid "No cost"
+msgstr "Sans frais"
 
 #: tabapp/templates/products/list.html:24
 msgid "Edit"
@@ -269,6 +277,7 @@ msgid "Add in stock"
 msgstr "Ajouter au stock"
 
 #: tabapp/templates/retailers/products.html:36
+#: tabapp/templates/urls/list.html:14
 msgid "Validate"
 msgstr "Valider"
 
@@ -340,6 +349,30 @@ msgstr "Êtes-vous sûr de vendre ce produit ?"
 msgid "Are you sure to delete this product from the stocks ?"
 msgstr "Êtes-vous sûr de retirer ce produit des stocks ?"
 
+#: tabapp/templates/urls/list.html:7
+msgid "Urls list"
+msgstr "Liste des urls"
+
+#: tabapp/templates/urls/list.html:11 tabapp/templates/urls/list.html:19
+msgid "Long URL"
+msgstr "Originale"
+
+#: tabapp/templates/urls/list.html:12
+msgid "Enter URL"
+msgstr "Saisissez une URL"
+
+#: tabapp/templates/urls/list.html:20
+msgid "Created"
+msgstr "Créée"
+
+#: tabapp/templates/urls/list.html:21
+msgid "UUID"
+msgstr "UUID"
+
+#: tabapp/templates/urls/list.html:22
+msgid "Clicks"
+msgstr "Vues"
+
 #: tabapp/views/retailers.py:91
 msgid "Retailer updated."
 msgstr "Distributeur mis à jour."
@@ -348,7 +381,7 @@ msgstr "Distributeur mis à jour."
 msgid "Retailer deleted."
 msgstr "Distributeur supprimé."
 
-#: tabapp/views/retailers.py:195 tabapp/views/retailers.py:196
+#: tabapp/views/retailers.py:196 tabapp/views/retailers.py:197
 msgid "Product pay."
 msgstr "Produit payé."
 
@@ -360,14 +393,10 @@ msgstr "Produit vendu."
 msgid "Product deleted from stocks."
 msgstr "Produit supprimé des stocks."
 
-#: tabapp/views/users.py:45
+#: tabapp/views/users.py:48
 msgid "User updated."
 msgstr "Distributeur mis à jour."
 
-#: tabapp/views/users.py:68
+#: tabapp/views/users.py:71
 msgid "Unknown user"
 msgstr "Utilisateur inconnu"
-
-#~ msgid "No cost"
-#~ msgstr "Pas de coût"
-

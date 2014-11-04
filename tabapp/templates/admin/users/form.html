@@ -40,19 +40,21 @@
             </div>
         </div>
     </form>
-    <h2>{{ _('Logins') }}</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>{{ _('Username') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for login in contact.logins %}
+    {% if contact %}
+        <h2>{{ _('Logins') }}</h2>
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>{{ login.username }}</td>
+                    <th>{{ _('Username') }}</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for login in contact.logins %}
+                    <tr>
+                        <td>{{ login.username }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock content %}

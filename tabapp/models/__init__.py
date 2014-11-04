@@ -32,13 +32,13 @@ Model.query_class = LimitingQuery
 db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
 
 
-from .contact import Contact
-from .login import Login
-from .product_cost import ProductCost
-from .product import Product
-from .retailer_product import RetailerProduct
-from .invoice_item import InvoiceItem
-from .invoice import Invoice
-from .retailer import Retailer
-from .delivery_slip_line import DeliverySlipLine
-from .delivery_slip import DeliverySlip
+from tabapp.models.contact import Contact
+from tabapp.models.login import Login
+from tabapp.models.product_cost import ProductCost
+from tabapp.models.product import Product
+from tabapp.models.retailer_product import RetailerProduct
+from tabapp.models.invoice_item import InvoiceItem
+from tabapp.models.invoice import Invoice
+from tabapp.models.retailer import Retailer
+from tabapp.models.delivery_slip_line import DeliverySlipLine
+from tabapp.models.delivery_slip import DeliverySlip

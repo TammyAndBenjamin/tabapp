@@ -20,15 +20,15 @@
             {% for stock in stocks %}
                 {% set price_incl_tax = stock.product.unit_price %}
                 {% set price_excl_tax = price_incl_tax / g.config.get('APP_VAT') %}
-                {% set fees_incl_tax = price_incl_tax * retailer.fees_proportion %}
-                {% set fees_excl_tax = price_excl_tax * retailer.fees_proportion %}
+                {% set retailer_excl_tax = price_incl_tax * (1 - retailer.fees_proportion) %}
+                {% set retailer_incl_tax = retailer_excl_tax * g.config.get('APP_VAT') %}
                 <tr class="retailer_product" data-product-order-id="{{ stock.id }}">
                     <td>
                         <input type="checkbox" name="retailer_product_id" value="{{ stock.id }}" />
                     </td>
                     <td>{{ stock.product.title }}</td>
-                    <td>{{ (price_excl_tax - fees_excl_tax)|currency }}</td>
-                    <td>{{ (price_incl_tax - fees_incl_tax)|currency }}</td>
+                    <td>{{ retailer_excl_tax|currency }}</td>
+                    <td>{{ retailer_incl_tax|currency }}</td>
                     <td>{{ price_excl_tax|currency }}</td>
                     <td>{{ price_incl_tax|currency }}</td>
                 </tr>

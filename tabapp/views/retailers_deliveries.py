@@ -68,6 +68,7 @@ def add(retailer_id):
                 if not quantity:
                     continue
                 product = Product.query.get(product_id)
+                retailer_unit_price = product.unit_price * (1 - retailer.fees_proportion)
                 delivery_slip_line = DeliverySlipLine()
                 delivery_slip_line.product_id = product.id
                 delivery_slip_line.fees = retailer.fees_proportion
@@ -81,8 +82,8 @@ def add(retailer_id):
                     delivery_slip_line.orders.append(retailer_product)
                 delivery_slip_line.quantity = quantity
                 delivery_slip_line.recommanded_price = product.unit_price
-                delivery_slip_line.incl_tax_price = product.unit_price * delivery_slip_line.quantity * (1 - delivery_slip_line.fees)
-                delivery_slip_line.excl_tax_price = delivery_slip_line.incl_tax_price / g.config['APP_VAT']
+                delivery_slip_line.excl_tax_price = retailer_unit_price * delivery_slip_line.quantity
+                delivery_slip_line.incl_tax_price = delivery_slip_line.excl_tax_price * g.config['APP_VAT']
                 delivery_slip_line.tax_price = delivery_slip_line.incl_tax_price - delivery_slip_line.excl_tax_price
                 delivery_slip.lines.append(delivery_slip_line)
                 product = Product.query.get(product_id)

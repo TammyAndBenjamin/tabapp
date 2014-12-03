@@ -37,7 +37,7 @@ msgstr "Produits"
 
 #: tabapp/templates/layout.html:12
 msgid "Retailers"
-msgstr "Distribiteurs"
+msgstr "Distributeurs"
 
 #: tabapp/templates/layout.html:13
 msgid "Urls"

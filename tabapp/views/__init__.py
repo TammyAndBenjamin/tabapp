@@ -35,7 +35,7 @@ def time_filter(time, format = None, locale = None):
 
 @app.template_filter('percent')
 def percent_filter(value):
-    return format_percent(value)
+    return format_percent(value, '#,##0.##%')
 
 
 from tabapp.views.supply import supply_bp

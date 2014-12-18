@@ -58,7 +58,7 @@ def subscribe():
     lead.email = lead_email
     db.session.add(lead)
     db.session.commit()
-    content = jsonify(success=_('Vos coordonnées ont bien été prises en compte.'))
+    content = jsonify(success=_('Your email was successfully registered'))
     response = make_response(content)
     response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
     return response

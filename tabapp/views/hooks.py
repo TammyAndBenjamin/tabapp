@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from flask import Blueprint, request, g, current_app, abort
+from flask import Blueprint, request, g, current_app, abort, jsonify, make_response
+from flask.ext.babel import gettext as _
+from flask.ext.cors import cross_origin
 from tabapp import csrf
-from tabapp.models import db, Product
-import hashlib, base64, hmac
+from tabapp.models import db, Product, Lead
+import hashlib
+import base64
+import hmac
 
 hooks_bp = Blueprint('hooks_bp', __name__, subdomain='hooks')
 
@@ -37,6 +41,27 @@ def products():
     }
     callbacks[topic](product_id, data)
     return 'ok'
+
+
+@csrf.exempt
+@hooks_bp.route('/subscribe/', methods=['POST'])
+@cross_origin(origins=['http://www.tammyandbenjamin.com', 'http://tabdev.myshopify.com/'])
+def subscribe():
+    try:
+        token = request.form['b_1c3be4482a6a53fea9c9c2e39_423d8800d8']
+        if token:
+            raise ValueError()
+    except (KeyError, ValueError):
+        abort(404)
+    lead_email = request.form['lead_email']
+    lead = Lead()
+    lead.email = lead_email
+    db.session.add(lead)
+    db.session.commit()
+    content = jsonify(success=_('Vos coordonnées ont bien été prises en compte.'))
+    response = make_response(content)
+    response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+    return response
 
 
 def add(product_id, data):

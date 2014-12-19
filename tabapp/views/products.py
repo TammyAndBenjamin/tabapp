@@ -21,8 +21,18 @@ products_bp = Blueprint('products_bp', __name__, subdomain='backyard')
 def index():
     page = int(request.args.get('page', 1))
     products = Product.query.paginate(page)
+    products_retailers = {}
+    for product in products.items:
+        product_retailers = products_retailers.get(product.id, {})
+        for stock in product.stocks:
+            retailer_id = stock.retailer.id
+            retailer_url = url_for('retailers_bp.retailer', retailer_id=retailer_id)
+            retailer_link = '<a href="{}">{}</a>'.format(retailer_url, stock.retailer.name)
+            product_retailers[retailer_id] = retailer_link
+        products_retailers[product.id] = product_retailers
     context = {
         'products': products.items,
+        'products_retailers': products_retailers,
         'page': products.page,
         'max_page': products.pages,
     }

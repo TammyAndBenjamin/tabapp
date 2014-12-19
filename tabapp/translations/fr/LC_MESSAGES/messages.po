@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  1.0\n"
 "Report-Msgid-Bugs-To: b.pincemaille@tammyandbenjamin.com\n"
-"POT-Creation-Date: 2014-12-18 19:03+0000\n"
+"POT-Creation-Date: 2014-12-19 18:42+0000\n"
 "PO-Revision-Date: 2014-11-01 10:02+0000\n"
 "Last-Translator: Jonathan CAMILE <jonathan.camile@gmail.com>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr "Commandes"
 msgid "Products"
 msgstr "Produits"
 
-#: tabapp/templates/layout.html:12
+#: tabapp/templates/layout.html:12 tabapp/templates/products/list.html:31
 msgid "Retailers"
 msgstr "Distributeurs"
 
@@ -117,7 +117,7 @@ msgstr "HT"
 msgid "excl. VAT discount"
 msgstr "Remise HT"
 
-#: tabapp/templates/orders.html:29 tabapp/templates/products/list.html:13
+#: tabapp/templates/orders.html:29 tabapp/templates/products/list.html:14
 msgid "Cost"
 msgstr "Coût"
 
@@ -190,35 +190,53 @@ msgid "Refresh from Shopify"
 msgstr "Raffraichir"
 
 #: tabapp/templates/products/list.html:12
-#: tabapp/templates/products/list.html:68
+msgid "Quantity"
+msgstr "Quantité"
+
+#: tabapp/templates/products/list.html:13
+#: tabapp/templates/products/list.html:82
 msgid "Price"
 msgstr "Prix"
 
-#: tabapp/templates/products/list.html:23
+#: tabapp/templates/products/list.html:15
+msgid "Sell by"
+msgstr "Vendu par"
+
+#: tabapp/templates/products/list.html:27
 msgid "No cost"
 msgstr "Sans frais"
 
-#: tabapp/templates/products/list.html:24
+#: tabapp/templates/products/list.html:32
+msgid "%(num)d retailer"
+msgid_plural "%(num)d retailers"
+msgstr[0] "%(num)d distributeur"
+msgstr[1] "%(num)d distributeurs"
+
+#: tabapp/templates/products/list.html:35
+msgid "No retailer"
+msgstr "Aucun distributeur"
+
+#: tabapp/templates/products/list.html:38
 msgid "Edit"
 msgstr "Modifier"
 
-#: tabapp/templates/products/list.html:42
+#: tabapp/templates/products/list.html:56
 msgid "Edit product cost"
 msgstr "Modifier le coût"
 
-#: tabapp/templates/products/list.html:48
+#: tabapp/templates/products/list.html:62
 msgid "Product cost"
 msgstr "Coût produit"
 
-#: tabapp/templates/products/list.html:54
+#: tabapp/templates/products/list.html:68
 msgid "Close"
 msgstr "Fermer"
 
-#: tabapp/templates/products/list.html:55
+#: tabapp/templates/products/list.html:69
 msgid "Update"
 msgstr "Modifier"
 
-#: tabapp/templates/products/list.html:67
+#: tabapp/templates/products/list.html:81
 msgid "Date"
 msgstr "Date"
 

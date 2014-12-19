@@ -12,7 +12,7 @@ class RetailerProduct(db.Model):
     version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    product = relationship('Product')
+    product = relationship('Product', backref=backref('stocks', lazy='dynamic'))
     retailer_id = db.Column(db.Integer, db.ForeignKey('retailer.id'), nullable=False)
     retailer = relationship('Retailer', backref=backref('stocks', lazy='dynamic'))
     order_date = db.Column(db.Date)

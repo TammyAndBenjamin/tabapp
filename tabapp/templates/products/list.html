@@ -9,18 +9,32 @@
         <thead>
             <tr>
                 <th>{{ _('Product') }}</th>
+                <th>{{ _('Quantity') }}</th>
                 <th>{{ _('Price') }}</th>
                 <th>{{ _('Cost') }}</th>
+                <th>{{ _('Sell by') }}</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% for product in products %}
+                {% set product_retailers = products_retailers[product.id] %}
                 {% set current_cost = product.costs.first().value if product.costs.count() else None %}
                 <tr class="action_row" data-product-id="{{ product.id }}" data-label="{{ product.title }}" data-value="{{ current_cost if current_cost else '' }}">
                     <td>{{ product.title }}</td>
+                    <td>{{ product.quantity }}</td>
                     <td>{{ product.unit_price|currency }}</td>
                     <td>{{ current_cost|currency if current_cost else _('No cost') }}{% if product.costs.count() %}&nbsp;<a href="{{ url_for('products_bp.costs', product_id=product.id) }}" class="glyphicon glyphicon-search cost_lookback"></a>{% endif %}</td>
+                    <td>
+                        {% if product_retailers|count %}
+                            {% set popover_content = '<ul class="list-unstyled"><li>%s</li></ul>'|format(product_retailers.values()|join('</li><li>')) %}
+                            <span class="product_retailers" data-toggle="popover" title="{{ _('Retailers') }}" data-content="{{ popover_content|escape }}" data-placement="top" data-trigger="click" style="cursor: pointer;">
+                                {{ ngettext('%(num)d retailer', '%(num)d retailers', product_retailers|count) }}
+                            </span>
+                        {% else %}
+                            {{ _('No retailer') }}
+                        {% endif %}
+                    </td>
                     <td><a class="edit_cost" href="{{ url_for('products_bp.costs', product_id=product.id) }}">{{ _('Edit') }}</a></td>
                 </tr>
             {% endfor %}
@@ -82,6 +96,9 @@
     <script>
         var csrf_token = '{{ csrf_token() }}';
         $(document).ready(function() {
+            $('.product_retailers').popover({
+                html: true,
+            });
             $('.cost_lookback').popover({
                 trigger: 'manual',
                 html: true,

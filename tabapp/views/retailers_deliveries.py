@@ -100,7 +100,10 @@ def add(retailer_id):
             for msg in e.args:
                 flash(msg, 'error')
     page = int(request.args.get('page', 1))
-    products = Product.query.filter(Product.quantity > 0).order_by(Product.title).paginate(page, per_page=12)
+    products = Product.query.filter(
+        Product.quantity > 0,
+        Product.is_wholesale.__eq__(False)
+    ).order_by(Product.title).paginate(page, per_page=12)
     context = {
         'retailer': retailer,
         'tab_counts': tab_counts(retailer),

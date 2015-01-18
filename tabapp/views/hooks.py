@@ -65,6 +65,7 @@ def subscribe():
 
 
 def add(product_id, data):
+    tags = row.get('tags', '').split(', ')
     product = Product()
     product.remote_id = data.get('id')
     product.remote_variant_id = data.get('variants')[0].get('id')
@@ -73,13 +74,14 @@ def add(product_id, data):
     product.unit_price = data.get('variants')[0].get('price')
     if data.get('images'):
         product.image = data.get('images')[0].get('src')
-    product.last_sync = datetime.now()
+    product.is_wholesale = 'WHOLESALE' in tags
     db.session.add(product)
     db.session.commit()
     current_app.logger.info('Product {} added.'.format(product.id))
 
 
 def update(product_id, data):
+    tags = row.get('tags', '').split(', ')
     product = Product.query.filter(Product.remote_id == data.get('id')).first()
     if not product:
         return True
@@ -88,7 +90,7 @@ def update(product_id, data):
     product.unit_price = data.get('variants')[0].get('price')
     if data.get('images'):
         product.image = data.get('images')[0].get('src')
-    product.last_sync = datetime.now()
+    product.is_wholesale = 'WHOLESALE' in tags
     db.session.commit()
     current_app.logger.info('Product {} updated.'.format(product.id))
 

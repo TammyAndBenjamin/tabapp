@@ -5,7 +5,7 @@ import tabapp.utils
 import requests
 from datetime import datetime
 from tabapp.models import db
-from flask import g
+from flask import g, current_app
 
 
 class Product(db.Model):
@@ -20,7 +20,8 @@ class Product(db.Model):
     image = db.Column(db.String)
     remote_id = db.Column(db.Integer, nullable=False)
     remote_variant_id = db.Column(db.Integer, nullable=False)
-    last_sync = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    last_sync = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    is_wholesale = db.Column(db.Boolean, nullable=False, default=False)
 
     def push_to_remote(self, url, quantity):
         if not g.config['SYNC_ACTIVE']:
@@ -44,6 +45,7 @@ class Product(db.Model):
             'updated_at',
             'images',
             'variants',
+            'tags',
         ]
         resource = 'products'
         params = '?page={{page}}&fields={fields}'.format(**{
@@ -51,6 +53,7 @@ class Product(db.Model):
         })
         rows = tabapp.utils.list_from_resource(resource, params)
         for row in rows:
+            tags = row.get('tags', '').split(', ')
             product = Product.query.filter(Product.remote_id == row.get('id')).first()
             if product and product.last_sync.isoformat() >= row.get('updated_at'):
                 continue
@@ -62,7 +65,7 @@ class Product(db.Model):
             product.quantity = row.get('variants')[0].get('inventory_quantity')
             product.unit_price = row.get('variants')[0].get('price')
             product.image = row.get('images')[0].get('src')
-            product.last_sync = datetime.now()
+            product.is_wholesale = 'WHOLESALE' in tags
             if not product.id:
                 db.session.add(product)
         db.session.commit()

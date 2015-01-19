@@ -30,17 +30,19 @@ def noindex(f):
     return add_response_headers({'X-Robots-Tag': 'noindex'})(f)
 
 
-def list_from_resource(resource, params, limit=None, page=None, count=False, key=None):
+def list_from_resource(resource, params, limit=None, page=None, count=False, key=None, _url=None):
     def make_requests(url, page, limit):
         url = url.format(**{'page': page, 'limit': limit})
+        current_app.logger.debug(url)
         r = requests.get(url)
         return r.json()
     if not limit:
         limit = 50
     if not key:
         key = resource
-    url = '{}{}.json{}'.format(g.config['SHOPIFY_URL'], resource, params)
-    current_app.logger.debug(url)
+    if not _url:
+        _url = g.config['SHOPIFY_URL']
+    url = '{}{}.json{}'.format(_url, resource, params)
     if count:
         url = url.replace(resource, '{}/count'.format(resource))
         data = make_requests(url, 1, limit)
@@ -122,32 +124,6 @@ def process_orders(orders):
         row['benefits'] = row['excluding_taxes_amount'] - row['discount_amount'] - row['cost_amount']
         rows.append(row)
     return rows
-
-
-def aggregate_orders(orders):
-    aggregate = {}
-    for order in orders:
-        customer = order.get('customer')
-        customer_email = customer.get('email')
-        row = aggregate.get(customer_email)
-        if not row:
-            row = {
-                'count': 0,
-                'subtotal_price': 0,
-                'total_discount': 0,
-                'total_tax': 0,
-                'total_price': 0,
-            }
-        row['count'] += 1
-        if order.get('taxes_included'):
-            row['subtotal_price'] += (decimal.Decimal(order.get('total_price', 0)) - decimal.Decimal(order.get('total_tax', 0)))
-        else:
-            row['subtotal_price'] += decimal.Decimal(order.get('subtotal_price', 0))
-        row['total_discount'] += decimal.Decimal(order.get('total_discount', 0))
-        row['total_tax'] += decimal.Decimal(order.get('total_tax', 0))
-        row['total_price'] += decimal.Decimal(order.get('total_price', 0))
-        aggregate[customer_email] = row
-    return aggregate
 
 
 def request_wants_json():

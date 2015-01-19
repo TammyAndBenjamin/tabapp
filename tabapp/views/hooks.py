@@ -5,7 +5,7 @@ from flask import Blueprint, request, g, current_app, abort, jsonify, make_respo
 from flask.ext.babel import gettext as _
 from flask.ext.cors import cross_origin
 from tabapp import csrf
-from tabapp.models import db, Product, Lead
+from tabapp.models import db, Product, Lead, ProductOrder
 import hashlib
 import base64
 import hmac
@@ -40,6 +40,28 @@ def products():
         'products/delete': delete,
     }
     callbacks[topic](product_id, data)
+    return 'ok'
+
+
+@csrf.exempt
+@hooks_bp.route('/product_orders/', methods=['POST'])
+def product_orders():
+    if not g.config['SYNC_ACTIVE']:
+        return ''
+    remote_h = request.headers.get('X-Shopify-Hmac-Sha256')
+    if not remote_h:
+        current_app.logger.warning('Hmac signature not found')
+        return abort(404)
+    topic = request.headers.get('X-Shopify-Topic')
+    product_order_id = request.headers.get('X-Shopify-Order-Id')
+    data = request.get_json()
+    #if not is_valid(remote_h, data):
+        #current_app.logger.warning('Invalid Hmac signature for the hooks')
+        #return abort(404)
+    callbacks = {
+        'product_orders/payment': pay,
+    }
+    callbacks[topic](product_order_id, data)
     return 'ok'
 
 

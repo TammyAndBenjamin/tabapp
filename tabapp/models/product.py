@@ -5,7 +5,7 @@ import tabapp.utils
 import requests
 from datetime import datetime
 from tabapp.models import db
-from flask import g, current_app
+from flask import g
 
 
 class Product(db.Model):

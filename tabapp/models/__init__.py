@@ -44,3 +44,4 @@ from tabapp.models.delivery_slip_line import DeliverySlipLine
 from tabapp.models.delivery_slip import DeliverySlip
 from tabapp.models.url import Url, UrlClick
 from tabapp.models.lead import Lead
+from tabapp.models.order import ProductOrder

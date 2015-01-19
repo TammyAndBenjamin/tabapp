@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 from flask import Blueprint, request, g, current_app, abort, jsonify, make_response
 from flask.ext.babel import gettext as _
 from flask.ext.cors import cross_origin
 from tabapp import csrf
 from tabapp.models import db, Product, Lead, ProductOrder
+import tabapp.utils
 import hashlib
 import base64
 import hmac
+import decimal
 
 hooks_bp = Blueprint('hooks_bp', __name__, subdomain='hooks')
 
@@ -58,10 +59,52 @@ def product_orders():
     #if not is_valid(remote_h, data):
         #current_app.logger.warning('Invalid Hmac signature for the hooks')
         #return abort(404)
-    callbacks = {
-        'product_orders/payment': pay,
-    }
-    callbacks[topic](product_order_id, data)
+    if not product_order_id:
+        product_order_id = data.get('product_order_id')
+    product_order = ProductOrder.query.filter(ProductOrder.remote_id == product_order_id).first()
+    is_new = (product_order == None)
+    if not product_order:
+        product_order = ProductOrder()
+        product_order.remote_id = product_order_id
+        db.session.add(product_order)
+    if is_new and topic == 'orders/paid':
+        shipping_address = product_order.get('shipping_address')
+        product_order.name = data.get('name')
+        product_order.shipping_country = shipping_address['country_code'] if shipping_address else 'FR'
+        product_order.subtotal_price = decimal.Decimal(data.get('subtotal_price', '0'))
+        product_order.total_tax = decimal.Decimal(data.get('total_tax', '0'))
+        product_order.total_price = decimal.Decimal(data.get('total_price', '0'))
+    product_order.financial_status = data.get('financial_status')
+    fields = [
+        'id',
+        'kind',
+        'status',
+        'amount',
+        'created_at',
+    ]
+    resource = 'orders/{}/transactions'.format(product_order.remote_id)
+    params = '?page={{page}}&limit={{limit}}&fields={fields}'.format(**{
+        'fields': ','.join(fields),
+    })
+    transactions = tabapp.utils.list_from_resource(resource, params, key='transactions', page=1)
+    transaction_ids = []
+    paid_price = 0
+    refunded_price = 0
+    for transaction in transactions:
+        if not transaction.get('status') == 'success':
+            continue
+        if transaction.get('kind') in ['authorization', 'void']:
+            continue
+        transaction_ids.append(transaction.get('id'))
+        date = date if date else transaction.get('created_at')
+        if transaction.get('kind') in ['capture', 'sale']:
+            paid_price += decimal.Decimal(transaction.get('amount'))
+        if transaction.get('kind') in ['refund']:
+            refunded_price += decimal.Decimal(transaction.get('amount'))
+    product_order.transaction_ids = transaction_ids
+    product_order.paid_price = paid_price
+    product_order.refunded_price = refunded_price
+    db.session.commit()
     return 'ok'
 
 

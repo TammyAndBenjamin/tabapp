@@ -60,7 +60,7 @@ def product_orders():
         #current_app.logger.warning('Invalid Hmac signature for the hooks')
         #return abort(404)
     if not product_order_id:
-        product_order_id = data.get('product_order_id')
+        product_order_id = data.get('order_id')
     product_order = ProductOrder.query.filter(ProductOrder.remote_id == product_order_id).first()
     is_new = (product_order == None)
     if not product_order:
@@ -68,13 +68,13 @@ def product_orders():
         product_order.remote_id = product_order_id
         db.session.add(product_order)
     if is_new and topic == 'orders/paid':
-        shipping_address = product_order.get('shipping_address')
+        shipping_address = data.get('shipping_address')
         product_order.name = data.get('name')
         product_order.shipping_country = shipping_address['country_code'] if shipping_address else 'FR'
         product_order.subtotal_price = decimal.Decimal(data.get('subtotal_price', '0'))
         product_order.total_tax = decimal.Decimal(data.get('total_tax', '0'))
         product_order.total_price = decimal.Decimal(data.get('total_price', '0'))
-    product_order.financial_status = data.get('financial_status')
+        product_order.financial_status = data.get('financial_status')
     fields = [
         'id',
         'kind',
@@ -87,16 +87,18 @@ def product_orders():
         'fields': ','.join(fields),
     })
     transactions = tabapp.utils.list_from_resource(resource, params, key='transactions', page=1)
+    if not transactions:
+        return 'ok'
     transaction_ids = []
     paid_price = 0
     refunded_price = 0
+    product_order.date = min([transaction.get('created_at') for transaction in transactions])
     for transaction in transactions:
         if not transaction.get('status') == 'success':
             continue
         if transaction.get('kind') in ['authorization', 'void']:
             continue
         transaction_ids.append(transaction.get('id'))
-        date = date if date else transaction.get('created_at')
         if transaction.get('kind') in ['capture', 'sale']:
             paid_price += decimal.Decimal(transaction.get('amount'))
         if transaction.get('kind') in ['refund']:

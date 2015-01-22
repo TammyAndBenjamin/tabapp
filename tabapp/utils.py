@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import g, make_response, current_app, request
+from flask import g, make_response, current_app, request, abort
 from datetime import date
 from tabapp.models import db, ProductCost
 import decimal
@@ -9,6 +9,7 @@ import requests
 import sqlalchemy
 import sqlalchemy.sql.expression
 import sqlalchemy.dialects.postgresql
+import hashlib, base64, hmac, json
 
 
 def add_response_headers(headers={}):
@@ -28,6 +29,30 @@ def add_response_headers(headers={}):
 def noindex(f):
     """This decorator passes X-Robots-Tag: noindex"""
     return add_response_headers({'X-Robots-Tag': 'noindex'})(f)
+
+
+def shopify_webhook(f):
+    """
+      A decorator thats checks and validates a Shopify Webhook request.
+    """
+    def _hmac_is_valid(data, secret, hmac_to_verify):
+        hash = hmac.new(secret, msg=data, digestmod=hashlib.sha256)
+        hmac_calculated = base64.b64encode(hash.digest())
+        return hmac.compare_digest(hmac_calculated, hmac_to_verify)
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            request.headers['X-Shopify-Topic']
+            webhook_hmac = request.headers['X-Shopify-Hmac-Sha256'].encode()
+            json.loads(request.get_data().decode())
+        except Exception as e:
+            current_app.logger.debug(e)
+            return abort(400)
+        if not _hmac_is_valid(request.get_data(), current_app.config['SHOPIFY_SECRET'].encode(), webhook_hmac):
+            return abort(403)
+        return f(*args, **kwargs)
+    return wrapper
 
 
 def list_from_resource(resource, params, limit=None, page=None, count=False, key=None, _url=None):

@@ -49,4 +49,5 @@ from tabapp.views.products import products_bp
 from tabapp.views.users import users_bp
 from tabapp.views.hooks import hooks_bp
 from tabapp.views.admin import admin_bp
+from tabapp.views.login import login_bp
 from tabapp.views.urls import urls_bp

@@ -22,5 +22,5 @@ class ContactForm(Form):
     lastname = TextField(lazy_gettext('Lastname'), validators=[DataRequired()])
     email = TextField(lazy_gettext('Email'), validators=[DataRequired(), Email()])
     phone = TextField(lazy_gettext('Phone'))
-    username = TextField(lazy_gettext('Username'))
-    password = PasswordField(lazy_gettext('Password'))
+    username = TextField(lazy_gettext('Username'), validators=[DataRequired()])
+    password = PasswordField(lazy_gettext('Password'), validators=[DataRequired()])

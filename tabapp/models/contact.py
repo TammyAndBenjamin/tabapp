@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from tabapp.models import db
+from sqlalchemy.orm import relationship
 import sqlalchemy_utils
 
 class Contact(db.Model):
@@ -19,6 +20,7 @@ class Contact(db.Model):
             'pbkdf2_sha512',
         ],
     ))
+    roles = relationship('Role', secondary='contact_role')
 
     def is_authenticated(self):
         return bool(self.id)

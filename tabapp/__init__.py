@@ -39,5 +39,5 @@ def on_identity_loaded(sender, identity):
     # Assuming the User model has a list of roles, update the
     # identity with the roles that the user provides
     if hasattr(current_user, 'roles'):
-        for role in current_user.roles:
-            identity.provides.add(RoleNeed(role.name))
+        for role_id in current_user.roles:
+            identity.provides.add(RoleNeed(role_id))

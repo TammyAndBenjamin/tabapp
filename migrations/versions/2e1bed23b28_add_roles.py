@@ -12,6 +12,7 @@ down_revision = '3054f19b964'
 
 from alembic import op
 from sqlalchemy import text
+from sqlalchemy.dialects.postgresql import ARRAY
 import sqlalchemy as sa
 
 
@@ -24,35 +25,20 @@ def upgrade():
         sa.Column('name', sa.String(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('contact_role',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('created', sa.DateTime(), nullable=False),
-        sa.Column('version', sa.DateTime(), nullable=False),
-        sa.Column('enabled', sa.Boolean(), nullable=False),
-        sa.Column('contact_id', sa.Integer(), nullable=False),
-        sa.Column('role_id', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
-        sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
-        sa.PrimaryKeyConstraint('id')
-    )
     connection = op.get_bind()
     t = text('''
         INSERT INTO role(id, created, version, enabled, name)
         VALUES (nextval('core_seq_general'), now(), now(), true, 'admin')
     ''')
     connection.execute(t)
-    t = text('SELECT id FROM role')
-    for row in connection.execute(t):
-        role_id = row[0]
-        t = text('''
-            INSERT INTO contact_role(id, created, version, enabled, role_id, contact_id)
-            SELECT nextval('core_seq_general'), now(), now(), true, :role_id, contact.id
-            FROM contact
-        ''').bindparams(role_id=role_id)
-        connection.execute(t)
-
+    op.add_column('contact', sa.Column('roles', ARRAY(sa.Integer())))
+    t = text('''
+        UPDATE contact
+        SET roles = (SELECT array_agg(id) FROM role)
+    ''')
+    connection.execute(t)
 
 
 def downgrade():
-    op.drop_table('contact_role')
+    op.drop_column('contact', 'roles')
     op.drop_table('role')

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from tabapp.models import db
-from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import ARRAY
 import sqlalchemy_utils
 
 class Contact(db.Model):
@@ -20,7 +20,7 @@ class Contact(db.Model):
             'pbkdf2_sha512',
         ],
     ))
-    roles = relationship('Role', secondary='contact_role')
+    roles = db.Column(ARRAY(db.Integer))
 
     def is_authenticated(self):
         return bool(self.id)

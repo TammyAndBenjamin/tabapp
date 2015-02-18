@@ -5,7 +5,6 @@ from flask.ext.sqlalchemy import SQLAlchemy, BaseQuery
 db = SQLAlchemy(session_options={'expire_on_commit': False})
 
 from tabapp.models.contact import Contact
-from tabapp.models.contact_role import ContactRole
 from tabapp.models.role import Role
 from tabapp.models.product_cost import ProductCost
 from tabapp.models.product import Product

@@ -1,8 +1,20 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField
+from wtforms import TextField, PasswordField, SelectMultipleField
+from wtforms import widgets
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange, Email
 from flask.ext.babel import lazy_gettext
+
+
+class MultiCheckboxField(SelectMultipleField):
+    """
+    A multiple-select, except displays a list of checkboxes.
+
+    Iterating the field will produce subfields, allowing custom rendering of
+    the enclosed checkbox fields.
+    """
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
 
 
 class RetailerForm(Form):
@@ -22,5 +34,9 @@ class ContactForm(Form):
     lastname = TextField(lazy_gettext('Lastname'), validators=[DataRequired()])
     email = TextField(lazy_gettext('Email'), validators=[DataRequired(), Email()])
     phone = TextField(lazy_gettext('Phone'))
+    roles = MultiCheckboxField(lazy_gettext('Roles'), choices=[], coerce=int)
+
+
+class CredentialsForm(Form):
     username = TextField(lazy_gettext('Username'), validators=[DataRequired()])
     password = PasswordField(lazy_gettext('Password'), validators=[DataRequired()])

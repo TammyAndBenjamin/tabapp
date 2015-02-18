@@ -3,7 +3,7 @@
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app
 from flask.ext.login import login_required, logout_user, login_user
 from flask.ext.babel import gettext as _
-from tabapp.models import Login
+from tabapp.models import Contact
 
 login_bp = Blueprint('login_bp', __name__, subdomain='backyard')
 
@@ -14,11 +14,11 @@ def login():
         return render_template('login.html')
     username = request.form.get('username')
     password = request.form.get('password')
-    login = Login.query.filter(Login.username == username).first()
-    if not login or login.password != password:
+    contact = Contact.query.filter(Contact.username == username).first()
+    if not contact or contact.password != password:
         flash(_('Unknown user'), 'error')
         return render_template('login.html')
-    login_user(login)
+    login_user(contact)
     return redirect(request.args.get('next') or url_for('index'))
 
 

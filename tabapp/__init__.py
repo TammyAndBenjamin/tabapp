@@ -13,20 +13,20 @@ app.config.from_envvar('SETTINGS')
 app.secret_key = app.config['SECRET_KEY']
 csrf = CsrfProtect(app)
 
+
+from tabapp.models import Contact
+from tabapp.views import main_bp, orders_bp, retailers_bp,\
+    retailers_stocks_bp, users_bp, supply_bp, urls_bp, url_bp, \
+    retailers_deliveries_bp, products_bp, hooks_bp, admin_bp, login_bp
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login_bp.login'
 
 
 @login_manager.user_loader
-def load_user(login_id):
-    return Login.query.get(login_id)
-
-
-from tabapp.models import Login
-from tabapp.views import main_bp, orders_bp, retailers_bp,\
-    retailers_stocks_bp, users_bp, supply_bp, urls_bp, url_bp, \
-    retailers_deliveries_bp, products_bp, hooks_bp, admin_bp, login_bp
+def load_user(contact_id):
+    return Contact.query.get(contact_id)
 
 # Backyard
 app.register_blueprint(main_bp)

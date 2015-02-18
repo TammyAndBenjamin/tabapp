@@ -12,19 +12,19 @@
                 <th>{{ _('Lastname') }}</th>
                 <th>{{ _('Email') }}</th>
                 <th>{{ _('Phone') }}</th>
-                <th>{{ _('Has login') }}</th>
+                <th>{{ _('Username') }}</th>
                 <th><a href="{{ url_for('users_bp.user') }}" class="glyphicon glyphicon-plus text-success"></a></th>
             </tr>
         </thead>
         <tbody>
-            {% for user in users %}
+            {% for contact in contacts %}
                 <tr>
-                    <td>{{ user.firstname }}</td>
-                    <td>{{ user.lastname }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.phone }}</td>
-                    <td>{{ _('Yes') if user.logins.count() else _('No') }}</td>
-                    <td><a href="{{ url_for('users_bp.user', user_id=user.id) }}" class="glyphicon glyphicon-pencil"></a></td>
+                    <td>{{ contact.firstname }}</td>
+                    <td>{{ contact.lastname }}</td>
+                    <td>{{ contact.email }}</td>
+                    <td>{{ contact.phone }}</td>
+                    <td>{{ contact.username }}</td>
+                    <td><a href="{{ url_for('users_bp.user', user_id=contact.id) }}" class="glyphicon glyphicon-pencil"></a></td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, g, redirect, url_for, flash
 from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
 from tabapp.models import db, Contact
-from tabapp.forms import ContactForm, LoginForm
+from tabapp.forms import ContactForm
 
 users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 
@@ -12,9 +12,9 @@ users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 @users_bp.route('/')
 @login_required
 def list():
-    users = Contact.query.all()
+    contacts = Contact.query.all()
     context = {
-        'users': users,
+        'contacts': contacts,
     }
     return render_template('admin/users/list.html', **context)
 

@@ -33,7 +33,6 @@ db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
 
 
 from tabapp.models.contact import Contact
-from tabapp.models.login import Login
 from tabapp.models.product_cost import ProductCost
 from tabapp.models.product import Product
 from tabapp.models.retailer_product import RetailerProduct

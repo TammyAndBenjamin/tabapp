@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import TextField, PasswordField
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange, Email
 from flask.ext.babel import lazy_gettext
@@ -22,3 +22,5 @@ class ContactForm(Form):
     lastname = TextField(lazy_gettext('Lastname'), validators=[DataRequired()])
     email = TextField(lazy_gettext('Email'), validators=[DataRequired(), Email()])
     phone = TextField(lazy_gettext('Phone'))
+    username = TextField(lazy_gettext('Username'))
+    password = PasswordField(lazy_gettext('Password'))

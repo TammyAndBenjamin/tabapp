@@ -2,6 +2,7 @@
 
 from flask import Blueprint, render_template, g, redirect, url_for, flash, current_app, request
 from flask.ext.babel import gettext as _
+from tabapp.security import permisssion_required
 from tabapp.models import db, Contact, Role
 from tabapp.forms import ContactForm, CredentialsForm
 
@@ -9,7 +10,7 @@ users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 
 
 @users_bp.route('/')
-@login_required
+@permisssion_required('admin')
 def list():
     contacts = Contact.query.all()
     context = {
@@ -20,7 +21,7 @@ def list():
 
 @users_bp.route('/new', defaults={'user_id': None}, methods=['GET', 'POST'])
 @users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
-@login_required
+@permisssion_required('admin')
 def user(user_id):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)

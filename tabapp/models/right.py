@@ -4,7 +4,7 @@ from datetime import datetime
 from tabapp.models import db
 
 
-class Role(db.Model):
+class Right(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)

@@ -3,8 +3,8 @@
 from flask import Blueprint, request, render_template, g, redirect, url_for, flash, current_app, session
 from flask.ext.login import login_required, logout_user, login_user
 from flask.ext.babel import gettext as _
-from tabapp.models import Contact
 from flask.ext.principal import Identity, AnonymousIdentity, identity_changed
+from tabapp.models import Contact
 
 login_bp = Blueprint('login_bp', __name__, subdomain='backyard')
 

@@ -5,5 +5,6 @@
 {% block content %}
     <ul class="nav nav-pills">
         <li{% if sub_tab == 'users' %} class="active"{% endif %}><a href="{{ url_for('users_bp.list') }}">{{ _('Users') }}</a></li>
+        <li{% if sub_tab == 'roles' %} class="active"{% endif %}><a href="{{ url_for('roles_bp.list') }}">{{ _('Roles') }}</a></li>
     </ul>
 {% endblock content %}

@@ -4,7 +4,6 @@ from flask import Blueprint, request, render_template,\
     jsonify, g, current_app, redirect, url_for, abort
 from flask.ext.login import login_required
 from flask.ext.babel import format_date, format_currency
-from tabapp import admin_permission
 from tabapp.models import db, Product, ProductCost
 from datetime import date
 import tabapp.utils
@@ -14,7 +13,7 @@ products_bp = Blueprint('products_bp', __name__, subdomain='backyard')
 
 
 @products_bp.route('/')
-@admin_permission.require()
+@login_required
 def index():
     page = int(request.args.get('page', 1))
     products = Product.query.paginate(page)

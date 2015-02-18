@@ -1,0 +1,26 @@
+{% extends 'admin/layout.html' %}
+
+{% set sub_tab = 'roles' %}
+
+{% block content %}
+    {{ super() }}
+    <h2>{{ _('Roles list') }}</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{ _('Name') }}</th>
+                <th>{{ _('Key') }}</th>
+                <th><a href="{{ url_for('roles_bp.role') }}" class="glyphicon glyphicon-plus text-success"></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+                <tr>
+                    <td>{{ role.name }}</td>
+                    <td>{{ role.key }}</td>
+                    <td><a href="{{ url_for('roles_bp.user', role_id=role.id) }}" class="glyphicon glyphicon-pencil"></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from tabapp import app
 from flask.ext.sqlalchemy import SQLAlchemy, Model, BaseQuery
 
 
@@ -22,14 +21,14 @@ class LimitingQuery(BaseQuery):
     def private(self):
         mzero = self._mapper_zero()
         if mzero is not None:
-            crit = mzero.class_.enabled == True
+            crit = mzero.class_.enabled is True
             return self.enable_assertions(False).filter(crit)
         else:
             return self
 
 
 Model.query_class = LimitingQuery
-db = SQLAlchemy(app, session_options={'query_cls': LimitingQuery})
+db = SQLAlchemy(session_options={'query_cls': LimitingQuery})
 
 
 from tabapp.models.contact import Contact

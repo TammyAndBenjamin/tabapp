@@ -3,7 +3,7 @@
 from flask import Blueprint, request, g, current_app, abort, jsonify, make_response
 from flask.ext.babel import gettext as _
 from flask.ext.cors import cross_origin
-from tabapp import csrf
+from tabapp.security import csrf
 from tabapp.models import db, Product, Lead, ProductOrder
 import tabapp.utils
 import decimal

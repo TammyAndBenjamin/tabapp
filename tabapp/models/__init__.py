@@ -27,7 +27,7 @@ class LimitingQuery(BaseQuery):
             return self
 
 
-Model.query_class = LimitingQuery
+#Model.query_class = LimitingQuery
 db = SQLAlchemy(session_options={'query_cls': LimitingQuery})
 
 

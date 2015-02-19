@@ -10,7 +10,7 @@ users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
 
 
 @users_bp.route('/')
-@permisssion_required('admin')
+@permisssion_required(['admin'])
 def list():
     contacts = Contact.query.all()
     context = {
@@ -21,7 +21,7 @@ def list():
 
 @users_bp.route('/new', defaults={'user_id': None}, methods=['GET', 'POST'])
 @users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
-@permisssion_required('admin')
+@permisssion_required(['admin'])
 def user(user_id):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)

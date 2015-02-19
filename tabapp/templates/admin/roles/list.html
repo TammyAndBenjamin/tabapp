@@ -18,7 +18,7 @@
                 <tr>
                     <td>{{ role.name }}</td>
                     <td>{{ role.key }}</td>
-                    <td><a href="{{ url_for('roles_bp.user', role_id=role.id) }}" class="glyphicon glyphicon-pencil"></a></td>
+                    <td><a href="{{ url_for('roles_bp.role', role_id=role.id) }}" class="glyphicon glyphicon-pencil"></a></td>
                 </tr>
             {% endfor %}
         </tbody>

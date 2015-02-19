@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import redirect, request, url_for
+from flask import redirect, request, url_for, current_app
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import current_user
-from flask.ext.principal import Principal, identity_loaded, RoleNeed, UserNeed, Permission
+from flask.ext.principal import (
+        Principal,
+        identity_loaded,
+        RoleNeed,
+        UserNeed,
+        Permission,
+        PermissionDenied,
+    )
 from tabapp.models import Role
 
 
@@ -32,14 +39,16 @@ def init_app(app):
                 identity.provides.add(RoleNeed(role_id))
 
 
-def permisssion_required(role_key):
+def permisssion_required(role_keys):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            role = Role.query.filter(Role.key == role_key).first()
+            role = Role.query.filter(Role.key.in_(role_keys)).first()
             permisssion = Permission(RoleNeed(role.id))
-            with permisssion.require():
-                return f(*args, **kwargs)
-            return redirect(url_for('login_bp.login', next=request.url))
+            try:
+                with permisssion.require():
+                    return f(*args, **kwargs)
+            except PermissionDenied:
+                return redirect(url_for('login_bp.login', next=request.url))
         return decorated_function
     return decorator

@@ -62,6 +62,7 @@ def init_app(app):
     app.register_blueprint(urls_bp, url_prefix='/urls')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(users_bp, url_prefix='/admin/users')
+    app.register_blueprint(roles_bp, url_prefix='/admin/roles')
     # Data
     app.register_blueprint(supply_bp, url_prefix='/supplies')
     app.register_blueprint(url_bp, url_prefix='/u')

@@ -10,6 +10,7 @@
             <tr>
                 <th>{{ _('Name') }}</th>
                 <th>{{ _('Key') }}</th>
+                <th>{{ _('Descendants') }}</th>
                 <th><a href="{{ url_for('roles_bp.role') }}" class="glyphicon glyphicon-plus text-success"></a></th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                 <tr>
                     <td>{{ role.name }}</td>
                     <td>{{ role.key }}</td>
+                    <td>{{ descendants[role.id]|join(', ') }}</td>
                     <td><a href="{{ url_for('roles_bp.role', role_id=role.id) }}" class="glyphicon glyphicon-pencil"></a></td>
                 </tr>
             {% endfor %}

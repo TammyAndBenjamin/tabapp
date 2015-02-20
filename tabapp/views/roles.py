@@ -13,8 +13,12 @@ roles_bp = Blueprint('roles_bp', __name__, subdomain='backyard')
 @permisssion_required(['admin'])
 def list():
     roles = Role.query.all()
+    descendants = {}
+    for role in roles:
+        descendants[role.id] = [descendant.name for descendant in role.descendants]
     context = {
         'roles': roles,
+        'descendants': descendants,
     }
     return render_template('admin/roles/list.html', **context)
 

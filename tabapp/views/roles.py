@@ -29,11 +29,11 @@ def role(role_id):
         form.populate_obj(role)
         if not role.id:
             db.session.add(role)
+        db.session.commit()
+        flash(_('Role updated.'), 'success')
         kwargs = {
             'role_id': role.id,
         }
-        db.session.commit()
-        flash(_('Role updated.'), 'success')
         return redirect(url_for('roles_bp.role', **kwargs))
     context = {
         'role_id': role.id,

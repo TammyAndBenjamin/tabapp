@@ -39,11 +39,11 @@ def user(user_id):
         #contact.phone = current_form.phone.data
         if not contact.id:
             db.session.add(contact)
+        db.session.commit()
+        flash(_('User updated.'), 'success')
         kwargs = {
             'user_id': contact.id,
         }
-        db.session.commit()
-        flash(_('User updated.'), 'success')
         return redirect(url_for('users_bp.user', **kwargs))
     context = {
         'user_id': contact.id,

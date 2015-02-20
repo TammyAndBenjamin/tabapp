@@ -40,3 +40,8 @@ class ContactForm(Form):
 class CredentialsForm(Form):
     username = TextField(lazy_gettext('Username'), validators=[DataRequired()])
     password = PasswordField(lazy_gettext('Password'), validators=[DataRequired()])
+
+
+class RoleForm(Form):
+    key = TextField(lazy_gettext('key'), validators=[DataRequired()])
+    name = TextField(lazy_gettext('Name'), validators=[DataRequired()])

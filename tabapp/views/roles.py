@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, jsonify
 from flask.ext.babel import gettext as _
 from tabapp.security import permisssion_required
-from tabapp.models import Role
+from tabapp.models import db, Role
+from tabapp.forms import RoleForm
 
 roles_bp = Blueprint('roles_bp', __name__, subdomain='backyard')
 
@@ -22,8 +23,31 @@ def list():
 @roles_bp.route('/<int:role_id>', methods=['GET', 'POST'])
 @permisssion_required(['admin'])
 def role(role_id):
-    roles = Role.query.all()
+    role = Role.query.get(role_id) if role_id else Role()
+    form = RoleForm(obj=role)
+    if form.validate_on_submit():
+        form.populate_obj(role)
+        if not role.id:
+            db.session.add(role)
+        kwargs = {
+            'role_id': role.id,
+        }
+        db.session.commit()
+        flash(_('Role updated.'), 'success')
+        return redirect(url_for('roles_bp.role', **kwargs))
     context = {
-        'roles': roles,
+        'role_id': role.id,
+        'form': form,
     }
-    return render_template('admin/roles/list.html', **context)
+    return render_template('admin/roles/form.html', **context)
+
+
+@roles_bp.route('/<int:role_id>', methods=['DELETE'])
+@permisssion_required(['admin'])
+def delete(role_id):
+    role = Role.query.get(role_id)
+    if not role:
+        return abort(404)
+    db.session.delete(role)
+    db.session.commit()
+    return jsonify(redirect=url_for('roles_bp.list'))

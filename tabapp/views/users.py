@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request, abort, current_app
 from flask.ext.babel import gettext as _
 from tabapp.security import permisssion_required
 from tabapp.models import db, Contact, Role
@@ -25,8 +25,6 @@ def list():
 def user(user_id):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)
-    contact_form.roles.choices = [(role.id, role.name) for role in Role.query.all()]
-    contact_form.roles.data = [role.id for role in contact.roles]
     credentials_form = CredentialsForm(obj=contact)
     forms = {
         'contact_details': contact_form,
@@ -34,8 +32,7 @@ def user(user_id):
     }
     current_form = forms.get(request.form.get('action'))
     if current_form and current_form.validate_on_submit():
-        contact = Contact.query.get(user_id)\
-            if user_id else Contact()
+        contact = Contact.query.get(user_id) if user_id else Contact()
         current_form.populate_obj(contact)
         if current_form is contact_form:
             contact.phone = current_form.phone.data

@@ -1,12 +1,14 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, SelectMultipleField
+from wtforms import TextField, PasswordField
 from wtforms import widgets
+from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange, Email
 from flask.ext.babel import lazy_gettext
+from tabapp.models import Role
 
 
-class MultiCheckboxField(SelectMultipleField):
+class MultiCheckboxField(QuerySelectMultipleField):
     """
     A multiple-select, except displays a list of checkboxes.
 
@@ -34,7 +36,7 @@ class ContactForm(Form):
     lastname = TextField(lazy_gettext('Lastname'), validators=[DataRequired()])
     email = TextField(lazy_gettext('Email'), validators=[DataRequired(), Email()])
     phone = TextField(lazy_gettext('Phone'))
-    roles = MultiCheckboxField(lazy_gettext('Roles'), choices=[], coerce=int)
+    roles = MultiCheckboxField(get_label=lambda obj: obj.name, query_factory=lambda: Role.query.filter())
 
 
 class CredentialsForm(Form):

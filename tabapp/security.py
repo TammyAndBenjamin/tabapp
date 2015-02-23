@@ -35,8 +35,8 @@ def init_app(app):
         # Assuming the User model has a list of roles, update the
         # identity with the roles that the user provides
         if hasattr(current_user, 'roles'):
-            for role_id in current_user.roles:
-                identity.provides.add(RoleNeed(role_id))
+            for role in current_user.roles:
+                identity.provides.add(RoleNeed(role.id))
 
 
 def permisssion_required(role_keys):

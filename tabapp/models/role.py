@@ -5,7 +5,17 @@ from datetime import datetime
 from sqlalchemy.orm import aliased
 from tabapp.models import db
 
-role_lineage = db.Table('role_lineage',
+ContactRole = db.Table('contact_role',
+    db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
+    db.Column('created', db.DateTime, nullable=False, default=datetime.now),
+    db.Column('version', db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now),
+    db.Column('enabled', db.Boolean, nullable=False, default=True),
+    db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), nullable=False),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'), nullable=False)
+)
+
+
+RoleLineage = db.Table('role_lineage',
     db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
     db.Column('created', db.DateTime, nullable=False, default=datetime.now),
     db.Column('version', db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now),
@@ -25,13 +35,13 @@ class Role(db.Model):
 
     def _get_descendants(self):
         descendants = db.session.query(
-            role_lineage.c.child_id
+            RoleLineage.c.child_id
         ).filter(
-            role_lineage.c.parent_id == self.id
+            RoleLineage.c.parent_id == self.id
         ).cte(name="descendants", recursive=True)
 
         children = aliased(descendants, name="child")
-        parents = aliased(role_lineage, name="parent")
+        parents = aliased(RoleLineage, name="parent")
 
         descendants = descendants.union(
             db.session.query(

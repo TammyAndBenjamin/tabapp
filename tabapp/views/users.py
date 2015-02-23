@@ -26,6 +26,7 @@ def user(user_id):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)
     contact_form.roles.choices = [(role.id, role.name) for role in Role.query.all()]
+    contact_form.roles.data = [role.id for role in contact.roles]
     credentials_form = CredentialsForm(obj=contact)
     forms = {
         'contact_details': contact_form,
@@ -36,7 +37,8 @@ def user(user_id):
         contact = Contact.query.get(user_id)\
             if user_id else Contact()
         current_form.populate_obj(contact)
-        #contact.phone = current_form.phone.data
+        if current_form is contact_form:
+            contact.phone = current_form.phone.data
         if not contact.id:
             db.session.add(contact)
         db.session.commit()

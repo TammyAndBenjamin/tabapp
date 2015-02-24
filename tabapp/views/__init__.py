@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import g
+from flask import g, render_template
 from flask.ext.login import current_user
 from flask.ext.babel import format_date, format_datetime, format_time,\
     format_currency, format_percent
@@ -28,6 +28,21 @@ def init_app(app):
         g.current_user = current_user
 
 
+    @app.errorhandler(403)
+    def page_not_found(e):
+        return render_template('403.html'), 403
+
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('404.html'), 404
+
+
+    @app.errorhandler(500)
+    def page_not_found(e):
+        return render_template('500.html'), 500
+
+
     @app.template_filter('currency')
     def currency_filter(value):
         return format_currency(value, 'EUR')
@@ -52,7 +67,12 @@ def init_app(app):
     def percent_filter(value):
         return format_percent(value, '#,##0.##%')
 
-    app.jinja_env.globals.update(can_access=lambda endpoint: tabapp.security.can_access(endpoint))
+
+    @app.context_processor
+    def utility_processor():
+        def can_access(endpoint):
+            return tabapp.security.can_access(endpoint)
+        return {'can_access': can_access}
 
     # Backyard
     app.register_blueprint(main_bp)

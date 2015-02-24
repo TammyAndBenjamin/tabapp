@@ -4,6 +4,14 @@
 
 {% block content %}
     <ul class="nav nav-pills">
-        <li{% if sub_tab == 'users' %} class="active"{% endif %}><a href="{{ url_for('users_bp.list') }}">{{ _('Users') }}</a></li>
+        {% set tabs = [
+            ['users', 'users_bp.list', _('Users')],
+            ['roles', 'roles_bp.list', _('Roles')],
+        ] %}
+        {% for key, endpoint, label in tabs %}
+            {% if can_access(endpoint) %}
+                <li{% if sub_tab ==  key %} class="active"{% endif %}><a href="{{ url_for(endpoint) }}">{{ label }}</a></li>
+            {% endif %}
+        {% endfor %}
     </ul>
 {% endblock content %}

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.migrate import Migrate, MigrateCommand
-from tabapp import app
-from tabapp.models import db
+from flask.ext.migrate import Migrate
 
 
-migrate = Migrate(app, db)
+migrate = Migrate()

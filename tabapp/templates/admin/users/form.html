@@ -4,52 +4,114 @@
 
 {% block content %}
     {{ super() }}
-    <h2>{{ _('Edit user') }}</h2>
-    <form class="form-horizontal" role="form" method="POST" action="{{ url_for('users_bp.user', user_id=user_id) }}">
+    <h2>
+        {{ _('Edit user') }}
+        {% if user_id and can_access('users_bp.delete') %}
+            <a href="{{ url_for('users_bp.delete', user_id=user_id) }}" class="btn btn-danger btn-xs delete_button">{{ _('Delete') }}</a>
+        {% endif %}
+    </h2>
+    {% if contact_form.errors %}
+        <ul class="alert alert-danger list-unstyled">
+            {% for field_name, field_errors in contact_form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ contact_form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form class="form-horizontal" role="form" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="form-group">
-            <label for="user_firstname" class="control-label col-sm-2">{{ form.firstname.label }}</label>
-            <div class="col-sm-10">
-                {{ form.firstname(id='user_firstname', class='form-control')|safe }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="user_lastname" class="control-label col-sm-2">{{ form.lastname.label }}</label>
-            <div class="col-sm-10">
-                {{ form.lastname(id='user_lastname', class='form-control')|safe }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="user_username" class="control-label col-sm-2">{{ form.username.label }}</label>
-            <div class="col-sm-10">
-                {{ form.username(id='user_username', class='form-control', autocomplete='off')|safe }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="user_password" class="control-label col-sm-2">{{ form.password.label }}</label>
-            <div class="col-sm-10">
-                {{ form.password(id='user_password', class='form-control', autocomplete='off')|safe }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="user_email" class="control-label col-sm-2">{{ form.email.label }}</label>
-            <div class="col-sm-2">
-                {{ form.email(id='user_email', class='form-control')|safe }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="user_phone" class="control-label col-sm-2">{{ form.phone.label }}</label>
+            <label for="user_firstname" class="control-label col-sm-2">{{ contact_form.firstname.label }}</label>
             <div class="col-sm-6">
-                {{ form.phone(id='user_phone', class='form-control', type="tel")|safe }}
+                {{ contact_form.firstname(id='user_firstname', class='form-control')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="user_lastname" class="control-label col-sm-2">{{ contact_form.lastname.label }}</label>
+            <div class="col-sm-6">
+                {{ contact_form.lastname(id='user_lastname', class='form-control')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="user_email" class="control-label col-sm-2">{{ contact_form.email.label }}</label>
+            <div class="col-sm-2">
+                {{ contact_form.email(id='user_email', class='form-control')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="user_phone" class="control-label col-sm-2">{{ contact_form.phone.label }}</label>
+            <div class="col-sm-6">
+                {{ contact_form.phone(id='user_phone', class='form-control', type="tel")|safe }}
+            </div>
+        </div>
+        {% if contact_form.roles %}
+            <div class="form-group">
+                <label for="user_roles" class="control-label col-sm-2">{{ contact_form.roles.label }}</label>
+                <div class="col-sm-6">
+                    {{ contact_form.roles(id='user_roles', class='list-unstyled')|safe }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" name="action" value="contact_details" class="btn btn-default">{{ _('Save') }}</button>
+            </div>
+        </div>
+    </form>
+
+    <h2>{{ _('Edit credentials') }}</h2>
+    {% if credentials_form.errors %}
+        <ul class="alert alert-danger list-unstyled">
+            {% for field_name, field_errors in credentials_form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ credentials_form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form class="form-horizontal" role="form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="form-group">
+            <label for="user_username" class="control-label col-sm-2">{{ credentials_form.username.label }}</label>
+            <div class="col-sm-6">
+                {{ credentials_form.username(id='user_username', class='form-control', autocomplete='off')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="user_password" class="control-label col-sm-2">{{ credentials_form.password.label }}</label>
+            <div class="col-sm-6">
+                {{ credentials_form.password(id='user_password', class='form-control', autocomplete='off')|safe }}
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default">{{ _('Save') }}</button>
-                {% if user_id %}
-                    <button type="submit" class="btn btn-danger btn-xs">{{ _('Delete') }}</button>
-                {% endif %}
+                <button type="submit" name="action" value="contact_credentials" class="btn btn-default">{{ _('Save') }}</button>
             </div>
         </div>
     </form>
 {% endblock content %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            var csrf_token = '{{ csrf_token() }}';
+            $('.delete_button').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'DELETE',
+                    mimeType: 'application/json',
+                    beforeSend: function(xhr, settings) {
+                        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        }
+                    },
+                    success: function(response) {
+                        document.location = response.redirect
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock script %}

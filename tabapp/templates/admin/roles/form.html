@@ -1,0 +1,72 @@
+{% extends 'admin/layout.html' %}
+
+{% set sub_tab = 'roles' %}
+
+{% block content %}
+    {{ super() }}
+    <h2>
+        {{ _('Edit role') }}
+        {% if role_id %}
+            <a href="{{ url_for('roles_bp.delete', role_id=role_id) }}" class="btn btn-danger btn-xs delete_button">{{ _('Delete') }}</a>
+        {% endif %}
+    </h2>
+    {% if form.errors %}
+        <ul class="alert alert-danger list-unstyled">
+            {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form class="form-horizontal" role="form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="form-group">
+            <label for="role_key" class="control-label col-sm-2">{{ form.key.label }}</label>
+            <div class="col-sm-6">
+                {{ form.key(id='role_key', class='form-control')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="role_name" class="control-label col-sm-2">{{ form.name.label }}</label>
+            <div class="col-sm-6">
+                {{ form.name(id='role_name', class='form-control')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="user_roles" class="control-label col-sm-2">{{ form.roles.label }}</label>
+            <div class="col-sm-6">
+                {{ form.roles(id='role_roles', class='list-unstyled')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" name="action" value="contact_details" class="btn btn-default">{{ _('Save') }}</button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            var csrf_token = '{{ csrf_token() }}';
+            $('.delete_button').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'DELETE',
+                    mimeType: 'application/json',
+                    beforeSend: function(xhr, settings) {
+                        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        }
+                    },
+                    success: function(response) {
+                        document.location = response.redirect
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock script %}

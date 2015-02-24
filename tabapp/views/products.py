@@ -5,19 +5,16 @@ from flask import Blueprint, request, render_template,\
 from flask.ext.login import login_required
 from flask.ext.babel import format_date, format_currency
 from tabapp.models import db, Product, ProductCost
-from datetime import datetime, date
+from datetime import date
+from tabapp.security import permisssion_required
 import tabapp.utils
-import math
-import sqlalchemy
-import sqlalchemy.sql.expression
-import sqlalchemy.dialects.postgresql
 
 
 products_bp = Blueprint('products_bp', __name__, subdomain='backyard')
 
 
 @products_bp.route('/')
-@login_required
+@permisssion_required(['normal'])
 def index():
     page = int(request.args.get('page', 1))
     products = Product.query.paginate(page)
@@ -40,7 +37,7 @@ def index():
 
 
 @products_bp.route('/sync', methods=['POST'])
-@login_required
+@permisssion_required(['normal'])
 def sync():
     Product.sync_from_remote()
     if tabapp.utils.request_wants_json():
@@ -49,7 +46,7 @@ def sync():
 
 
 @products_bp.route('/<int:product_id>/costs', methods=['GET', 'POST'])
-@login_required
+@permisssion_required(['normal'])
 def costs(product_id):
     if request.method == 'POST':
         product_cost = tabapp.utils.current_product_cost(product_id)

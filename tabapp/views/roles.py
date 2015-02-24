@@ -29,6 +29,7 @@ def list():
 def role(role_id):
     role = Role.query.get(role_id) if role_id else Role()
     form = RoleForm(obj=role)
+    form.roles.query = Role.query.filter(Role.id != role.id)
     if form.validate_on_submit():
         form.populate_obj(role)
         if not role.id:

@@ -34,6 +34,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="user_roles" class="control-label col-sm-2">{{ form.roles.label }}</label>
+            <div class="col-sm-6">
+                {{ form.roles(id='role_roles', class='list-unstyled')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" name="action" value="contact_details" class="btn btn-default">{{ _('Save') }}</button>
             </div>

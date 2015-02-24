@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import current_app
 from datetime import datetime
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, relationship
 from tabapp.models import db
 
 ContactRole = db.Table('contact_role',
@@ -32,6 +31,7 @@ class Role(db.Model):
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String, nullable=False)
     key = db.Column(db.String, nullable=False)
+    roles = relationship('Role', secondary='role_lineage', primaryjoin='Role.id==role_lineage.c.parent_id', secondaryjoin='Role.id==role_lineage.c.child_id')
 
     def _get_descendants(self):
         descendants = db.session.query(

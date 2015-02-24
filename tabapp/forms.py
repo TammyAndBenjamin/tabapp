@@ -47,3 +47,4 @@ class CredentialsForm(Form):
 class RoleForm(Form):
     key = TextField(lazy_gettext('key'), validators=[DataRequired()])
     name = TextField(lazy_gettext('Name'), validators=[DataRequired()])
+    roles = MultiCheckboxField(get_label=lambda obj: obj.name)

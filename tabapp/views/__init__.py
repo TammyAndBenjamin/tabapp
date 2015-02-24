@@ -18,6 +18,7 @@ from tabapp.views.hooks import hooks_bp
 from tabapp.views.admin import admin_bp
 from tabapp.views.login import login_bp
 from tabapp.views.urls import urls_bp
+import tabapp.security
 
 
 def init_app(app):
@@ -50,6 +51,8 @@ def init_app(app):
     @app.template_filter('percent')
     def percent_filter(value):
         return format_percent(value, '#,##0.##%')
+
+    app.jinja_env.globals.update(can_access=lambda endpoint: tabapp.security.can_access(endpoint))
 
     # Backyard
     app.register_blueprint(main_bp)

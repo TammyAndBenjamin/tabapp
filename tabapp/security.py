@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import redirect, request, url_for, current_app
+from flask import current_app, abort
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import current_user
 from flask.ext.principal import (
@@ -13,6 +13,7 @@ from flask.ext.principal import (
         PermissionDenied,
     )
 from tabapp.models import Role
+import collections
 
 
 csrf = CsrfProtect()
@@ -37,18 +38,34 @@ def init_app(app):
         if hasattr(current_user, 'roles'):
             for role in current_user.roles:
                 identity.provides.add(RoleNeed(role.id))
+                for descendant in role.descendants:
+                    identity.provides.add(RoleNeed(descendant.id))
 
 
 def permisssion_required(role_keys):
+    if not isinstance(role_keys, collections.Iterable):
+        raise
     def decorator(f):
+        f.permissions = role_keys
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            role = Role.query.filter(Role.key.in_(role_keys)).first()
-            permisssion = Permission(RoleNeed(role.id))
-            try:
-                with permisssion.require():
+            roles = Role.query.filter(Role.key.in_(role_keys)).all()
+            for role in roles:
+                permisssion = Permission(RoleNeed(role.id))
+                if permisssion.can():
                     return f(*args, **kwargs)
-            except PermissionDenied:
-                return redirect(url_for('login_bp.login', next=request.url))
+            return abort(403)
         return decorated_function
     return decorator
+
+
+def can_access(endpoint):
+    f = current_app.view_functions[endpoint]
+    if not hasattr(f, 'permissions'):
+        return True
+    roles = Role.query.filter(Role.key.in_(f.permissions)).all()
+    for role in roles:
+        permisssion = Permission(RoleNeed(role.id))
+        if permisssion.can():
+            return True
+    return False

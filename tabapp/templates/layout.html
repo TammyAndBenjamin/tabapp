@@ -6,12 +6,19 @@
         <div class="row">
             <div class="col-md-2">
                 <ul class="nav nav-pills nav-stacked">
-                    <li{% if main_tab == 'analytics' %} class="active"{% endif %}><a href="/">{{ _('Analytics') }}</a></li>
-                    <li{% if main_tab == 'orders' %} class="active"{% endif %}><a href="{{ url_for('orders_bp.index') }}">{{ _('Orders') }}</a></li>
-                    <li{% if main_tab == 'products' %} class="active"{% endif %}><a href="{{ url_for('products_bp.index') }}">{{ _('Products') }}</a></li>
-                    <li{% if main_tab == 'retailers' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.index') }}">{{ _('Retailers') }}</a></li>
-                    <li{% if main_tab == 'urls' %} class="active"{% endif %}><a href="{{ url_for('urls_bp.index') }}">{{ _('Urls') }}</a></li>
-                    <li{% if main_tab == 'admin' %} class="active"{% endif %}><a href="{{ url_for('admin_bp.index') }}">{{ _('Admin') }}</a></li>
+                    {% set tabs = [
+                        ['analytics', 'main_bp.index', _('Analytics')],
+                        ['orders', 'orders_bp.index', _('Orders')],
+                        ['products', 'products_bp.index', _('Products')],
+                        ['retailers', 'retailers_bp.index', _('Retailers')],
+                        ['urls', 'urls_bp.index', _('Urls')],
+                        ['admin', 'admin_bp.index', _('Admin')],
+                    ] %}
+                    {% for key, endpoint, label in tabs %}
+                        {% if can_access(endpoint) %}
+                            <li{% if main_tab ==  key %} class="active"{% endif %}><a href="{{ url_for(endpoint) }}">{{ label }}</a></li>
+                        {% endif %}
+                    {% endfor %}
                 </ul>
             </div>
             <div class="col-md-10">

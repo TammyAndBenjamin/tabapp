@@ -6,7 +6,7 @@
     {{ super() }}
     <h2>
         {{ _('Edit user') }}
-        {% if user_id %}
+        {% if user_id and can_access('users_bp.delete') %}
             <a href="{{ url_for('users_bp.delete', user_id=user_id) }}" class="btn btn-danger btn-xs delete_button">{{ _('Delete') }}</a>
         {% endif %}
     </h2>
@@ -19,7 +19,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-    <form class="form-horizontal" role="form" method="POST" action="{{ url_for('users_bp.user', user_id=user_id) }}">
+    <form class="form-horizontal" role="form" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="form-group">
             <label for="user_firstname" class="control-label col-sm-2">{{ contact_form.firstname.label }}</label>
@@ -45,12 +45,14 @@
                 {{ contact_form.phone(id='user_phone', class='form-control', type="tel")|safe }}
             </div>
         </div>
-        <div class="form-group">
-            <label for="user_roles" class="control-label col-sm-2">{{ contact_form.roles.label }}</label>
-            <div class="col-sm-6">
-                {{ contact_form.roles(id='user_roles', class='list-unstyled')|safe }}
+        {% if contact_form.roles %}
+            <div class="form-group">
+                <label for="user_roles" class="control-label col-sm-2">{{ contact_form.roles.label }}</label>
+                <div class="col-sm-6">
+                    {{ contact_form.roles(id='user_roles', class='list-unstyled')|safe }}
+                </div>
             </div>
-        </div>
+        {% endif %}
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" name="action" value="contact_details" class="btn btn-default">{{ _('Save') }}</button>
@@ -68,7 +70,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-    <form class="form-horizontal" role="form" method="POST" action="{{ url_for('users_bp.user', user_id=user_id) }}">
+    <form class="form-horizontal" role="form" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="form-group">
             <label for="user_username" class="control-label col-sm-2">{{ credentials_form.username.label }}</label>

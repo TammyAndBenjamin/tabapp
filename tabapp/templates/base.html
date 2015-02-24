@@ -15,6 +15,7 @@
                 </div>
                 {% if g.current_user.is_authenticated() %}
                     <div class="navbar-right">
+                        <a class="navbar-brand" href="{{ url_for('users_bp.account') }}"><small>{{ '%s %s.'|format(g.current_user.firstname, g.current_user.lastname[0:1]) }}</small></a>
                         <a class="navbar-brand" href="{{ url_for('login_bp.logout') }}">{{ _('Logout') }}</a>
                     </div>
                 {% endif %}

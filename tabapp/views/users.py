@@ -2,8 +2,10 @@
 
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request, abort, current_app
 from flask.ext.babel import gettext as _
-from tabapp.security import permisssion_required
-from tabapp.models import db, Contact
+from flask.ext.login import current_user
+from flask.ext.principal import RoleNeed, Permission
+from tabapp.security import permisssion_required, can_access
+from tabapp.models import db, Contact, Role
 from tabapp.forms import ContactForm, CredentialsForm
 
 users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
@@ -19,12 +21,15 @@ def list():
     return render_template('admin/users/list.html', **context)
 
 
-@users_bp.route('/new', defaults={'user_id': None}, methods=['GET', 'POST'])
-@users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
-@permisssion_required(['admin'])
-def user(user_id):
+def _user_handler(user_id, endpoint):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)
+
+    admin_role = Role.query.filter(Role.key == 'admin').scalar()
+    admin_permisssion = Permission(RoleNeed(admin_role.id))
+    if not admin_permisssion.can():
+        del contact_form.roles
+
     credentials_form = CredentialsForm(obj=contact)
     forms = {
         'contact_details': contact_form,
@@ -45,7 +50,7 @@ def user(user_id):
         kwargs = {
             'user_id': contact.id,
         }
-        return redirect(url_for('users_bp.user', **kwargs))
+        return redirect(url_for(endpoint, **kwargs))
     context = {
         'user_id': contact.id,
         'contact': contact,
@@ -53,6 +58,19 @@ def user(user_id):
         'credentials_form': credentials_form,
     }
     return render_template('admin/users/form.html', **context)
+
+
+@users_bp.route('/new', defaults={'user_id': None}, methods=['GET', 'POST'])
+@users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
+@permisssion_required(['admin'])
+def user(user_id):
+    return _user_handler(user_id, 'users_bp.user')
+
+
+@users_bp.route('/account', methods=['GET', 'POST'])
+def account():
+    user_id = current_user.id
+    return _user_handler(user_id, 'users_bp.account')
 
 
 @users_bp.route('/<int:user_id>', methods=['DELETE'])

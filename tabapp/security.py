@@ -10,7 +10,6 @@ from flask.ext.principal import (
         RoleNeed,
         UserNeed,
         Permission,
-        PermissionDenied,
     )
 from tabapp.models import Role
 import collections
@@ -26,15 +25,11 @@ def init_app(app):
 
     @identity_loaded.connect_via(app)
     def on_identity_loaded(sender, identity):
-        # Set the identity user object
         identity.user = current_user
 
-        # Add the UserNeed to the identity
         if hasattr(current_user, 'id'):
             identity.provides.add(UserNeed(current_user.id))
 
-        # Assuming the User model has a list of roles, update the
-        # identity with the roles that the user provides
         if hasattr(current_user, 'roles'):
             for role in current_user.roles:
                 identity.provides.add(RoleNeed(role.id))

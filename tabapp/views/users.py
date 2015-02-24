@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request, abort, current_app
 from flask.ext.babel import gettext as _
 from tabapp.security import permisssion_required
-from tabapp.models import db, Contact, Role
+from tabapp.models import db, Contact
 from tabapp.forms import ContactForm, CredentialsForm
 
 users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
@@ -33,7 +33,9 @@ def user(user_id):
     current_form = forms.get(request.form.get('action'))
     if current_form and current_form.validate_on_submit():
         contact = Contact.query.get(user_id) if user_id else Contact()
+        current_app.logger.debug(str(contact.password))
         current_form.populate_obj(contact)
+        current_app.logger.debug(str(contact.password))
         if current_form is contact_form:
             contact.phone = current_form.phone.data
         if not contact.id:

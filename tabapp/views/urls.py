@@ -2,15 +2,15 @@
 
 from datetime import datetime
 from flask import Blueprint, render_template, request, g, current_app, abort
-from flask.ext.login import login_required
 from tabapp.models import db, Url
+from tabapp.security import permisssion_required
 import hashlib
 
 urls_bp = Blueprint('urls_bp', __name__, subdomain='backyard')
 
 
 @urls_bp.route('/', methods=['GET', 'POST'])
-@login_required
+@permisssion_required(['normal'])
 def index():
     if request.method == 'POST':
         long_url = request.form['long_url']
@@ -32,7 +32,7 @@ def index():
 
 
 @urls_bp.route('/<int:url_id>/')
-@login_required
+@permisssion_required(['normal'])
 def one(url_id):
     url = Url.query.get(url_id)
     if not url:

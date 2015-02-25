@@ -11,9 +11,9 @@ from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
 from tabapp.models import (
     db, Invoice, InvoiceItem, Retailer,
-    RetailerProduct, DeliverySlip
+    RetailerProduct, DeliverySlip, Contact
 )
-from tabapp.forms import RetailerForm
+from tabapp.forms import RetailerForm, ContactForm
 import tabapp.utils
 
 
@@ -215,3 +215,33 @@ def contacts(retailer_id):
         'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/contacts.html', **context)
+
+
+@retailers_bp.route('/<int:retailer_id>/contacts/new', defaults={'contact_id': None}, methods=['GET', 'POST'])
+@retailers_bp.route('/<int:retailer_id>/contacts/<int:contact_id>/', methods=['GET', 'POST'])
+@login_required
+def contact(retailer_id, contact_id):
+    retailer = Retailer.query.get(retailer_id)
+    contact = Contact.query.get(contact_id) if contact_id else Contact()
+    contact_form = ContactForm(obj=contact)
+    del contact_form.roles
+    if contact_form.validate_on_submit():
+        contact_form.populate_obj(contact)
+        contact.phone = contact_form.phone.data
+        if not contact.id:
+            retailer.contacts.append(contact)
+        db.session.commit()
+        flash(_('User updated.'), 'success')
+        kwargs = {
+            'retailer_id': retailer.id,
+            'contact_id': contact.id,
+        }
+        return redirect(url_for('retailers_bp.contact', **kwargs))
+    context = {
+        'user_id': contact.id,
+        'retailer': retailer,
+        'tab_counts': tab_counts(retailer),
+        'contact': contact,
+        'contact_form': contact_form,
+    }
+    return render_template('retailers/contact.html', **context)

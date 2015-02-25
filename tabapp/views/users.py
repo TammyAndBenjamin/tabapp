@@ -62,9 +62,7 @@ def _contact_handler(user_id, endpoint):
     current_form = forms.get(request.form.get('action'))
     if current_form and current_form.validate_on_submit():
         contact = Contact.query.get(user_id) if user_id else Contact()
-        current_app.logger.debug(str(contact.password))
         current_form.populate_obj(contact)
-        current_app.logger.debug(str(contact.password))
         if current_form is contact_form:
             contact.phone = current_form.phone.data
         if not contact.id:

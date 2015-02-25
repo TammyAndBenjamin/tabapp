@@ -9,9 +9,9 @@ from flask.ext.principal import (
         identity_loaded,
         RoleNeed,
         UserNeed,
+        ItemNeed,
         Permission,
     )
-from tabapp.models import Role
 import collections
 
 
@@ -32,21 +32,24 @@ def init_app(app):
 
         if hasattr(current_user, 'roles'):
             for role in current_user.roles:
-                identity.provides.add(RoleNeed(role.id))
+                identity.provides.add(RoleNeed(role.key))
                 for descendant in role.descendants:
-                    identity.provides.add(RoleNeed(descendant.id))
+                    identity.provides.add(RoleNeed(descendant.key))
+
+        if hasattr(current_user, 'retailers'):
+            for retailer in current_user.retailers:
+                identity.provides.add(ItemNeed('access', 'retailer', retailer.id))
 
 
 def permisssion_required(role_keys):
     if not isinstance(role_keys, collections.Iterable):
         raise
     def decorator(f):
-        f.permissions = role_keys
+        f.role_keys = role_keys
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            roles = Role.query.filter(Role.key.in_(role_keys)).all()
-            for role in roles:
-                permisssion = Permission(RoleNeed(role.id))
+            for key in role_keys:
+                permisssion = Permission(RoleNeed(key))
                 if permisssion.can():
                     return f(*args, **kwargs)
             return abort(403)
@@ -56,11 +59,10 @@ def permisssion_required(role_keys):
 
 def can_access(endpoint):
     f = current_app.view_functions[endpoint]
-    if not hasattr(f, 'permissions'):
+    if not hasattr(f, 'role_keys'):
         return True
-    roles = Role.query.filter(Role.key.in_(f.permissions)).all()
-    for role in roles:
-        permisssion = Permission(RoleNeed(role.id))
+    for role_key in f.role_keys:
+        permisssion = Permission(RoleNeed(role_key))
         if permisssion.can():
             return True
     return False

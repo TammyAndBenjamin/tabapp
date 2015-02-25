@@ -5,10 +5,12 @@ from flask import (
     request,
     render_template,
     redirect, url_for, flash, jsonify,
-    abort, g
+    abort, g, current_app
 )
 from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
+from flask.ext.principal import Permission, ItemNeed, RoleNeed
+from tabapp.security import permisssion_required
 from tabapp.models import (
     db, Invoice, InvoiceItem, Retailer,
     RetailerProduct, DeliverySlip, Contact
@@ -43,9 +45,14 @@ def tab_counts(retailer):
 
 
 @retailers_bp.route('/')
-@login_required
+@permisssion_required(['normal', 'retailer'])
 def index():
+    permisssion = Permission(RoleNeed('normal'))
     retailers = Retailer.query.all()
+    for retailer in retailers[:]:
+        need = ItemNeed('access', 'retailer', retailer.id)
+        if not permisssion.union(Permission(need)).can():
+            retailers.remove(retailer)
     context = {
         'retailers': retailers,
     }

@@ -49,8 +49,7 @@ def _contact_handler(user_id, endpoint):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)
 
-    admin_role = Role.query.filter(Role.key == 'admin').scalar()
-    admin_permisssion = Permission(RoleNeed(admin_role.id))
+    admin_permisssion = Permission(RoleNeed('admin'))
     if not admin_permisssion.can():
         del contact_form.roles
 

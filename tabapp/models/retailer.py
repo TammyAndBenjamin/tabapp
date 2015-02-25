@@ -2,7 +2,7 @@
 
 from sqlalchemy.sql.expression import func
 from tabapp.models import db
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 RetailerContact = db.Table('retailer_contact',
     db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
@@ -25,4 +25,4 @@ class Retailer(db.Model):
     zip = db.Column(db.String)
     city = db.Column(db.String)
     country = db.Column(db.String)
-    contacts = relationship('Contact', secondary='retailer_contact')
+    contacts = relationship('Contact', secondary='retailer_contact', backref=backref('retailers', lazy='dynamic'))

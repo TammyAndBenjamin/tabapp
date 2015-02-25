@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-from tabapp.models import db
+from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import ARRAY
+from tabapp.models import db
 import sqlalchemy_utils
 
 
 class Contact(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     firstname = db.Column(db.String, nullable=False)
     lastname = db.Column(db.String, nullable=False)

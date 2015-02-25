@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from sqlalchemy.sql.expression import func
 from tabapp.models import db
 
 class Retailer(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String, nullable=False)
     code = db.Column(db.String, nullable=False)

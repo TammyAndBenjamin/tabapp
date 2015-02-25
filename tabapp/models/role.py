@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import aliased, relationship
 from tabapp.models import db
 
 ContactRole = db.Table('contact_role',
     db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
-    db.Column('created', db.DateTime, nullable=False, default=datetime.now),
-    db.Column('version', db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now),
+    db.Column('created', db.DateTime, nullable=False, default=func.now()),
+    db.Column('version', db.DateTime, nullable=False, default=func.now(), onupdate=func.now()),
     db.Column('enabled', db.Boolean, nullable=False, default=True),
     db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), nullable=False),
     db.Column('role_id', db.Integer, db.ForeignKey('role.id'), nullable=False)
@@ -16,8 +16,8 @@ ContactRole = db.Table('contact_role',
 
 RoleLineage = db.Table('role_lineage',
     db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
-    db.Column('created', db.DateTime, nullable=False, default=datetime.now),
-    db.Column('version', db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now),
+    db.Column('created', db.DateTime, nullable=False, default=func.now()),
+    db.Column('version', db.DateTime, nullable=False, default=func.now(), onupdate=func.now()),
     db.Column('enabled', db.Boolean, nullable=False, default=True),
     db.Column('parent_id', db.Integer, db.ForeignKey('role.id'), nullable=False),
     db.Column('child_id', db.Integer, db.ForeignKey('role.id'), nullable=False)
@@ -26,8 +26,8 @@ RoleLineage = db.Table('role_lineage',
 
 class Role(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String, nullable=False)
     key = db.Column(db.String, nullable=False)

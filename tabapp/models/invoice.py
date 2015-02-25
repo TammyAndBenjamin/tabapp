@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import calendar
-import sqlalchemy
-from datetime import datetime, date
-from tabapp.models import db, InvoiceItem
+from datetime import date
+from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy_utils import aggregated
+from tabapp.models import db, InvoiceItem
+import calendar
+import sqlalchemy
 
 
 def generate_no(context):
@@ -21,8 +22,8 @@ def generate_no(context):
 class Invoice(db.Model):
     __tablename__ = 'invoice'
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     retailer_id = db.Column(db.Integer, db.ForeignKey('retailer.id'))
     retailer = relationship('Retailer', backref=backref('invoices', lazy='dynamic'))

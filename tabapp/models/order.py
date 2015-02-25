@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-from tabapp.models import db
+from sqlalchemy.sql.expression import func
 from sqlalchemy.dialects.postgresql import ARRAY
+from tabapp.models import db
 
 
 class ProductOrder(db.Model):
     __tablename__ = 'product_order'
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     remote_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)

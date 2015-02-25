@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import calendar
-from datetime import datetime, date
-from tabapp.models import db, DeliverySlipLine
+from sqlalchemy.sql.expression import func
+from datetime import date
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy_utils import aggregated
+from tabapp.models import db, DeliverySlipLine
+import calendar
 import sqlalchemy
 
 
@@ -21,8 +22,8 @@ def generate_no(context):
 class DeliverySlip(db.Model):
     __tablename__ = 'delivery_slip'
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    version = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     retailer_id = db.Column(db.Integer, db.ForeignKey('retailer.id'), nullable=False)
     retailer = relationship('Retailer')

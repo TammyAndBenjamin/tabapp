@@ -1,0 +1,26 @@
+{% extends 'retailers/retailer.html' %}
+
+{% set retailer_tab = 'contacts' %}
+
+{% block list %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{ _('Firstname') }}</th>
+                <th>{{ _('Lastname') }}</th>
+                <th>{{ _('Email') }}</th>
+                <th>{{ _('Phone') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+                <tr>
+                    <td>{{ contact.firstname }}</td>
+                    <td>{{ contact.lastname }}</td>
+                    <td>{{ contact.email|default('', True) }}</td>
+                    <td>{{ contact.phone|default('', True) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock list %}

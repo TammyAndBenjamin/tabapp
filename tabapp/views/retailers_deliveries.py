@@ -34,6 +34,7 @@ def tab_counts(retailer):
         'invoices': Invoice.query.filter(
             Invoice.retailer_id == retailer.id
         ).count(),
+        'contacts': len(retailer.contacts),
     }
     return counts
 

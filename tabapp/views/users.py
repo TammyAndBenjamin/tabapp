@@ -21,7 +21,31 @@ def list():
     return render_template('admin/users/list.html', **context)
 
 
-def _user_handler(user_id, endpoint):
+@users_bp.route('/new', defaults={'user_id': None}, methods=['GET', 'POST'])
+@users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
+@permisssion_required(['admin'])
+def user(user_id):
+    return _contact_handler(user_id, 'users_bp.user')
+
+
+@users_bp.route('/account', methods=['GET', 'POST'])
+def account():
+    user_id = current_user.id
+    return _contact_handler(user_id, 'users_bp.account')
+
+
+@users_bp.route('/<int:user_id>', methods=['DELETE'])
+@permisssion_required(['admin'])
+def delete(user_id):
+    contact = Contact.query.get(user_id)
+    if not contact:
+        return abort(404)
+    db.session.delete(contact)
+    db.session.commit()
+    return jsonify(redirect=url_for('users_bp.list'))
+
+
+def _contact_handler(user_id, endpoint):
     contact = Contact.query.get(user_id) if user_id else Contact()
     contact_form = ContactForm(obj=contact)
 
@@ -58,27 +82,3 @@ def _user_handler(user_id, endpoint):
         'credentials_form': credentials_form,
     }
     return render_template('admin/users/form.html', **context)
-
-
-@users_bp.route('/new', defaults={'user_id': None}, methods=['GET', 'POST'])
-@users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
-@permisssion_required(['admin'])
-def user(user_id):
-    return _user_handler(user_id, 'users_bp.user')
-
-
-@users_bp.route('/account', methods=['GET', 'POST'])
-def account():
-    user_id = current_user.id
-    return _user_handler(user_id, 'users_bp.account')
-
-
-@users_bp.route('/<int:user_id>', methods=['DELETE'])
-@permisssion_required(['admin'])
-def delete(user_id):
-    contact = Contact.query.get(user_id)
-    if not contact:
-        return abort(404)
-    db.session.delete(contact)
-    db.session.commit()
-    return jsonify(redirect=url_for('users_bp.list'))

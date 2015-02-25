@@ -10,16 +10,23 @@
                 <li>{{ retailer.zip }}, {{ retailer.city }}</li>
             </ul>
             <ul class="list-unstyled col-sm-6">
-                <li><strong>{{ _('Contact:') }}</strong> {{ retailer.contact_firstname }} {{ retailer.contact_lastname }}</li>
                 <li><strong>{{ _('Fees:') }}</strong> {{ retailer.fees_proportion|percent }}</li>
             </ul>
         </div>
     </div>
     <ul class="nav nav-tabs">
-        <li{% if retailer_tab == 'delivery_slips' %} class="active"{% endif %}><a href="{{ url_for('retailers_deliveries_bp.index', retailer_id=retailer.id) }}">{{ _('Delivery Slips') }} <span class="tab_counts delivery_slips badge alert-info">{{ tab_counts.delivery_slips }}</span></a></li>
-        <li{% if retailer_tab == 'stocks' %} class="active"{% endif %}><a href="{{ url_for('retailers_stocks_bp.index', retailer_id=retailer.id) }}">{{ _('Stocks') }} <span class="tab_counts stocks badge alert-info">{{ tab_counts.stocks }}</span></a></li>
-        <li{% if retailer_tab == 'sold' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.sold', retailer_id=retailer.id) }}">{{ _('Sold') }} <span class="tab_counts sold badge alert-info">{{ tab_counts.sold }}</span></a></li>
-        <li{% if retailer_tab == 'invoices' %} class="active"{% endif %}><a href="{{ url_for('retailers_bp.invoices', retailer_id=retailer.id) }}">{{ _('Invoices') }} <span class="tab_counts invoices badge alert-info">{{ tab_counts.invoices }}</span></a></li>
+        {% set tabs = [
+            ['delivery_slips', 'retailers_deliveries_bp.index', _('Delivery Slips')],
+            ['stocks', 'retailers_stocks_bp.index', _('Stocks')],
+            ['sold', 'retailers_bp.sold', _('Sold')],
+            ['invoices', 'retailers_bp.invoices', _('Invoices')],
+            ['contacts', 'retailers_bp.contacts', _('Contacts')],
+        ] %}
+        {% for key, endpoint, label in tabs %}
+            {% if can_access(endpoint) %}
+                <li{% if retailer_tab ==  key %} class="active"{% endif %}><a href="{{ url_for(endpoint, retailer_id=retailer.id) }}">{{ label }} <span class="tab_counts {{ key }} badge alert-info">{{ tab_counts.get(key) }}</span></a></li>
+            {% endif %}
+        {% endfor %}
     </ul>
     {% block list %}{% endblock list %}
 {% endblock content %}

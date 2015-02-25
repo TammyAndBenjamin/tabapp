@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from datetime import date
-from flask import Blueprint, request, render_template, redirect,\
-    url_for, flash, jsonify, abort, current_app, g
+from flask import (
+    Blueprint,
+    request,
+    render_template,
+    redirect, url_for, flash, jsonify,
+    abort, g
+)
 from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
-from tabapp.models import db, Invoice, InvoiceItem, Retailer,\
+from tabapp.models import (
+    db, Invoice, InvoiceItem, Retailer,
     RetailerProduct, DeliverySlip
+)
 from tabapp.forms import RetailerForm
 import tabapp.utils
-import decimal
-import sqlalchemy
-import sqlalchemy.dialects.postgresql
 
 
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
@@ -34,6 +37,7 @@ def tab_counts(retailer):
         'invoices': Invoice.query.filter(
             Invoice.retailer_id == retailer.id
         ).count(),
+        'contacts': len(retailer.contacts),
     }
     return counts
 
@@ -199,3 +203,15 @@ def make_invoice(retailer_id):
         'retailer_id': retailer.id,
     }
     return redirect(url_for('retailers_bp.sold', **kwargs))
+
+
+@retailers_bp.route('/<int:retailer_id>/contacts/')
+@login_required
+def contacts(retailer_id):
+    retailer = Retailer.query.get(retailer_id)
+    context = {
+        'retailer': retailer,
+        'contacts': retailer.contacts,
+        'tab_counts': tab_counts(retailer),
+    }
+    return render_template('retailers/contacts.html', **context)

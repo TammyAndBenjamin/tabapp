@@ -3,7 +3,6 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, request, render_template
-from form_order import OrderForm
 from tabapp.utils import list_from_resource, process_orders
 from tabapp.security import permisssion_required
 import math
@@ -45,9 +44,3 @@ def index(page):
         'orders': orders,
     }
     return render_template('orders.html', **context)
-
-@orders_bp.route('/add')
-@permisssion_required(['normal'])
-def form():
-    form = OrderForm(request.form)
-    return render_template('order.html', form=form)

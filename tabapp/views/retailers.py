@@ -5,7 +5,7 @@ from flask import (
     request,
     render_template,
     redirect, url_for, flash, jsonify,
-    abort, g, current_app
+    abort, g
 )
 from flask.ext.login import login_required
 from flask.ext.babel import gettext as _

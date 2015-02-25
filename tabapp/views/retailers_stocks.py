@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
-from flask import Blueprint, request, render_template,\
-    redirect, url_for, flash, current_app, jsonify, abort, g
+from flask import (
+    Blueprint,
+    render_template,
+    redirect,
+    url_for, flash, jsonify, g
+)
 from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
-from tabapp.models import db, Invoice, Retailer, Product,\
-    RetailerProduct, DeliverySlip, DeliverySlipLine
+from tabapp.models import (
+    db, Invoice, Retailer, Product,
+    RetailerProduct, DeliverySlip, Contact
+)
 import tabapp.utils
-import decimal
-import math
-import sqlalchemy
-import sqlalchemy.dialects.postgresql
 
 
 bp_name = 'retailers_stocks_bp'

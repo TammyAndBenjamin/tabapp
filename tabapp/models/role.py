@@ -9,8 +9,8 @@ RoleLineage = db.Table('role_lineage',
     db.Column('created', db.DateTime, nullable=False, default=func.now()),
     db.Column('version', db.DateTime, nullable=False, default=func.now(), onupdate=func.now()),
     db.Column('enabled', db.Boolean, nullable=False, default=True),
-    db.Column('parent_id', db.Integer, db.ForeignKey('role.id'), nullable=False),
-    db.Column('child_id', db.Integer, db.ForeignKey('role.id'), nullable=False)
+    db.Column('parent_id', db.Integer, db.ForeignKey('role.id', ondelete='CASCADE'), nullable=False),
+    db.Column('child_id', db.Integer, db.ForeignKey('role.id', ondelete='CASCADE'), nullable=False)
 )
 
 

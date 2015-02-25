@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.sql.expression import func
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import relationship
 from tabapp.models import db
 import sqlalchemy_utils
+
+ContactRole = db.Table('contact_role',
+    db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
+    db.Column('created', db.DateTime, nullable=False, default=func.now()),
+    db.Column('version', db.DateTime, nullable=False, default=func.now(), onupdate=func.now()),
+    db.Column('enabled', db.Boolean, nullable=False, default=True),
+    db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), nullable=False),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'), nullable=False)
+)
 
 
 class Contact(db.Model):

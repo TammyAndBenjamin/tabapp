@@ -4,16 +4,6 @@ from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import aliased, relationship
 from tabapp.models import db
 
-ContactRole = db.Table('contact_role',
-    db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
-    db.Column('created', db.DateTime, nullable=False, default=func.now()),
-    db.Column('version', db.DateTime, nullable=False, default=func.now(), onupdate=func.now()),
-    db.Column('enabled', db.Boolean, nullable=False, default=True),
-    db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), nullable=False),
-    db.Column('role_id', db.Integer, db.ForeignKey('role.id'), nullable=False)
-)
-
-
 RoleLineage = db.Table('role_lineage',
     db.Column('id', db.Integer, db.Sequence('core_seq_general'), primary_key=True),
     db.Column('created', db.DateTime, nullable=False, default=func.now()),

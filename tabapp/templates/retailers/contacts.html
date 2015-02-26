@@ -10,7 +10,6 @@
                 <th>{{ _('Lastname') }}</th>
                 <th>{{ _('Email') }}</th>
                 <th>{{ _('Phone') }}</th>
-                <th>{{ _('Username') }}</th>
                 <th><a href="{{ url_for('retailers_bp.contact', retailer_id=retailer.id) }}" class="glyphicon glyphicon-plus text-success"></a></th>
             </tr>
         </thead>
@@ -21,7 +20,6 @@
                     <td>{{ contact.lastname }}</td>
                     <td>{{ contact.email|default('', True) }}</td>
                     <td>{{ contact.phone|default('', True) }}</td>
-                    <td>{{ contact.username|default('', True) }}</td>
                     <td>
                         <a href="{{ url_for('retailers_bp.contact', retailer_id=retailer.id, contact_id=contact.id) }}" class="glyphicon glyphicon-pencil"></a>
                     </td>

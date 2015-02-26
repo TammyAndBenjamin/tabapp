@@ -11,7 +11,7 @@
                 <th>{{ _('Zip') }}</th>
                 <th>{{ _('City') }}</th>
                 <th>{{ _('Fees') }}</th>
-                <th>{{ _('Contact') }}</th>
+                <th>{{ _('Contacts') }}</th>
                 <th><a href="{{ url_for('retailers_bp.new_retailer') }}" class="glyphicon glyphicon-plus text-success"></a></th>
             </tr>
         </thead>
@@ -23,7 +23,7 @@
                     <td>{{ retailer.zip }}</td>
                     <td>{{ retailer.city }}</td>
                     <td>{{ retailer.fees_proportion|percent }}</td>
-                    <td>{{ retailer.contact_firstname|default('') }} {{ retailer.contact_lastname|default('') }}</td>
+                    <td>{{ retailer.contacts|count }}</td>
                     <td><a href="{{ url_for('retailers_bp.retailer', retailer_id=retailer.id) }}" class="glyphicon glyphicon-minus text-danger delete_retailer"></a></td>
                 </tr>
             {% endfor %}

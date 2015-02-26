@@ -4,15 +4,13 @@ from datetime import date
 from flask import (
     Blueprint,
     render_template,
-    redirect,
+    redirect, abort,
     url_for, flash, jsonify, g
 )
-from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
-from tabapp.models import (
-    db, Invoice, Retailer, Product,
-    RetailerProduct, DeliverySlip, Contact
-)
+from tabapp.models import db, Retailer, Product, RetailerProduct
+from tabapp.views.retailers import tab_counts
+from tabapp.extensions.security import permisssion_required
 import tabapp.utils
 
 
@@ -20,31 +18,13 @@ bp_name = 'retailers_stocks_bp'
 retailers_stocks_bp = Blueprint(bp_name, __name__, subdomain='backyard')
 
 
-def tab_counts(retailer):
-    counts = {
-        'delivery_slips': DeliverySlip.query.filter(
-            DeliverySlip.retailer_id == retailer.id
-        ).count(),
-        'stocks': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.is_(None)
-        ).count(),
-        'sold': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.isnot(None),
-            RetailerProduct.invoice_item_id.is_(None)
-        ).count(),
-        'invoices': Invoice.query.filter(
-            Invoice.retailer_id == retailer.id
-        ).count(),
-        'contacts': len(retailer.contacts),
-    }
-    return counts
-
-
 @retailers_stocks_bp.route('/<int:retailer_id>/stocks/', methods=['GET'])
-@login_required
+@permisssion_required(['normal', 'retailer'])
 def index(retailer_id):
+    permisssion = Permission(RoleNeed('normal'))
+    need = ItemNeed('access', 'retailer', retailer_id)
+    if not permisssion.union(Permission(need)).can():
+        return abort(403)
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
@@ -55,8 +35,12 @@ def index(retailer_id):
 
 
 @retailers_stocks_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/sell', methods=['POST'])
-@login_required
+@permisssion_required(['normal', 'retailer'])
 def sell(retailer_id, retailer_product_id):
+    permisssion = Permission(RoleNeed('normal'))
+    need = ItemNeed('access', 'retailer', retailer_id)
+    if not permisssion.union(Permission(need)).can():
+        return abort(403)
     retailer = Retailer.query.get(retailer_id)
     retailer_product = RetailerProduct.query.get(retailer_product_id)
     if not retailer or not retailer_product or retailer.id != retailer_product.retailer_id:
@@ -73,7 +57,7 @@ def sell(retailer_id, retailer_product_id):
 
 
 @retailers_stocks_bp.route('/<int:retailer_id>/stocks/<int:retailer_product_id>/', methods=['DELETE'])
-@login_required
+@permisssion_required(['normal'])
 def delete(retailer_id, retailer_product_id):
     retailer = Retailer.query.get(retailer_id)
     retailer_product = RetailerProduct.query.get(retailer_product_id)

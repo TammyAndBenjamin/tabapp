@@ -8,9 +8,9 @@ from tabapp.views.supply import supply_bp
 from tabapp.views.url import url_bp
 from tabapp.views.main import main_bp
 from tabapp.views.orders import orders_bp
-from tabapp.views.retailers import retailers_bp
-from tabapp.views.retailers_deliveries import retailers_deliveries_bp
-from tabapp.views.retailers_stocks import retailers_stocks_bp
+from tabapp.views.retailers.main import retailers_bp
+from tabapp.views.retailers.deliveries import retailers_deliveries_bp
+from tabapp.views.retailers.stocks import retailers_stocks_bp
 from tabapp.views.products import products_bp
 from tabapp.views.users import users_bp
 from tabapp.views.roles import roles_bp

@@ -3,57 +3,36 @@
 from datetime import date
 from flask import (
     Blueprint, request, render_template,
-    redirect, url_for, flash, jsonify, g
+    redirect, url_for, flash, g
 )
-from flask.ext.login import login_required
+from tabapp.extensions.security import permisssion_required
 from tabapp.models import (
-    db, Invoice, Retailer, Product,
-    RetailerProduct, DeliverySlip, DeliverySlipLine, Contact
+    db, Retailer, Product,
+    RetailerProduct, DeliverySlip, DeliverySlipLine
 )
+from tabapp.views.retailers import tab_counts
 
 
 bp_name = 'retailers_deliveries_bp'
 retailers_deliveries_bp = Blueprint(bp_name, __name__, subdomain='backyard')
 
 
-def tab_counts(retailer):
-    counts = {
-        'delivery_slips': DeliverySlip.query.filter(
-            DeliverySlip.retailer_id == retailer.id
-        ).count(),
-        'stocks': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.is_(None)
-        ).count(),
-        'sold': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.isnot(None),
-            RetailerProduct.invoice_item_id.is_(None)
-        ).count(),
-        'invoices': Invoice.query.filter(
-            Invoice.retailer_id == retailer.id
-        ).count(),
-        'contacts': len(retailer.contacts),
-    }
-    return counts
-
-
 @retailers_deliveries_bp.route('/<int:retailer_id>/delivery_slips/')
-@login_required
+@permisssion_required(['normal'])
 def index(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
         'delivery_slips': DeliverySlip.query.filter(
-                DeliverySlip.retailer_id == retailer.id
-            ).order_by(DeliverySlip.delivery_date),
+            DeliverySlip.retailer_id == retailer.id
+        ).order_by(DeliverySlip.delivery_date),
         'tab_counts': tab_counts(retailer),
     }
     return render_template('retailers/delivery_slips.html', **context)
 
 
 @retailers_deliveries_bp.route('/<int:retailer_id>/delivery_slips/add', methods=['GET', 'POST'])
-@login_required
+@permisssion_required(['normal'])
 def add(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     if request.method == 'POST':
@@ -115,7 +94,7 @@ def add(retailer_id):
 
 
 @retailers_deliveries_bp.route('/<int:retailer_id>/delivery_slips/<int:delivery_slip_id>/')
-@login_required
+@permisssion_required(['normal'])
 def one(retailer_id, delivery_slip_id):
     retailer = Retailer.query.get(retailer_id)
     delivery_slip = DeliverySlip.query.get(delivery_slip_id)

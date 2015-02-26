@@ -7,41 +7,19 @@ from flask import (
     redirect, url_for, flash, jsonify,
     abort, g
 )
-from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
 from flask.ext.principal import Permission, ItemNeed, RoleNeed
 from tabapp.extensions.security import permisssion_required
 from tabapp.models import (
     db, Invoice, InvoiceItem, Retailer,
-    RetailerProduct, DeliverySlip, Contact
+    RetailerProduct, Contact
 )
 from tabapp.forms import RetailerForm, ContactForm
+from tabapp.views.retailers import tab_counts
 import tabapp.utils
 
 
 retailers_bp = Blueprint('retailers_bp', __name__, subdomain='backyard')
-
-
-def tab_counts(retailer):
-    counts = {
-        'delivery_slips': DeliverySlip.query.filter(
-            DeliverySlip.retailer_id == retailer.id
-        ).count(),
-        'stocks': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.is_(None)
-        ).count(),
-        'sold': RetailerProduct.query.filter(
-            RetailerProduct.retailer_id == retailer.id,
-            RetailerProduct.sold_date.isnot(None),
-            RetailerProduct.invoice_item_id.is_(None)
-        ).count(),
-        'invoices': Invoice.query.filter(
-            Invoice.retailer_id == retailer.id
-        ).count(),
-        'contacts': len(retailer.contacts),
-    }
-    return counts
 
 
 @retailers_bp.route('/')
@@ -60,8 +38,12 @@ def index():
 
 
 @retailers_bp.route('/<int:retailer_id>/', methods=['GET'])
-@login_required
+@permisssion_required(['normal', 'retailer'])
 def retailer(retailer_id):
+    permisssion = Permission(RoleNeed('normal'))
+    need = ItemNeed('access', 'retailer', retailer_id)
+    if not permisssion.union(Permission(need)).can():
+        return abort(403)
     retailer = Retailer.query.get(retailer_id)
     if not retailer:
         return abort(404)
@@ -73,7 +55,7 @@ def retailer(retailer_id):
 
 
 @retailers_bp.route('/new')
-@login_required
+@permisssion_required(['normal'])
 def new_retailer():
     form = RetailerForm()
     context = {
@@ -86,7 +68,7 @@ def new_retailer():
 @retailers_bp.route('/', defaults={'retailer_id': None}, methods=['POST'])
 @retailers_bp.route('/<int:retailer_id>/', methods=['POST'])
 @retailers_bp.route('/<int:retailer_id>/edit', methods=['GET', 'POST'])
-@login_required
+@permisssion_required(['normal'])
 def edit_retailer(retailer_id):
     form = None
     if request.method == 'POST':
@@ -117,7 +99,7 @@ def edit_retailer(retailer_id):
 
 @retailers_bp.route('/<int:retailer_id>/', methods=['DELETE'])
 @retailers_bp.route('/<int:retailer_id>/delete', methods=['POST'])
-@login_required
+@permisssion_required(['normal'])
 def delete_retailer(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     if not retailer:
@@ -131,7 +113,7 @@ def delete_retailer(retailer_id):
 
 
 @retailers_bp.route('/<int:retailer_id>/sold/')
-@login_required
+@permisssion_required(['normal'])
 def sold(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
@@ -146,7 +128,7 @@ def sold(retailer_id):
 
 
 @retailers_bp.route('/<int:retailer_id>/invoices/')
-@login_required
+@permisssion_required(['normal'])
 def invoices(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     context = {
@@ -158,7 +140,7 @@ def invoices(retailer_id):
 
 
 @retailers_bp.route('/<int:retailer_id>/invoices/<int:invoice_id>/')
-@login_required
+@permisssion_required(['normal'])
 def invoice(retailer_id, invoice_id):
     retailer = Retailer.query.get(retailer_id)
     invoice = Invoice.query.get(invoice_id)
@@ -170,7 +152,7 @@ def invoice(retailer_id, invoice_id):
 
 
 @retailers_bp.route('/<int:retailer_id>/invoices/', methods=['POST'])
-@login_required
+@permisssion_required(['normal'])
 def make_invoice(retailer_id):
     retailer = Retailer.query.get(retailer_id)
     retailer_product_ids = request.form.getlist('retailer_product_ids[]')
@@ -213,8 +195,12 @@ def make_invoice(retailer_id):
 
 
 @retailers_bp.route('/<int:retailer_id>/contacts/')
-@login_required
+@permisssion_required(['normal', 'retailer'])
 def contacts(retailer_id):
+    permisssion = Permission(RoleNeed('normal'))
+    need = ItemNeed('access', 'retailer', retailer_id)
+    if not permisssion.union(Permission(need)).can():
+        return abort(403)
     retailer = Retailer.query.get(retailer_id)
     context = {
         'retailer': retailer,
@@ -226,8 +212,12 @@ def contacts(retailer_id):
 
 @retailers_bp.route('/<int:retailer_id>/contacts/new', defaults={'contact_id': None}, methods=['GET', 'POST'])
 @retailers_bp.route('/<int:retailer_id>/contacts/<int:contact_id>/', methods=['GET', 'POST'])
-@login_required
+@permisssion_required(['normal', 'retailer'])
 def contact(retailer_id, contact_id):
+    permisssion = Permission(RoleNeed('normal'))
+    need = ItemNeed('access', 'retailer', retailer_id)
+    if not permisssion.union(Permission(need)).can():
+        return abort(403)
     retailer = Retailer.query.get(retailer_id)
     contact = Contact.query.get(contact_id) if contact_id else Contact()
     contact_form = ContactForm(obj=contact)

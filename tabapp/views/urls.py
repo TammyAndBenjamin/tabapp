@@ -3,7 +3,7 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, g, current_app, abort
 from tabapp.models import db, Url
-from tabapp.security import permisssion_required
+from tabapp.extensions.security import permisssion_required
 import hashlib
 
 urls_bp = Blueprint('urls_bp', __name__, subdomain='backyard')

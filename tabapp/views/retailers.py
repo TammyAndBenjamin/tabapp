@@ -10,7 +10,7 @@ from flask import (
 from flask.ext.login import login_required
 from flask.ext.babel import gettext as _
 from flask.ext.principal import Permission, ItemNeed, RoleNeed
-from tabapp.security import permisssion_required
+from tabapp.extensions.security import permisssion_required
 from tabapp.models import (
     db, Invoice, InvoiceItem, Retailer,
     RetailerProduct, DeliverySlip, Contact

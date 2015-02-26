@@ -4,7 +4,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, request, render_template
 from tabapp.utils import list_from_resource, process_orders
-from tabapp.security import permisssion_required
+from tabapp.extensions.security import permisssion_required
 import math
 
 orders_bp = Blueprint('orders_bp', __name__, subdomain='backyard')

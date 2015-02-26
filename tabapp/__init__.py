@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from tabapp import models, auth, security, lang, views, migrate
+from tabapp import views, extensions
+from tabapp.models import db
 
 
 def create_app():
@@ -12,12 +13,8 @@ def create_app():
     app.config.from_envvar('SETTINGS')
     app.secret_key = app.config['SECRET_KEY']
 
-    models.db.init_app(app)
-    security.init_app(app)
-    auth.login_manager.init_app(app)
-    lang.init_app(app)
+    db.init_app(app)
     views.init_app(app)
-
-    migrate.migrate.init_app(app, models.db)
+    extensions.init(app)
 
     return app

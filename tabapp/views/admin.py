@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template
-from tabapp.security import permisssion_required
+from tabapp.extensions.security import permisssion_required
 
 admin_bp = Blueprint('admin_bp', __name__, subdomain='backyard')
 

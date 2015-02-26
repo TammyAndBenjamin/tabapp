@@ -6,7 +6,7 @@ from flask.ext.login import login_required
 from flask.ext.babel import format_date, format_currency
 from tabapp.models import db, Product, ProductCost
 from datetime import date
-from tabapp.security import permisssion_required
+from tabapp.extensions.security import permisssion_required
 import tabapp.utils
 
 

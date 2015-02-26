@@ -2,5 +2,4 @@
 
 from flask.ext.migrate import Migrate
 
-
 migrate = Migrate()

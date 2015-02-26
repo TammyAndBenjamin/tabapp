@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, jsonify,
 from flask.ext.babel import gettext as _
 from flask.ext.login import current_user
 from flask.ext.principal import RoleNeed, Permission
-from tabapp.security import permisssion_required, can_access
+from tabapp.extensions.security import permisssion_required, can_access
 from tabapp.models import db, Contact, Role
 from tabapp.forms import ContactForm, CredentialsForm
 

@@ -43,13 +43,32 @@ If you're not using the provided vm you'll need to init the database with a scri
 # -*- coding: utf-8 -*-
 
 
-from tabapp.models import db, Login, Retailer
+from tabapp.models import db, Contact
 
 db.create_all()
 
 data = {
-    Login: [
-        {'username': 'user1', 'password': 'password'},
+    Role: [
+        {
+            'name': 'Normal',
+            'key': 'normal',
+            'roles': [],
+        },
+        {
+            'name': 'Admin',
+            'key': 'admin',
+            'roles': ['normal'],
+        },
+    ],
+    Contact: [
+        {
+            'firstname': 'Foo',
+            'lastname': 'Bar',
+            'email': 'foo@bar.com',
+            'username': 'user1',
+            'password': 'password',
+            'roles': ['admin'],
+        },
     ],
 }
 
@@ -57,7 +76,11 @@ for Entity, records in data.items():
     for record in records:
         entity = Entity()
         for key, value in record.items():
-            setattr(entity, key, value)
+            if key == 'roles':
+                roles = Role.query.filter(Role.key.in_(value))
+                getattr(entity, key).extend(roles)
+            else:
+                setattr(entity, key, value)
         db.session.add(entity)
 db.session.commit()
 

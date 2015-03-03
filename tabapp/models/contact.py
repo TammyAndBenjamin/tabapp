@@ -44,8 +44,8 @@ class Contact(db.Model):
 
     lang_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
     lang = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='lang')")
-    timezone_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
-    timezone = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='tz')")
+    tz_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
+    tz = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='tz')")
 
     def is_authenticated(self):
         return bool(self.id)

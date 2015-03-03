@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.sqlalchemy import SQLAlchemy, BaseQuery
+from flask.ext.sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy(session_options={'expire_on_commit': False})
 
-from tabapp.models.contact import Contact
+from tabapp.models.contact import Locale, Contact
 from tabapp.models.role import Role
 from tabapp.models.product_cost import ProductCost
 from tabapp.models.product import Product

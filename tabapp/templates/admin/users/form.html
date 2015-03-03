@@ -45,6 +45,18 @@
                 {{ contact_form.phone(id='user_phone', class='form-control', type="tel")|safe }}
             </div>
         </div>
+        <div class="form-group">
+            <label for="user_lang" class="control-label col-sm-2">{{ contact_form.lang.label }}</label>
+            <div class="col-sm-6">
+                {{ contact_form.lang(id='user_lang', class='form-control')|safe }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="user_tz" class="control-label col-sm-2">{{ contact_form.tz.label }}</label>
+            <div class="col-sm-6">
+                {{ contact_form.tz(id='user_tz', class='form-control')|safe }}
+            </div>
+        </div>
         {% if contact_form.roles %}
             <div class="form-group">
                 <label for="user_roles" class="control-label col-sm-2">{{ contact_form.roles.label }}</label>

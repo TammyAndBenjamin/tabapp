@@ -1,11 +1,11 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
 from wtforms import widgets
-from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
+from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField, QuerySelectField
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange, Email
 from flask.ext.babel import lazy_gettext
-from tabapp.models import Role
+from tabapp.models import Role, Locale
 
 
 class MultiCheckboxField(QuerySelectMultipleField):
@@ -36,6 +36,8 @@ class ContactForm(Form):
     lastname = TextField(lazy_gettext('Lastname'), validators=[DataRequired()])
     email = TextField(lazy_gettext('Email'), validators=[DataRequired(), Email()])
     phone = TextField(lazy_gettext('Phone'))
+    lang = QuerySelectField(get_label=lambda obj: obj.label, query_factory=lambda: Locale.query.filter(Locale.type=='lang'), allow_blank=True)
+    tz = QuerySelectField(get_label=lambda obj: obj.label, query_factory=lambda: Locale.query.filter(Locale.type=='tz'), allow_blank=True)
     roles = MultiCheckboxField(get_label=lambda obj: obj.name, query_factory=lambda: Role.query.filter())
 
 

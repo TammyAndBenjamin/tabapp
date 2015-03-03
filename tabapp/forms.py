@@ -27,8 +27,6 @@ class RetailerForm(Form):
     zip = TextField(lazy_gettext('Zip'))
     city = TextField(lazy_gettext('City'))
     country = TextField(lazy_gettext('Country'))
-    contact_firstname = TextField(lazy_gettext('Contact firstname'), validators=[DataRequired()])
-    contact_lastname = TextField(lazy_gettext('Contact lastname'), validators=[DataRequired()])
 
 
 class ContactForm(Form):
@@ -47,6 +45,6 @@ class CredentialsForm(Form):
 
 
 class RoleForm(Form):
-    key = TextField(lazy_gettext('key'), validators=[DataRequired()])
+    key = TextField(lazy_gettext('Key'), validators=[DataRequired()])
     name = TextField(lazy_gettext('Name'), validators=[DataRequired()])
     roles = MultiCheckboxField(get_label=lambda obj: obj.name)

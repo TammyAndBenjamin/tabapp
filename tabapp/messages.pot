@@ -1,14 +1,14 @@
 # Translations template for PROJECT.
-# Copyright (C) 2014 ORGANIZATION
+# Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-19 18:42+0000\n"
+"POT-Creation-Date: 2015-03-03 09:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: tabapp/templates/base.html:18
-msgid "Logout"
+#: tabapp/templates/403.html:5
+msgid "You can't touch this"
 msgstr ""
 
-#: tabapp/templates/layout.html:9
-msgid "Analytics"
+#: tabapp/templates/404.html:5
+msgid "Do not know what you're looking for"
+msgstr ""
+
+#: tabapp/templates/500.html:5
+msgid "Server Error"
+msgstr ""
+
+#: tabapp/templates/base.html:19
+msgid "Logout"
 msgstr ""
 
 #: tabapp/templates/layout.html:10
 msgid "Orders"
 msgstr ""
 
-#: tabapp/templates/layout.html:11 tabapp/templates/order.html:17
-#: tabapp/templates/orders.html:26 tabapp/templates/products/list.html:6
+#: tabapp/templates/layout.html:11 tabapp/templates/orders.html:26
+#: tabapp/templates/products/list.html:6
 #: tabapp/templates/retailers/products.html:10
 msgid "Products"
 msgstr ""
@@ -63,18 +71,6 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: tabapp/templates/order.html:4
-msgid "Order"
-msgstr ""
-
-#: tabapp/templates/order.html:7 tabapp/templates/retailers/index.html:14
-msgid "Contact"
-msgstr ""
-
-#: tabapp/templates/order.html:34
-msgid "Add"
-msgstr ""
-
 #: tabapp/templates/orders.html:6
 msgid "Sales"
 msgstr ""
@@ -96,14 +92,17 @@ msgid "Filter"
 msgstr ""
 
 #: tabapp/templates/orders.html:23 tabapp/templates/admin/users/list.html:11
+#: tabapp/templates/retailers/contacts.html:9
 msgid "Firstname"
 msgstr ""
 
 #: tabapp/templates/orders.html:24 tabapp/templates/admin/users/list.html:12
+#: tabapp/templates/retailers/contacts.html:10
 msgid "Lastname"
 msgstr ""
 
 #: tabapp/templates/orders.html:25 tabapp/templates/admin/users/list.html:13
+#: tabapp/templates/retailers/contacts.html:11
 msgid "Email"
 msgstr ""
 
@@ -137,30 +136,56 @@ msgstr ""
 msgid "Product"
 msgstr ""
 
-#: tabapp/templates/admin/layout.html:7
+#: tabapp/templates/admin/layout.html:8
 msgid "Users"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:7
-msgid "Edit user"
+#: tabapp/templates/admin/layout.html:9
+msgid "Roles"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:36
-#: tabapp/templates/retailers/form.html:61
-msgid "Save"
+#: tabapp/templates/admin/roles/form.html:8
+msgid "Edit role"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:38
+#: tabapp/templates/admin/roles/form.html:10
+#: tabapp/templates/admin/users/form.html:10
 #: tabapp/templates/retailers/form.html:63
 msgid "Delete"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:44
-msgid "Logins"
+#: tabapp/templates/admin/roles/form.html:44
+#: tabapp/templates/admin/users/form.html:58
+#: tabapp/templates/admin/users/form.html:89
+#: tabapp/templates/retailers/contact.html:46
+#: tabapp/templates/retailers/form.html:61
+msgid "Save"
 msgstr ""
 
-#: tabapp/templates/admin/users/form.html:48
-msgid "Username"
+#: tabapp/templates/admin/roles/list.html:7
+msgid "Roles list"
+msgstr ""
+
+#: tabapp/templates/admin/roles/list.html:11
+#: tabapp/templates/retailers/index.html:9
+msgid "Name"
+msgstr ""
+
+#: tabapp/templates/admin/roles/list.html:12
+msgid "Key"
+msgstr ""
+
+#: tabapp/templates/admin/roles/list.html:13
+msgid "Descendants"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:8
+#: tabapp/templates/retailers/contact.html:7
+msgid "Edit user"
+msgstr ""
+
+#: tabapp/templates/admin/users/form.html:63
+msgid "Edit credentials"
 msgstr ""
 
 #: tabapp/templates/admin/users/list.html:7
@@ -168,21 +193,12 @@ msgid "Users list"
 msgstr ""
 
 #: tabapp/templates/admin/users/list.html:14
+#: tabapp/templates/retailers/contacts.html:12
 msgid "Phone"
 msgstr ""
 
 #: tabapp/templates/admin/users/list.html:15
-msgid "Has login"
-msgstr ""
-
-#: tabapp/templates/admin/users/list.html:26
-msgid "Yes"
-msgstr ""
-
-#: tabapp/templates/admin/users/list.html:26
-#: tabapp/templates/retailers/delivery_slips.html:11
-#: tabapp/templates/retailers/invoices.html:9
-msgid "No"
+msgid "Username"
 msgstr ""
 
 #: tabapp/templates/products/list.html:7
@@ -241,6 +257,11 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: tabapp/templates/retailers/delivery_slips.html:11
+#: tabapp/templates/retailers/invoices.html:9
+msgid "No"
+msgstr ""
+
 #: tabapp/templates/retailers/delivery_slips.html:12
 msgid "Delivery date"
 msgstr ""
@@ -263,10 +284,6 @@ msgstr ""
 msgid "Retailers list"
 msgstr ""
 
-#: tabapp/templates/retailers/index.html:9
-msgid "Name"
-msgstr ""
-
 #: tabapp/templates/retailers/index.html:10
 msgid "Address"
 msgstr ""
@@ -281,6 +298,11 @@ msgstr ""
 
 #: tabapp/templates/retailers/index.html:13
 msgid "Fees"
+msgstr ""
+
+#: tabapp/templates/retailers/index.html:14
+#: tabapp/templates/retailers/retailer.html:23
+msgid "Contacts"
 msgstr ""
 
 #: tabapp/templates/retailers/index.html:42
@@ -301,10 +323,6 @@ msgid "Validate"
 msgstr ""
 
 #: tabapp/templates/retailers/retailer.html:13
-msgid "Contact:"
-msgstr ""
-
-#: tabapp/templates/retailers/retailer.html:14
 msgid "Fees:"
 msgstr ""
 
@@ -356,15 +374,15 @@ msgstr ""
 msgid "Retailer price incl. VAT"
 msgstr ""
 
-#: tabapp/templates/retailers/stocks.html:30
+#: tabapp/templates/retailers/stocks.html:31
 msgid "Sell"
 msgstr ""
 
-#: tabapp/templates/retailers/stocks.html:47
+#: tabapp/templates/retailers/stocks.html:51
 msgid "Are you sure to sold this product ?"
 msgstr ""
 
-#: tabapp/templates/retailers/stocks.html:68
+#: tabapp/templates/retailers/stocks.html:72
 msgid "Are you sure to delete this product from the stocks ?"
 msgstr ""
 
@@ -392,35 +410,39 @@ msgstr ""
 msgid "Clicks"
 msgstr ""
 
-#: tabapp/views/hooks.py:61
+#: tabapp/views/hooks.py:66
 msgid "Your email was successfully registered"
 msgstr ""
 
-#: tabapp/views/retailers.py:91
-msgid "Retailer updated."
+#: tabapp/views/login.py:20
+msgid "Unknown user"
 msgstr ""
 
-#: tabapp/views/retailers.py:117 tabapp/views/retailers.py:118
-msgid "Retailer deleted."
+#: tabapp/views/roles.py:38
+msgid "Role updated."
 msgstr ""
 
-#: tabapp/views/retailers.py:196 tabapp/views/retailers.py:197
-msgid "Product pay."
-msgstr ""
-
-#: tabapp/views/retailers_stocks.py:64 tabapp/views/retailers_stocks.py:65
-msgid "Product sold."
-msgstr ""
-
-#: tabapp/views/retailers_stocks.py:87 tabapp/views/retailers_stocks.py:88
-msgid "Product deleted from stocks."
-msgstr ""
-
-#: tabapp/views/users.py:48
+#: tabapp/views/users.py:70 tabapp/views/retailers/main.py:231
 msgid "User updated."
 msgstr ""
 
-#: tabapp/views/users.py:71
-msgid "Unknown user"
+#: tabapp/views/retailers/main.py:84
+msgid "Retailer updated."
+msgstr ""
+
+#: tabapp/views/retailers/main.py:110 tabapp/views/retailers/main.py:111
+msgid "Retailer deleted."
+msgstr ""
+
+#: tabapp/views/retailers/main.py:189 tabapp/views/retailers/main.py:190
+msgid "Product pay."
+msgstr ""
+
+#: tabapp/views/retailers/stocks.py:51 tabapp/views/retailers/stocks.py:52
+msgid "Product sold."
+msgstr ""
+
+#: tabapp/views/retailers/stocks.py:74 tabapp/views/retailers/stocks.py:75
+msgid "Product deleted from stocks."
 msgstr ""
 

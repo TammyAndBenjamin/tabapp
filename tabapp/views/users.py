@@ -4,8 +4,8 @@ from flask import Blueprint, render_template, redirect, url_for, flash, jsonify,
 from flask.ext.babel import gettext as _
 from flask.ext.login import current_user
 from flask.ext.principal import RoleNeed, Permission
-from tabapp.extensions.security import permisssion_required, can_access
-from tabapp.models import db, Contact, Role
+from tabapp.extensions.security import permisssion_required
+from tabapp.models import db, Contact
 from tabapp.forms import ContactForm, CredentialsForm
 
 users_bp = Blueprint('users_bp', __name__, subdomain='backyard')
@@ -62,8 +62,6 @@ def _contact_handler(user_id, endpoint):
     if current_form and current_form.validate_on_submit():
         contact = Contact.query.get(user_id) if user_id else Contact()
         current_form.populate_obj(contact)
-        if current_form is contact_form:
-            contact.phone = current_form.phone.data
         if not contact.id:
             db.session.add(contact)
         db.session.commit()

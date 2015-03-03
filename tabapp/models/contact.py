@@ -33,7 +33,7 @@ class Contact(db.Model):
     firstname = db.Column(db.String, nullable=False)
     lastname = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
-    phone = db.Column(db.String())
+    phone = db.Column(db.String)
     username = db.Column(db.String, index=True, unique=True)
     password = db.Column(sqlalchemy_utils.PasswordType(
         schemes=[
@@ -45,7 +45,7 @@ class Contact(db.Model):
     lang_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
     lang = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='lang')")
     tz_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
-    tz = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='tz')")
+    tz = relationship('Locale', primaryjoin="and_(Contact.tz_id==Locale.id, Locale.type=='tz')")
 
     def is_authenticated(self):
         return bool(self.id)

@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
 
+from flask import current_app
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlalchemy_utils import force_auto_coercion
 
 db = SQLAlchemy(session_options={'expire_on_commit': False})
+
+
+@event.listens_for(Engine, 'before_cursor_execute')
+def before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    current_app.logger.debug("Start Query: %s with %s", statement, str(parameters))
+
+force_auto_coercion()
 
 from tabapp.models.contact import Locale, Contact
 from tabapp.models.role import Role

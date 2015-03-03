@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  1.0\n"
 "Report-Msgid-Bugs-To: b.pincemaille@tammyandbenjamin.com\n"
-"POT-Creation-Date: 2015-03-03 09:19+0000\n"
+"POT-Creation-Date: 2015-03-03 22:13+0000\n"
 "PO-Revision-Date: 2014-11-01 10:02+0000\n"
 "Last-Translator: Jonathan CAMILE <jonathan.camile@gmail.com>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -155,8 +155,8 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: tabapp/templates/admin/roles/form.html:44
-#: tabapp/templates/admin/users/form.html:58
-#: tabapp/templates/admin/users/form.html:89
+#: tabapp/templates/admin/users/form.html:70
+#: tabapp/templates/admin/users/form.html:101
 #: tabapp/templates/retailers/contact.html:46
 #: tabapp/templates/retailers/form.html:61
 msgid "Save"
@@ -184,7 +184,7 @@ msgstr "Enfants"
 msgid "Edit user"
 msgstr "Modification utilisateur"
 
-#: tabapp/templates/admin/users/form.html:63
+#: tabapp/templates/admin/users/form.html:75
 msgid "Edit credentials"
 msgstr "Edition identifiants"
 
@@ -422,9 +422,9 @@ msgstr "Utilisateur inconnu"
 msgid "Role updated."
 msgstr "Rôle mis à jour."
 
-#: tabapp/views/users.py:70 tabapp/views/retailers/main.py:231
+#: tabapp/views/users.py:68 tabapp/views/retailers/main.py:231
 msgid "User updated."
-msgstr "Distributeur mis à jour."
+msgstr "Utilisateur mis à jour."
 
 #: tabapp/views/retailers/main.py:84
 msgid "Retailer updated."

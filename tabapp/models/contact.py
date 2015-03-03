@@ -15,6 +15,16 @@ ContactRole = db.Table('contact_role',
 )
 
 
+class Locale(db.Model):
+    id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=func.now())
+    version = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
+    enabled = db.Column(db.Boolean, nullable=False, default=True)
+    type = db.Column(db.String, nullable=False)
+    label = db.Column(db.String, nullable=False)
+    value = db.Column(db.String, nullable=False)
+
+
 class Contact(db.Model):
     id = db.Column(db.Integer, db.Sequence('core_seq_general'), primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=func.now())
@@ -31,6 +41,11 @@ class Contact(db.Model):
         ],
     ))
     roles = relationship('Role', secondary='contact_role')
+
+    lang_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
+    lang = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='lang')")
+    timezone_id = db.Column(db.Integer, db.ForeignKey('locale.id'))
+    timezone = relationship('Locale', primaryjoin="and_(Contact.lang_id==Locale.id, Locale.type=='tz')")
 
     def is_authenticated(self):
         return bool(self.id)

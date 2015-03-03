@@ -12,14 +12,14 @@ def init_app(app):
 
     @babel.localeselector
     def get_locale():
-        user = getattr(g, 'user', None)
-        if user is not None:
-            return user.locale
+        user = getattr(g, 'current_user', None)
+        if user is not None and user.lang:
+            return user.lang.value
         return request.accept_languages.best_match(['fr', 'en'])
 
 
     @babel.timezoneselector
     def get_timezone():
-        user = getattr(g, 'user', None)
-        if user is not None:
-            return user.timezone
+        user = getattr(g, 'current_user', None)
+        if user is not None and user.timezone:
+            return user.timezone.value

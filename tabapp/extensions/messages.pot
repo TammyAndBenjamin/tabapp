@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-03 22:26+0000\n"
+"POT-Creation-Date: 2015-03-04 08:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: tabapp/forms.py:23 tabapp/forms.py:51
+#: tabapp/forms.py:23 tabapp/forms.py:49
 #: tabapp/templates/admin/roles/list.html:11
 #: tabapp/templates/retailers/index.html:9
 msgid "Name"
@@ -47,50 +47,50 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: tabapp/forms.py:35 tabapp/templates/orders.html:23
+#: tabapp/forms.py:33 tabapp/templates/orders.html:23
 #: tabapp/templates/admin/users/list.html:11
 #: tabapp/templates/retailers/contacts.html:9
 msgid "Firstname"
 msgstr ""
 
-#: tabapp/forms.py:36 tabapp/templates/orders.html:24
+#: tabapp/forms.py:34 tabapp/templates/orders.html:24
 #: tabapp/templates/admin/users/list.html:12
 #: tabapp/templates/retailers/contacts.html:10
 msgid "Lastname"
 msgstr ""
 
-#: tabapp/forms.py:37 tabapp/templates/orders.html:25
+#: tabapp/forms.py:35 tabapp/templates/orders.html:25
 #: tabapp/templates/admin/users/list.html:13
 #: tabapp/templates/retailers/contacts.html:11
 msgid "Email"
 msgstr ""
 
-#: tabapp/forms.py:38 tabapp/templates/admin/users/list.html:14
+#: tabapp/forms.py:36 tabapp/templates/admin/users/list.html:14
 #: tabapp/templates/retailers/contacts.html:12
 msgid "Phone"
 msgstr ""
 
-#: tabapp/forms.py:39
+#: tabapp/forms.py:37
 msgid "Language"
 msgstr ""
 
-#: tabapp/forms.py:40
+#: tabapp/forms.py:38
 msgid "Timezone"
 msgstr ""
 
-#: tabapp/forms.py:41 tabapp/templates/admin/layout.html:9
+#: tabapp/forms.py:39 tabapp/templates/admin/layout.html:9
 msgid "Roles"
 msgstr ""
 
-#: tabapp/forms.py:45 tabapp/templates/admin/users/list.html:15
+#: tabapp/forms.py:43 tabapp/templates/admin/users/list.html:15
 msgid "Username"
 msgstr ""
 
-#: tabapp/forms.py:46 tabapp/templates/login.html:21
+#: tabapp/forms.py:44 tabapp/templates/login.html:21
 msgid "Password"
 msgstr ""
 
-#: tabapp/forms.py:50
+#: tabapp/forms.py:48 tabapp/templates/admin/roles/list.html:12
 msgid "Key"
 msgstr ""
 
@@ -218,10 +218,6 @@ msgstr ""
 
 #: tabapp/templates/admin/roles/list.html:7
 msgid "Roles list"
-msgstr ""
-
-#: tabapp/templates/admin/roles/list.html:12
-msgid "Key"
 msgstr ""
 
 #: tabapp/templates/admin/roles/list.html:13

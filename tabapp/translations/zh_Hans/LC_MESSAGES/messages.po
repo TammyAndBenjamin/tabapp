@@ -1,17 +1,18 @@
-# French translations for TABAPP.
-# Copyright (C) 2014 TAMMY & BENJAMIN
-# This file is distributed under the same license as the TABAPP project.
-# Jonathan CAMILE <jonathan.camile@gmail.com>, 2014.
+# Chinese (Simplified) translations for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version:  1.0\n"
-"Report-Msgid-Bugs-To: b.pincemaille@tammyandbenjamin.com\n"
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-03-04 08:27+0000\n"
-"PO-Revision-Date: 2014-11-01 10:02+0000\n"
-"Last-Translator: Jonathan CAMILE <jonathan.camile@gmail.com>\n"
-"Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"PO-Revision-Date: 2015-03-04 08:43+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_Hans <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,192 +22,192 @@ msgstr ""
 #: tabapp/templates/admin/roles/list.html:11
 #: tabapp/templates/retailers/index.html:9
 msgid "Name"
-msgstr "Nom"
+msgstr ""
 
 #: tabapp/forms.py:24
 msgid "Code"
-msgstr "Code"
+msgstr ""
 
 #: tabapp/forms.py:25 tabapp/templates/retailers/index.html:13
 msgid "Fees"
-msgstr "Commission"
+msgstr ""
 
 #: tabapp/forms.py:26 tabapp/templates/retailers/index.html:10
 msgid "Address"
-msgstr "Adresse"
+msgstr ""
 
 #: tabapp/forms.py:27 tabapp/templates/retailers/index.html:11
 msgid "Zip"
-msgstr "CP"
+msgstr ""
 
 #: tabapp/forms.py:28 tabapp/templates/retailers/index.html:12
 msgid "City"
-msgstr "Ville"
+msgstr ""
 
 #: tabapp/forms.py:29
 msgid "Country"
-msgstr "Pays"
+msgstr ""
 
 #: tabapp/forms.py:33 tabapp/templates/orders.html:23
 #: tabapp/templates/admin/users/list.html:11
 #: tabapp/templates/retailers/contacts.html:9
 msgid "Firstname"
-msgstr "Prénom"
+msgstr ""
 
 #: tabapp/forms.py:34 tabapp/templates/orders.html:24
 #: tabapp/templates/admin/users/list.html:12
 #: tabapp/templates/retailers/contacts.html:10
 msgid "Lastname"
-msgstr "Nom"
+msgstr ""
 
 #: tabapp/forms.py:35 tabapp/templates/orders.html:25
 #: tabapp/templates/admin/users/list.html:13
 #: tabapp/templates/retailers/contacts.html:11
 msgid "Email"
-msgstr "Email"
+msgstr ""
 
 #: tabapp/forms.py:36 tabapp/templates/admin/users/list.html:14
 #: tabapp/templates/retailers/contacts.html:12
 msgid "Phone"
-msgstr "Téléphone"
+msgstr ""
 
 #: tabapp/forms.py:37
 msgid "Language"
-msgstr "Langue"
+msgstr ""
 
 #: tabapp/forms.py:38
 msgid "Timezone"
-msgstr "Fuseau horaire"
+msgstr ""
 
 #: tabapp/forms.py:39 tabapp/templates/admin/layout.html:9
 msgid "Roles"
-msgstr "Rôles"
+msgstr ""
 
 #: tabapp/forms.py:43 tabapp/templates/admin/users/list.html:15
 msgid "Username"
-msgstr "Username"
+msgstr ""
 
 #: tabapp/forms.py:44 tabapp/templates/login.html:21
 msgid "Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: tabapp/forms.py:48 tabapp/templates/admin/roles/list.html:12
 msgid "Key"
-msgstr "Clé"
+msgstr ""
 
 #: tabapp/templates/403.html:5
 msgid "You can't touch this"
-msgstr "vous n'avez pas accès à cette page"
+msgstr ""
 
 #: tabapp/templates/404.html:5
 msgid "Do not know what you're looking for"
-msgstr "Page non trouvée"
+msgstr ""
 
 #: tabapp/templates/500.html:5
 msgid "Server Error"
-msgstr "Une erreur est survenue. Veuillez réessayer plus tard."
+msgstr ""
 
 #: tabapp/templates/base.html:19
 msgid "Logout"
-msgstr "Déconnexion"
+msgstr ""
 
 #: tabapp/templates/layout.html:10
 msgid "Orders"
-msgstr "Commandes"
+msgstr ""
 
 #: tabapp/templates/layout.html:11 tabapp/templates/orders.html:26
 #: tabapp/templates/products/list.html:6
 #: tabapp/templates/retailers/products.html:10
 msgid "Products"
-msgstr "Produits"
+msgstr ""
 
 #: tabapp/templates/layout.html:12 tabapp/templates/products/list.html:31
 msgid "Retailers"
-msgstr "Distributeurs"
+msgstr ""
 
 #: tabapp/templates/layout.html:13
 msgid "Urls"
-msgstr "Urls"
+msgstr ""
 
 #: tabapp/templates/layout.html:14
 msgid "Admin"
-msgstr "Admin"
+msgstr ""
 
 #: tabapp/templates/login.html:12
 msgid "Who are you ?"
-msgstr "Qui êtes-vous ?"
+msgstr ""
 
 #: tabapp/templates/login.html:17
 msgid "Enter email"
-msgstr "Saisissez votre email"
+msgstr ""
 
 #: tabapp/templates/login.html:23
 msgid "Submit"
-msgstr "Valider"
+msgstr ""
 
 #: tabapp/templates/orders.html:6
 msgid "Sales"
-msgstr "Ventes"
+msgstr ""
 
 #: tabapp/templates/orders.html:7
 msgid "Add order"
-msgstr "Ajouter une commande"
+msgstr ""
 
 #: tabapp/templates/orders.html:10
 msgid "From"
-msgstr "Du"
+msgstr ""
 
 #: tabapp/templates/orders.html:14
 msgid "to"
-msgstr "au"
+msgstr ""
 
 #: tabapp/templates/orders.html:17
 msgid "Filter"
-msgstr "Filtrer"
+msgstr ""
 
 #: tabapp/templates/orders.html:27
 #: tabapp/templates/retailers/delivery_slips.html:13
 #: tabapp/templates/retailers/invoices.html:11
 msgid "excl. VAT"
-msgstr "HT"
+msgstr ""
 
 #: tabapp/templates/orders.html:28
 msgid "excl. VAT discount"
-msgstr "Remise HT"
+msgstr ""
 
 #: tabapp/templates/orders.html:29 tabapp/templates/products/list.html:14
 msgid "Cost"
-msgstr "Coût"
+msgstr ""
 
 #: tabapp/templates/orders.html:30
 msgid "Profit"
-msgstr "Marge"
+msgstr ""
 
 #: tabapp/templates/supplies.html:13
 msgid "Out of stock"
-msgstr "Rupture de stock"
+msgstr ""
 
 #: tabapp/templates/supplies.html:16 tabapp/templates/supplies.html:17
 msgid "Filter products"
-msgstr "Filtrer les produits"
+msgstr ""
 
 #: tabapp/templates/supplies.html:23 tabapp/templates/products/list.html:11
 msgid "Product"
-msgstr "Produit"
+msgstr ""
 
 #: tabapp/templates/admin/layout.html:8
 msgid "Users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: tabapp/templates/admin/roles/form.html:8
 msgid "Edit role"
-msgstr "Edition rôle"
+msgstr ""
 
 #: tabapp/templates/admin/roles/form.html:10
 #: tabapp/templates/admin/users/form.html:10
 #: tabapp/templates/retailers/form.html:63
 msgid "Delete"
-msgstr "Supprimer"
+msgstr ""
 
 #: tabapp/templates/admin/roles/form.html:44
 #: tabapp/templates/admin/users/form.html:70
@@ -214,255 +215,255 @@ msgstr "Supprimer"
 #: tabapp/templates/retailers/contact.html:46
 #: tabapp/templates/retailers/form.html:61
 msgid "Save"
-msgstr "Enregistrer"
+msgstr ""
 
 #: tabapp/templates/admin/roles/list.html:7
 msgid "Roles list"
-msgstr "Liste des rôles"
+msgstr ""
 
 #: tabapp/templates/admin/roles/list.html:13
 msgid "Descendants"
-msgstr "Enfants"
+msgstr ""
 
 #: tabapp/templates/admin/users/form.html:8
 #: tabapp/templates/retailers/contact.html:7
 msgid "Edit user"
-msgstr "Modification utilisateur"
+msgstr ""
 
 #: tabapp/templates/admin/users/form.html:75
 msgid "Edit credentials"
-msgstr "Edition identifiants"
+msgstr ""
 
 #: tabapp/templates/admin/users/list.html:7
 msgid "Users list"
-msgstr "Liste des utilisateurs"
+msgstr ""
 
 #: tabapp/templates/products/list.html:7
 msgid "Refresh from Shopify"
-msgstr "Raffraichir"
+msgstr ""
 
 #: tabapp/templates/products/list.html:12
 msgid "Quantity"
-msgstr "Quantité"
+msgstr ""
 
 #: tabapp/templates/products/list.html:13
 #: tabapp/templates/products/list.html:82
 msgid "Price"
-msgstr "Prix"
+msgstr ""
 
 #: tabapp/templates/products/list.html:15
 msgid "Sell by"
-msgstr "Vendu par"
+msgstr ""
 
 #: tabapp/templates/products/list.html:27
 msgid "No cost"
-msgstr "Sans frais"
+msgstr ""
 
 #: tabapp/templates/products/list.html:32
 #, python-format
 msgid "%(num)d retailer"
 msgid_plural "%(num)d retailers"
-msgstr[0] "%(num)d distributeur"
-msgstr[1] "%(num)d distributeurs"
+msgstr[0] ""
+msgstr[1] ""
 
 #: tabapp/templates/products/list.html:35
 msgid "No retailer"
-msgstr "Aucun distributeur"
+msgstr ""
 
 #: tabapp/templates/products/list.html:38
 msgid "Edit"
-msgstr "Modifier"
+msgstr ""
 
 #: tabapp/templates/products/list.html:56
 msgid "Edit product cost"
-msgstr "Modifier le coût"
+msgstr ""
 
 #: tabapp/templates/products/list.html:62
 msgid "Product cost"
-msgstr "Coût produit"
+msgstr ""
 
 #: tabapp/templates/products/list.html:68
 msgid "Close"
-msgstr "Fermer"
+msgstr ""
 
 #: tabapp/templates/products/list.html:69
 msgid "Update"
-msgstr "Modifier"
+msgstr ""
 
 #: tabapp/templates/products/list.html:81
 msgid "Date"
-msgstr "Date"
+msgstr ""
 
 #: tabapp/templates/retailers/delivery_slips.html:11
 #: tabapp/templates/retailers/invoices.html:9
 msgid "No"
-msgstr "Non"
+msgstr ""
 
 #: tabapp/templates/retailers/delivery_slips.html:12
 msgid "Delivery date"
-msgstr "Date de livraison"
+msgstr ""
 
 #: tabapp/templates/retailers/delivery_slips.html:14
 #: tabapp/templates/retailers/invoices.html:12
 msgid "VAT"
-msgstr "TVA"
+msgstr ""
 
 #: tabapp/templates/retailers/delivery_slips.html:15
 #: tabapp/templates/retailers/invoices.html:13
 msgid "incl. VAT"
-msgstr "TTC"
+msgstr ""
 
 #: tabapp/templates/retailers/form.html:5
 msgid "Edit retailer"
-msgstr "Edition distributeur"
+msgstr ""
 
 #: tabapp/templates/retailers/index.html:5
 msgid "Retailers list"
-msgstr "Liste des distributeurs"
+msgstr ""
 
 #: tabapp/templates/retailers/index.html:14
 #: tabapp/templates/retailers/retailer.html:23
 msgid "Contacts"
-msgstr "Contacts"
+msgstr ""
 
 #: tabapp/templates/retailers/index.html:42
 msgid "Are you sure to delete this retailer ?"
-msgstr "Êtes-vous sûr de supprimer ce distributeur ?"
+msgstr ""
 
 #: tabapp/templates/retailers/invoices.html:10
 msgid "Issue date"
-msgstr "Date d'émission"
+msgstr ""
 
 #: tabapp/templates/retailers/products.html:6
 msgid "Add in stock"
-msgstr "Ajouter au stock"
+msgstr ""
 
 #: tabapp/templates/retailers/products.html:36
 #: tabapp/templates/urls/list.html:14
 msgid "Validate"
-msgstr "Valider"
+msgstr ""
 
 #: tabapp/templates/retailers/retailer.html:13
 msgid "Fees:"
-msgstr "Commission :"
+msgstr ""
 
 #: tabapp/templates/retailers/retailer.html:19
 msgid "Delivery Slips"
-msgstr "Bons de dépôt"
+msgstr ""
 
 #: tabapp/templates/retailers/retailer.html:20
 msgid "Stocks"
-msgstr "Stocks"
+msgstr ""
 
 #: tabapp/templates/retailers/retailer.html:21
 msgid "Sold"
-msgstr "Vendus"
+msgstr ""
 
 #: tabapp/templates/retailers/retailer.html:22
 msgid "Invoices"
-msgstr "Factures"
+msgstr ""
 
 #: tabapp/templates/retailers/sold.html:12
 #: tabapp/templates/retailers/stocks.html:9
 msgid "Product name"
-msgstr "Produit"
+msgstr ""
 
 #: tabapp/templates/retailers/sold.html:13
 #: tabapp/templates/retailers/stocks.html:10
 msgid "Retailer price excl. VAT"
-msgstr "Prix distributeur HT"
+msgstr ""
 
 #: tabapp/templates/retailers/sold.html:14
 msgid "Retailer price incl. VATC"
-msgstr "Prix distributeur TTC"
+msgstr ""
 
 #: tabapp/templates/retailers/sold.html:15
 #: tabapp/templates/retailers/stocks.html:12
 msgid "TAB price excl. VAT"
-msgstr "Prix TAB HT"
+msgstr ""
 
 #: tabapp/templates/retailers/sold.html:16
 #: tabapp/templates/retailers/stocks.html:13
 msgid "TAB price incl. VAT"
-msgstr "Prix TAB TTC"
+msgstr ""
 
 #: tabapp/templates/retailers/sold.html:50
 msgid "Are you sure to create an invoice with these items ?"
-msgstr "Êtes-vous sûr de créer une facture avec ces produits ?"
+msgstr ""
 
 #: tabapp/templates/retailers/stocks.html:11
 msgid "Retailer price incl. VAT"
-msgstr "Prix distributeur TTC"
+msgstr ""
 
 #: tabapp/templates/retailers/stocks.html:31
 msgid "Sell"
-msgstr "Vendre"
+msgstr ""
 
 #: tabapp/templates/retailers/stocks.html:51
 msgid "Are you sure to sold this product ?"
-msgstr "Êtes-vous sûr de vendre ce produit ?"
+msgstr ""
 
 #: tabapp/templates/retailers/stocks.html:72
 msgid "Are you sure to delete this product from the stocks ?"
-msgstr "Êtes-vous sûr de retirer ce produit des stocks ?"
+msgstr ""
 
 #: tabapp/templates/urls/list.html:7
 msgid "Urls list"
-msgstr "Liste des urls"
+msgstr ""
 
 #: tabapp/templates/urls/list.html:11 tabapp/templates/urls/list.html:19
 msgid "Long URL"
-msgstr "Originale"
+msgstr ""
 
 #: tabapp/templates/urls/list.html:12
 msgid "Enter URL"
-msgstr "Saisissez une URL"
+msgstr ""
 
 #: tabapp/templates/urls/list.html:20
 msgid "Created"
-msgstr "Créée"
+msgstr ""
 
 #: tabapp/templates/urls/list.html:21
 msgid "UUID"
-msgstr "UUID"
+msgstr ""
 
 #: tabapp/templates/urls/list.html:22
 msgid "Clicks"
-msgstr "Vues"
+msgstr ""
 
 #: tabapp/views/hooks.py:66
 msgid "Your email was successfully registered"
-msgstr "Vos coordonnées ont bien été enregistrées"
+msgstr ""
 
 #: tabapp/views/login.py:20
 msgid "Unknown user"
-msgstr "Utilisateur inconnu"
+msgstr ""
 
 #: tabapp/views/roles.py:38
 msgid "Role updated."
-msgstr "Rôle mis à jour."
+msgstr ""
 
 #: tabapp/views/users.py:68 tabapp/views/retailers/main.py:231
 msgid "User updated."
-msgstr "Utilisateur mis à jour."
+msgstr ""
 
 #: tabapp/views/retailers/main.py:84
 msgid "Retailer updated."
-msgstr "Distributeur mis à jour."
+msgstr ""
 
 #: tabapp/views/retailers/main.py:110 tabapp/views/retailers/main.py:111
 msgid "Retailer deleted."
-msgstr "Distributeur supprimé."
+msgstr ""
 
 #: tabapp/views/retailers/main.py:189 tabapp/views/retailers/main.py:190
 msgid "Product pay."
-msgstr "Produit payé."
+msgstr ""
 
 #: tabapp/views/retailers/stocks.py:51 tabapp/views/retailers/stocks.py:52
 msgid "Product sold."
-msgstr "Produit vendu."
+msgstr ""
 
 #: tabapp/views/retailers/stocks.py:74 tabapp/views/retailers/stocks.py:75
 msgid "Product deleted from stocks."
-msgstr "Produit supprimé des stocks."
+msgstr ""
 

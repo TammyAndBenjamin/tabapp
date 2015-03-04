@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import current_app, abort
+from flask import current_app, abort, redirect, url_for, request
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import current_user
 from flask.ext.principal import (
@@ -48,6 +48,8 @@ def permisssion_required(role_keys):
         f.role_keys = role_keys
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated():
+                return redirect(url_for('login_bp.login', next=request.path))
             for key in role_keys:
                 permisssion = Permission(RoleNeed(key))
                 if permisssion.can():
@@ -58,6 +60,7 @@ def permisssion_required(role_keys):
 
 
 def can_access(endpoint):
+    """ Method used in templates only, it helps to validate endpoint access """
     f = current_app.view_functions[endpoint]
     if not hasattr(f, 'role_keys'):
         return True

@@ -17,4 +17,14 @@ def create_app():
     views.init_app(app)
     extensions.init(app)
 
+    if not app.debug:
+        import logging
+        import sys
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setLevel(logging.ERROR)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        app.logger.setLevel(logging.ERROR)
+        app.logger.addHandler(ch)
+
     return app

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import g, render_template
+from flask import g, render_template, current_app, request
 from flask.ext.login import current_user
 from flask.ext.babel import (
     format_date, format_datetime, format_time,
@@ -35,6 +35,7 @@ def init_app(app):
 
     @app.errorhandler(404)
     def page_not_found(e):
+        current_app.logger.error('{} not found.'.format(request.path))
         return render_template('404.html'), 404
 
     @app.errorhandler(500)

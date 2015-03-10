@@ -35,7 +35,7 @@ def init_app(app):
 
     @app.errorhandler(404)
     def page_not_found(e):
-        current_app.logger.error('{} not found.'.format(request.path))
+        current_app.logger.error('{} not found.'.format(request.url))
         return render_template('404.html'), 404
 
     @app.errorhandler(500)

@@ -3,8 +3,8 @@
 from functools import wraps
 from flask import current_app, abort, redirect, url_for, request
 from flask_wtf.csrf import CsrfProtect
-from flask.ext.login import current_user
-from flask.ext.principal import (
+from flask_login import current_user
+from flask_principal import (
         Principal,
         identity_loaded,
         RoleNeed,

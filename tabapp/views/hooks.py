@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, g, current_app, abort, jsonify, make_response
-from flask.ext.babel import gettext as _
-from flask.ext.cors import cross_origin
+from flask_babel import gettext as _
+from flask_cors import cross_origin
 from tabapp.extensions.security import csrf
 from tabapp.models import db, Product, Lead, ProductOrder
 import tabapp.utils

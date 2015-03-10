@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, jsonify
-from flask.ext.babel import gettext as _
+from flask_babel import gettext as _
 from tabapp.extensions.security import permisssion_required
 from tabapp.models import db, Role
 from tabapp.forms import RoleForm

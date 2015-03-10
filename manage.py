@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.script import Manager
+from flask_script import Manager
+from flask_migrate import MigrateCommand
 from tabapp import create_app
-from flask.ext.migrate import MigrateCommand
 
 
 manager = Manager(create_app())

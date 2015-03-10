@@ -7,8 +7,8 @@ from flask import (
     redirect, abort,
     url_for, flash, jsonify, g
 )
-from flask.ext.babel import gettext as _
-from flask.ext.principal import Permission, ItemNeed, RoleNeed
+from flask_babel import gettext as _
+from flask_principal import Permission, ItemNeed, RoleNeed
 from tabapp.extensions.security import permisssion_required
 from tabapp.models import db, Retailer, Product, RetailerProduct
 from tabapp.views.retailers import tab_counts

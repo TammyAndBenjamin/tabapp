@@ -7,8 +7,8 @@ from flask import (
     redirect, url_for, flash, jsonify,
     abort, g
 )
-from flask.ext.babel import gettext as _
-from flask.ext.principal import Permission, ItemNeed, RoleNeed
+from flask_babel import gettext as _
+from flask_principal import Permission, ItemNeed, RoleNeed
 from tabapp.extensions.security import permisssion_required
 from tabapp.models import (
     db, Invoice, InvoiceItem, Retailer,

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import request, g
-from flask.ext.babel import Babel
+from flask_babel import Babel
 
 
 babel = Babel()

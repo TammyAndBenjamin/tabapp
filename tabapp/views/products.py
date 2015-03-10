@@ -2,8 +2,8 @@
 
 from flask import Blueprint, request, render_template,\
     jsonify, g, current_app, redirect, url_for, abort
-from flask.ext.login import login_required
-from flask.ext.babel import format_date, format_currency
+from flask_login import login_required
+from flask_babel import format_date, format_currency
 from tabapp.models import db, Product, ProductCost
 from datetime import date
 from tabapp.extensions.security import permisssion_required

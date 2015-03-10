@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import g, render_template, current_app, request
-from flask.ext.login import current_user
-from flask.ext.babel import (
+from flask_login import current_user
+from flask_babel import (
     format_date, format_datetime, format_time,
     format_currency, format_percent
 )

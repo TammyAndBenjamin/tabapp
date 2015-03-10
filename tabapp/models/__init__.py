@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import current_app
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlalchemy_utils import force_auto_coercion

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request, abort, current_app
-from flask.ext.babel import gettext as _
-from flask.ext.login import current_user
-from flask.ext.principal import RoleNeed, Permission
+from flask_babel import gettext as _
+from flask_login import current_user
+from flask_principal import RoleNeed, Permission
 from tabapp.extensions.security import permisssion_required
 from tabapp.models import db, Contact
 from tabapp.forms import ContactForm, CredentialsForm

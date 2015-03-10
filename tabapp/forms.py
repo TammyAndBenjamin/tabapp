@@ -4,7 +4,7 @@ from wtforms import widgets
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField, QuerySelectField
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange, Email
-from flask.ext.babel import lazy_gettext
+from flask_babel import lazy_gettext
 from tabapp.models import Role, Locale
 
 

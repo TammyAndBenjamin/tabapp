@@ -2,7 +2,7 @@
 
 
 from flask import Blueprint, render_template
-from flask.ext.login import login_required
+from flask_login import login_required
 
 
 main_bp = Blueprint('main_bp', __name__, subdomain='backyard')

@@ -47,9 +47,10 @@ def shopify_webhook(f):
             webhook_hmac = request.headers['X-Shopify-Hmac-Sha256'].encode()
             json.loads(request.get_data().decode())
         except Exception as e:
-            current_app.logger.debug(e)
+            current_app.logger.error(e)
             return abort(400)
         if not _hmac_is_valid(request.get_data(), current_app.config['SHOPIFY_SECRET'].encode(), webhook_hmac):
+            current_app.logger.error('HMAC not valid for webhook')
             return abort(403)
         return f(*args, **kwargs)
     return wrapper

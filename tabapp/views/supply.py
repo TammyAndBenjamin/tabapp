@@ -13,7 +13,7 @@ def get_products():
             return url
         pattern = r'(\.(jpg|jpeg)\?)'
         return re.sub(pattern, r'_{}\1'.format(size), url, flags=re.IGNORECASE)
-    quantity_buffer = 2
+    quantity_buffer = 1
     fields = [
         'id',
         'title',
